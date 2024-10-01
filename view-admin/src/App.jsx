@@ -8,7 +8,7 @@ import Account from './components/content/Account';
 import Dashboard from './components/content/Dashboard';
 import Signup from './components/content/signup';
 import './scss/custom.scss';
-
+import { Header, Footer, Sidebar, Content } from './components/index';
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Track authentication
 
@@ -19,7 +19,6 @@ function App() {
         <Route path="/" element={<Signup />} />
 
         {/* Protected Routes */}
-        {isAuthenticated && (
           <>
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/messages" element={<Messages />} />
@@ -27,11 +26,11 @@ function App() {
             <Route path="/account" element={<Account />} />
             <Route path="/dashboard" element={<Dashboard />} />
           </>
-        )}
+        
       </Routes>
 
       {/* Only show Layout when authenticated */}
-      {isAuthenticated && <Layout />}
+     <Layout />
     </>
   );
 }
