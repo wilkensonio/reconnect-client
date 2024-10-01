@@ -22,13 +22,13 @@ function sidebar() {
         </CSidebarHeader>
         <CSidebarNav>
           <CNavTitle>reconnect</CNavTitle>
-          <CNavItem href="#"><CIcon customClassName="nav-icon" icon={cilLaptop} /> Dashboard</CNavItem>
+          <CNavItem href="/dashboard"><CIcon customClassName="nav-icon" icon={cilLaptop} /> Dashboard</CNavItem>
           <hr />
-          <CNavItem href="#"><CIcon customClassName="nav-icon" icon={cilEnvelopeClosed} /> Messages  
+          <CNavItem href="/messages"><CIcon customClassName="nav-icon" icon={cilEnvelopeClosed} /> Messages  
           <CBadge color="primary ms-auto">12</CBadge></CNavItem>
-          <CNavItem href="#"><CIcon customClassName="nav-icon" icon={cilCalendar} /> Calender</CNavItem> 
-          <CNavItem href="#"><CIcon customClassName="nav-icon" icon={cilPeople} />New Student</CNavItem>
-          <CNavItem href="#"><CIcon customClassName="nav-icon" icon={cilSettings} />Account</CNavItem>
+          <CNavItem href="/calendar"><CIcon customClassName="nav-icon" icon={cilCalendar} /> Calender</CNavItem> 
+          <CNavItem href="/newstudent"><CIcon customClassName="nav-icon" icon={cilPeople} />New Student</CNavItem>
+          <CNavItem href="/account"><CIcon customClassName="nav-icon" icon={cilSettings} />Account</CNavItem>
           <hr />
           <CNavItem href="#"><CIcon customClassName="nav-icon" icon={cilAccountLogout} />Logout</CNavItem>
         </CSidebarNav>
