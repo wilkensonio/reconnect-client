@@ -9,7 +9,7 @@ const Signup = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const signupPayload = {
-            email: email,
+            email: email,   
             password: password,
         };
         try {
