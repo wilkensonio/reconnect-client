@@ -1,16 +1,17 @@
 import React from 'react'
-import { CSidebar, CSidebarBrand, CSidebarHeader, CSidebarNav, CNavItem, CNavGroup, CNavTitle, CBadge } from '@coreui/react'
+import { CSidebar, CSidebarBrand, CSidebarHeader, CSidebarNav, CNavItem, CNavTitle, CBadge } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilSpeedometer, cilPuzzle, cilCloudDownload, cilLayers, cilEnvelopeClosed, cilCalendar, cilPeople, cilAccountLogout, cilSettings, cilLaptop } from '@coreui/icons'
+import { cilEnvelopeClosed, cilCalendar, cilPeople, cilAccountLogout, cilSettings, cilLaptop } from '@coreui/icons'
+import {Link} from 'react-router-dom'
 import logo from '/assets/logo/rconnect.png'
 
 function sidebar() { 
   return ( 
-      <CSidebar className="sidebar-narrow-unfoldable border-end" colorScheme="dark" unfoldable>
+      <CSidebar className=" border-end" colorScheme="dark" >
         <CSidebarHeader className="border-bottom">
           <CSidebarBrand>
             <img src={logo} alt="Reconnect logo" 
-            style={{
+              style={{
                 width: '100%',  
                 height: 'auto',  
                 display: 'block',
@@ -21,16 +22,50 @@ function sidebar() {
           </CSidebarBrand>
         </CSidebarHeader>
         <CSidebarNav>
-          <CNavTitle>reconnect</CNavTitle>
-          <CNavItem href="/dashboard"><CIcon customClassName="nav-icon" icon={cilLaptop} /> Dashboard</CNavItem>
+          <CNavTitle>reconnect</CNavTitle> 
+          <hr /> 
+          
+          <Link to="/dashboard" className="text-decoration-none text-light ms-3 mb-3">
+            <CNavItem className="d-flex align-items-center me-3">
+              <CIcon customClassName="nav-icon" icon={cilLaptop} /> Dashboard
+              <CBadge color="primary ms-auto">12</CBadge> 
+            </CNavItem> 
+          </Link> 
+          
+          <Link to="/messages" className="text-decoration-none text-light ms-3 mb-3">
+            <CNavItem className="d-flex align-items-center me-3">
+              <CIcon customClassName="nav-icon" icon={cilEnvelopeClosed} /> Students
+              <CBadge color="primary ms-auto">12</CBadge> 
+            </CNavItem> 
+          </Link>
+
+          <Link to="/calendar" className="text-decoration-none text-light ms-3 mb-3">
+            <CNavItem className="d-flex align-items-center me-3">
+              <CIcon customClassName="nav-icon" icon={cilCalendar} /> Calendar
+            </CNavItem> 
+          </Link>
+
+          <Link to="/newstudent" className="text-decoration-none text-light ms-3 mb-3">
+            <CNavItem className="d-flex align-items-center me-3">
+              <CIcon customClassName="nav-icon" icon={cilPeople} /> New Student
+            </CNavItem> 
+          </Link>
+
+          <Link to="/account" className="text-decoration-none text-light ms-3 mb-3">
+            <CNavItem className="d-flex align-items-center me-3">
+              <CIcon customClassName="nav-icon" icon={cilSettings} />Account
+            </CNavItem> 
+          </Link>
+
           <hr />
-          <CNavItem href="/messages"><CIcon customClassName="nav-icon" icon={cilEnvelopeClosed} /> Messages  
-          <CBadge color="primary ms-auto">12</CBadge></CNavItem>
-          <CNavItem href="/calendar"><CIcon customClassName="nav-icon" icon={cilCalendar} /> Calender</CNavItem> 
-          <CNavItem href="/newstudent"><CIcon customClassName="nav-icon" icon={cilPeople} />New Student</CNavItem>
-          <CNavItem href="/account"><CIcon customClassName="nav-icon" icon={cilSettings} />Account</CNavItem>
-          <hr />
-          <CNavItem href="#"><CIcon customClassName="nav-icon" icon={cilAccountLogout} />Logout</CNavItem>
+
+          <Link to="/logout" className="text-decoration-none text-light ms-3 mb-3">
+            <CNavItem className="d-flex align-items-center me-3">
+              <CIcon customClassName="nav-icon" icon={cilAccountLogout} />Logout
+            </CNavItem> 
+          </Link> 
+ 
+          
         </CSidebarNav>
       </CSidebar> 
   )
