@@ -9,6 +9,7 @@ import Dashboard from './components/content/Dashboard';
 import Signup from './components/content/signup';
 import './scss/custom.scss';
 import { Header, Footer, Sidebar, Content } from './components/index';
+
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Track authentication
 
