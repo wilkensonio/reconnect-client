@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { CButton, CRow, CCol, CForm, CFormInput, CFormLabel } from '@coreui/react';
+import { CButton, CRow, CCol, CForm, CFormInput, CFormLabel, CCard, CCardBody } from '@coreui/react';
 
 function SignInForm() {
   //Creates the objects for the inputs 
@@ -61,52 +61,56 @@ function SignInForm() {
   };
 
   return (
-    <CRow className="justify-content-center align-items-center" style={{ height: '100vh' }}>
-      <p className='h1 d-flex justify-content-center mt-5'>Sign In</p>
-      <CCol md={6} className="text-start mt-5">  
-        <CForm onSubmit={handleSubmit} className="row gy-2 gx-3 m-3">
-          <CCol xs={12}>
-            <CFormLabel htmlFor="emailInput">Email</CFormLabel>
-            <CFormInput
-              id="emailInput"
-              type="email"
-              placeholder="youremail@southernct.edu"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </CCol>
-          <CCol xs={12}>
-            <CFormLabel htmlFor="passwordInput">Password</CFormLabel>
-            <CFormInput
-              id="passwordInput"
-              type="password"
-              placeholder="*****************"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </CCol>
-          <CCol xs={12}>
-            <CButton color="primary" type="submit">Sign In</CButton>
-            <div className="mt-5 d-flex justify-content-center mb-3">
-              <a href="/signup" className="text-decoration-none">Don't have an account? Sign Up</a>
-            </div>
-          </CCol>
-           
-          {firstName && lastName && (
-            <div>
-              <h5>Welcome, {firstName} {lastName}!</h5>
-            </div>
-          )}
-          {error && (
-            <div className="text-danger">
-              <p>{error}</p>
-            </div>
-          )}
-        </CForm>
-      </CCol>
-    </CRow>
+    <CCard className="position-absolute top-50 start-50 translate-middle shadow" style={{maxWidth: '35rem', width: '90%'}}>
+    <CCardBody>
+      <CRow >
+        <p className='h1 d-flex justify-content-center mt-5'>Sign In</p>
+        <CCol md={12} className="text-start mt-5" >  
+          <CForm onSubmit={handleSubmit} className="row gy-2 gx-3 m-3">
+            <CCol xs={12}>
+              <CFormLabel htmlFor="emailInput"></CFormLabel>
+              <CFormInput
+                id="emailInput"
+                type="email"
+                placeholder="youremail@southernct.edu"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </CCol>
+            <CCol xs={12}>
+              <CFormLabel htmlFor="passwordInput"></CFormLabel>
+              <CFormInput
+                id="passwordInput"
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </CCol>
+            <CCol xs={12} className='pb-3' >
+              <CButton color="primary" type="submit" style={{position: 'relative', top:'10px'}}>Sign In</CButton>
+              <div className="mt-5 d-flex justify-content-center mb-3">
+                <a href="/signup" className="text-decoration-none">Don't have an account? Sign Up</a>
+              </div>
+            </CCol>
+            
+            {firstName && lastName && (
+              <div>
+                <h5>Welcome, {firstName} {lastName}!</h5>
+              </div>
+            )}
+            {error && (
+              <div className="text-danger">
+                <p>{error}</p>
+              </div>
+            )}
+          </CForm>
+        </CCol>
+      </CRow>
+    </CCardBody>
+  </CCard>
   );
 };
 
