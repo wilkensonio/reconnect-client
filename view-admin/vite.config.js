@@ -11,9 +11,9 @@ export default defineConfig({
     open: true,
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:5000',
+        target: 'http://ec2-3-82-206-23.compute-1.amazonaws.com:8000/',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '')
+        rewrite: (path) => path.replace(/^\/api/, 'api/v1')
       }
     }
   }
