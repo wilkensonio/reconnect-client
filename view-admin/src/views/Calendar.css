@@ -25,3 +25,13 @@
     color: white !important;
 }
 
+.fc {
+    border: 2px solid black;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.fc td, .fc th {  /* Removes the right border of the calendar */
+    border-style: none !important;
+  }

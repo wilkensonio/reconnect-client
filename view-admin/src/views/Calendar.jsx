@@ -13,11 +13,18 @@ export default function Calendar() {
           plugins={[dayGridPlugin, bootstrapPlugin]}
           initialView="dayGridMonth"
           headerToolbar={{
-            start: 'prevYear', 
+            left: 'prev,next today',
             center: 'title',
-            // left: 'today prev next', 
-            end: 'nextYear', 
-           
+            right: 'dayGridMonth,dayGridWeek,dayGridDay'
+          }}
+
+          buttonText= {{
+            prev: '<',
+            next:  '>',
+            today: 'Today',
+            month: 'Month',
+            week: 'Week',
+            day: 'Day'
           }}
           
           themeSystem="bootstrap" // Use Bootstrap theme for FullCalendar
