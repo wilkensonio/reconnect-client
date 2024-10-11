@@ -1,37 +1,46 @@
 
 /* Make the calendar grid cells more visually appealing */
 .fc-theme-bootstrap .fc-daygrid-day-frame {
-    border-radius: 4px; /* Round the day cells */
-    padding: 10px; /* Add padding to the day cells */
-    transition: background-color 0.3s ease; /* Smooth hover transition */
+    border-radius: 4px; 
+    padding: 10px; 
+    transition: background-color 0.3s ease; 
+    border: 2px solid #E6E6FA;
+}
+
+.fc-theme-bootstrap .fc-header-toolbar{
+    margin-left: 2rem;
+    margin-right: 2rem;
 }
 
 /* Hover effect on days */
 .fc-theme-bootstrap .fc-daygrid-day:hover {
-    background-color: #f0f8ff; /* Light blue background on hover */
+    background-color: #f0f8ff; 
 }
 
 /* Event styling */
 .fc-theme-bootstrap .fc-event {
-    background-color: #007bff !important; /* Bootstrap primary color */
-    border: none; /* Remove event border */
-    color: white; /* Ensure text is white */
-    border-radius: 4px; /* Add slight rounding to events */
+    background-color: #007bff !important; 
+    border: none; 
+    color: white; 
+    border-radius: 4px; 
 }
 
 /* Today highlight */
 .fc-theme-bootstrap .fc-day-today {
-    background-color: #98b3cd !important; /* Bootstrap danger color for today */
+    background-color: #98b3cd !important; 
     color: white !important;
 }
 
 .fc {
-    border: 2px solid black;
-    border-radius: 8px;
-    padding: 10px;
+    border: 2px solid #B0B0B0; 
+    border-radius: 8px; 
+    padding: 10px; 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 3%;
 }
+
 
 .fc td, .fc th {  /* Removes the right border of the calendar */
     border-style: none !important;
-  }
+}
+
