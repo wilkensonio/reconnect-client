@@ -7,7 +7,7 @@ import logo from '/assets/logo/rconnect.png'
 
 function sidebar() { 
   return ( 
-      <CSidebar className=" border-end" colorScheme="dark" >
+      <CSidebar className=" border-end" colorScheme="dark" unfoldable >
         <CSidebarHeader className="border-bottom">
           <CSidebarBrand>
             <img src={logo} alt="Reconnect logo" 
