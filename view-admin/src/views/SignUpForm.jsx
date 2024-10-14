@@ -213,7 +213,7 @@ const SignupForm = () => {
                      Sign Up 
                     </CButton>
                     <div className='mt-4'>
-                      <span className='d-flex justify-content-center'>
+                      <span className='d-flex justify-content-center pt-3'>
                         Have an account?&nbsp;
                         <a href='/signin' className='d-flex justify-content-center'>singn in </a>
                         </span> 

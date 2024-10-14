@@ -130,7 +130,7 @@ function SignInForm() {
                     </div>
                   )}
                   {error && (
-                    <div className="text-danger">
+                    <div className="text-danger text-center">
                       <p>{error}</p>
                     </div>
                   )}

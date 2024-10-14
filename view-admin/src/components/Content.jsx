@@ -1,5 +1,4 @@
-import React, { Suspense } from 'react'
-import {Item} from '../views/index'
+import React, { Suspense } from 'react' 
 import { CContainer, CSpinner } from '@coreui/react'
 import {Navigate, Routes, Route } from 'react-router-dom'
 import routes from '../routes'  
