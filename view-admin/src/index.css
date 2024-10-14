@@ -69,6 +69,19 @@ body {
   z-index: 1001; /* Ensure modal content is above the blur */
 }
 
+/* students */
+.card-student {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.card-student:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+}
+
+
 
 @import 'bootstrap/dist/css/bootstrap.min.css';
   
