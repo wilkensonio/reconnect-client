@@ -1,11 +1,165 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { CButton, CFormInput, CFormLabel, CContainer, CRow, CCol } from '@coreui/react';
+import { addStudent, uploadCsv } from '../api/StudentService'; // Adjust the path as needed
 
 function NewStudent() {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [studentId, setStudentId] = useState('');
+  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [success, setSuccess] = useState('');
+  const [error, setError] = useState('');
+  const [csvFile, setCsvFile] = useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    const studentData = {
+      student_id: studentId,
+      first_name: firstName,
+      last_name: lastName,
+      email,
+      phone_number: phoneNumber || '0000000000', 
+    }; 
+    
+    try {
+      const response = await addStudent(studentData);
+      if (response.status === 400){
+        setError(response.data.detail);
+        return;
+      }
+      if (response.status === 409){
+        setError('Student already exists');
+        return;
+      } 
+      if (response.status === 422) { 
+        setError('Invalid student data');
+        return;
+      }
+      console.log('Student added:', response);  
+      setFirstName('');
+      setLastName('');
+      setEmail('');
+      setStudentId('');
+      setPhoneNumber(''); 
+      setSuccess('Student added successfully');
+      setError(''); 
+    } catch (error) {
+      setScuccess('');  
+      console.error('Error adding student:', error);
+      setError('Failed to add student'); 
+    }
+  
+  };
+
+  const handleCsvUpload = async (e) => {
+    e.preventDefault();
+
+    try {
+      setSuccess('');
+      setError('');
+      if (!csvFile) {
+        setError('Select a CSV file');
+        return;
+      }
+      await uploadCsv(csvFile);
+      setSuccess('CSV file uploaded successfully');
+      setCsvFile(null);
+    } catch (error) {
+      console.error('Error uploading CSV file:', error);
+      setError('Failed to upload CSV file');
+    }
+  };
+
   return (
-    <div className="d-flex justify-content-center">
-      <p>this is the new student component</p>
-    </div>
+    <CContainer className='d-flex justify-content-center align-items-center min-vh-100 w-100'>
+      <div className='card shadow '>
+      <h3 className="text-center mt-4">Add New Student</h3>
+
+        <CRow className='m-3'> 
+          <CCol md={5}>
+              {/* <h3 className="text-center">Upload Students CSV</h3> */}
+              <form onSubmit={handleCsvUpload}>
+                <CFormLabel>Select CSV File</CFormLabel>
+                <CFormInput 
+                  type="file"
+                  accept=".csv"
+                  onChange={(e) => setCsvFile(e.target.files[0])}
+                  required
+                />
+                <CButton type="submit" color="success" className="mt-3">
+                  Upload CSV
+                </CButton>
+              </form>
+            </CCol>
+
+             {/* Vertical Divider */}
+            <CCol md={1} className="d-flex flex-column align-items-center justify-content-center">
+            
+            <div className='mt-2' style={{ borderLeft: '2px solid #007bff', height: '50%' }} />
+            <div className="mx-2 d-flex align-items-center justify-content-center">Or</div>
+            <div className='mb-2' style={{ borderLeft: '2px solid #007bff', height: '45%' }} />
+          
+            </CCol>
+
+            <CCol md={6}>
+              <form onSubmit={handleSubmit}> 
+                <CFormInput
+                  className='mt-4' 
+                  type="text"
+                  value={studentId}
+                  onChange={(e) => setStudentId(e.target.value)}
+                  placeholder='Student ID (HootLoot ID) *'
+                  required
+                />
+                <CFormInput
+                  className='mt-4' 
+                  type="text"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  placeholder='First Name *'
+                  required
+                /> 
+                
+                <CFormInput
+                  className='mt-4' 
+                  type="text"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  placeholder='Last Name *'
+                  required 
+                />  
+                
+                <CFormInput
+                  className='mt-4' 
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder='Email@southernct.edu *'
+                  required
+                />
+               
+                <CFormInput
+                  className='mt-4' 
+                  type="text"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  placeholder='Phone Number' 
+                />
+
+                <CButton type="submit" color="info" className="mt-3">
+                  Add Student
+                </CButton>
+              </form>
+            </CCol> 
+        </CRow>
+        { success && <p className='text-center mt-3 text-success'>{success}</p>}
+        { error && <p className='text-center mt-3 text-danger'>{error}</p>}
+      </div>
+    </CContainer>
   );
 }
+
 
 export default NewStudent;

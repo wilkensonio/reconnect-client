@@ -7,12 +7,16 @@ import logo from '/assets/logo/rconnect.png'
 
 function sidebar() { 
   return ( 
-      <CSidebar className=" border-end" unfoldable colorScheme="dark" >
+      <CSidebar className=" border-end" colorScheme="dark" unfoldable
+      style={{
+        transition: 'width 0.2s ease-in-out',
+      }}
+      >
         <CSidebarHeader className="border-bottom">
           <CSidebarBrand>
             <img src={logo} alt="Reconnect logo" 
               style={{
-                width: '100%',  
+                width: '90%',  
                 height: 'auto',  
                 display: 'block',
                 margin: 0,
@@ -26,28 +30,27 @@ function sidebar() {
           <hr /> 
           
           <Link to="/dashboard" className="text-decoration-none text-light ms-3 mb-3">
-            <CNavItem className="d-flex align-items-center me-3">
-              <CIcon customClassName="nav-icon" icon={cilLaptop} />Dashboard
-              <CBadge color="primary ms-auto">12</CBadge> 
+            <CNavItem className="d-flex  align-items-center me-3">
+              <CIcon className='d-flex justify-content-center' customClassName="nav-icon" icon={cilLaptop} />  Dashboard
             </CNavItem> 
           </Link> 
           
-          <Link to="/messages" className="text-decoration-none text-light ms-3 mb-3">
+          <Link to="/students" className="text-decoration-none text-light ms-3 mb-3">
             <CNavItem className="d-flex align-items-center me-3">
-              <CIcon customClassName="nav-icon" icon={cilEnvelopeClosed} />Students
+              <CIcon customClassName="nav-icon" icon={cilEnvelopeClosed} /> Students
               <CBadge color="primary ms-auto">12</CBadge> 
             </CNavItem> 
           </Link>
 
           <Link to="/calendar" className="text-decoration-none text-light ms-3 mb-3">
             <CNavItem className="d-flex align-items-center me-3">
-              <CIcon customClassName="nav-icon" icon={cilCalendar} />Calendar
+              <CIcon customClassName="nav-icon" icon={cilCalendar} /> Calendar
             </CNavItem> 
           </Link>
 
-          <Link to="/newstudent" className="text-decoration-none text-light ms-3 mb-3">
+          <Link to="/new-student" className="text-decoration-none text-light ms-3 mb-3">
             <CNavItem className="d-flex align-items-center me-3">
-              <CIcon customClassName="nav-icon" icon={cilPeople} />New Student
+              <CIcon customClassName="nav-icon" icon={cilPeople} /> Add Student
             </CNavItem> 
           </Link>
 

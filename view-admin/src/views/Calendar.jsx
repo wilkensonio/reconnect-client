@@ -63,7 +63,7 @@ export default function Calendar() {
       </div>
 
       {/* Modal transition */}
-      <CSSTransition in={visible} timeout={300} classNames="modal" unmountOnExit>
+      <CSSTransition in={visible} timeout={1000} classNames="modal" unmountOnExit>
         <CModal visible={visible} onClose={handleCloseForm}>
           <div className="row justify-content-center">
             <form onSubmit={handleFormSubmit} className="col-md-6">

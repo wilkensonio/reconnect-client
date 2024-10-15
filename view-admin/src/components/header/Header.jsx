@@ -30,8 +30,8 @@ function Header() {
                 </CNavLink>
               </CNavItem> 
               <CNavItem>
-                <CNavLink component={Link} to="/newstudent">
-                <BsPeople  className='me-2'/>New student
+                <CNavLink component={Link} to="/new-student">
+                <BsPeople  className='me-2'/>Add student
                 </CNavLink>
               </CNavItem>
               <CNavItem>
