@@ -7,9 +7,27 @@
     border: 2px solid #E6E6FA;
 }
 
-.fc-theme-bootstrap .fc-header-toolbar{
-    margin-left: 2rem;
-    margin-right: 2rem;
+.modal-enter {
+    opacity: 0 !important;
+    transform: scale(0.9) !important;
+    display: block !important;
+}
+
+.modal-enter-active {
+    opacity: 1 !important;
+    transform: scale(1) !important;
+    transition: opacity 1000ms ease-in, transform 1000ms ease-in-out !important; 
+}
+
+.modal-exit {
+    opacity: 1 !important;
+    transform: scale(1) !important;
+}
+
+.modal-exit-active {
+    opacity: 0 !important;
+    transform: scale(0.9) !important;
+    transition: opacity 1000ms ease-in-out, transform 1000ms ease-in-out !important;
 }
 
 /* Hover effect on days */
@@ -25,11 +43,27 @@
     border-radius: 4px; 
 }
 
-/* Today highlight */
-.fc-theme-bootstrap .fc-day-today {
+
+
+.fc-dayGridMonth-button, .fc-dayGridWeek-button, .fc-dayGridDay-button, .fc-prev-button, .fc-next-button, .fc-today-button {
     background-color: #98b3cd !important; 
     color: white !important;
+    border-radius: 15% !important;
+    margin: 10px 0;
 }
+
+@media (max-width: 400px) {
+    .fc-dayGridMonth-button, .fc-dayGridWeek-button, .fc-dayGridDay-button, .fc-prev-button, .fc-next-button, .fc-today-button {
+        display: block !important;
+        background-color: #98b3cd !important; 
+        color: white !important;
+        border-radius: 15% !important;
+        margin: 10px 0;
+    }
+    
+}
+
+
 
 .fc {
     border: 2px solid #B0B0B0; 
@@ -43,4 +77,5 @@
 .fc td, .fc th {  /* Removes the right border of the calendar */
     border-style: none !important;
 }
+
 
