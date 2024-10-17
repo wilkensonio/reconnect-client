@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CButton, CFormInput, CFormLabel, CContainer, CRow, CCol } from '@coreui/react';
-import { addStudent, uploadCsv } from '../api/StudentService'; // Adjust the path as needed
+import { addStudent, uploadCsv } from '../ApiService/StudentService'; // Adjust the path as needed
 
 function NewStudent() {
   const [firstName, setFirstName] = useState('');
@@ -14,15 +14,25 @@ function NewStudent() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+    // student_id is the HootLoot ID, must be a string and all digits
     const studentData = {
       student_id: studentId,
       first_name: firstName,
       last_name: lastName,
-      email,
+      email: email.toLocaleLowerCase(),
       phone_number: phoneNumber || '0000000000', 
     }; 
     
+    if (!/^\d+$/.test(studentId)) {
+      setError('Student ID must contain only digits');
+      return;
+    }
+
+    if (!email.toLocaleLowerCase().endsWith('@southernct.edu')) {
+      setError('Please enter a valid southern email');
+      return;
+    }
+
     try {
       const response = await addStudent(studentData);
       if (response.status === 400){
@@ -88,7 +98,7 @@ function NewStudent() {
                   onChange={(e) => setCsvFile(e.target.files[0])}
                   required
                 />
-                <CButton type="submit" color="success" className="mt-3">
+                <CButton type="submit" className="mt-3 ccolor">
                   Upload CSV
                 </CButton>
               </form>
@@ -148,7 +158,7 @@ function NewStudent() {
                   placeholder='Phone Number' 
                 />
 
-                <CButton type="submit" color="info" className="mt-3">
+                <CButton type="submit" className="mt-3 ccolor">
                   Add Student
                 </CButton>
               </form>

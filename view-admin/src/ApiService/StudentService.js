@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { HandleError } from './handleError';
 const apikey = import.meta.env.VITE_APP_API_KEY;
 const token = localStorage.getItem('reconnect_access_token');
 const token_type = localStorage.getItem('reconnect_token_type');
@@ -42,7 +43,7 @@ const fetchStudents = async () => {
         return response.data;
                  
     } catch (error) { 
-        handleError(error); 
+        HandleError(error); 
     }      
 }
 
@@ -51,7 +52,7 @@ const deleteStudent = async (studentId) => {
         const response = await axios.delete(`/api/students/${studentId}`, { headers });
         return response.data;
     } catch (error) {
-        handleError(error);
+        HandleError(error);
     }
 };
 
@@ -60,7 +61,7 @@ const addStudent = async (student) => {
         const response = await axios.post('/api/signup-student/', student, { headers });
         return response.data;
     } catch (error) {
-        return handleError(error);
+        return HandleError(error);
     }
 };
 
@@ -87,28 +88,12 @@ const scheduleMeeting = async (studentId) => {
         const response = await axios.post(`/api/schedule/${studentId}`, {}, { headers });
         return response.data;
     } catch (error) {
-        handleError(error);
+        HandleError(error);
     }
-};
-
-const handleError = (error) => {
-    const response = error.response;
-    if (response && response.status === 401) {
-        localStorage.removeItem('reconnect_access_token');
-        localStorage.removeItem('reconnect_token_type');
-        window.location.href = '/signin?message=Session expired. Please sign in again.';
-    } else {
-        console.error("api/studentService", response);
-        return response;
-    }
-};
-
-
+}; 
 
 export {
     fetchStudents, deleteStudent,
     scheduleMeeting, fakeStudents,
-    addStudent, uploadCsv 
-    
-    
+    addStudent, uploadCsv  
 };
