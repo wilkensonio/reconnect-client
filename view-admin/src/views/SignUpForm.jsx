@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { CForm, CCol, CFormInput, CFormLabel, CButton, CRow, CCard, CCardBody, CModal, CModalHeader, CModalTitle, CModalBody, CModalFooter } from '@coreui/react';
 import axios from 'axios'; 
+import {sendEmail, verifyEmailCode} from '../ApiService/MailService';
+import { signupUser } from '../ApiService/SignService';
+import VerifyEmailModal from '../components/auth/VerifyEmailModal';
  
 
-const apiKey = import.meta.env.VITE_APP_API_KEY;
+const SignupForm = ({onVerifySignup}) => {
+ 
 
-const SignupForm = () => {
   const [userId, setUserId] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -13,96 +16,34 @@ const SignupForm = () => {
   const [password, setPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [error, setError] = useState(''); 
-  const [showModal, setShowModal] = useState(false);  
-  const [verificationCode, setVerificationCode] = useState('');
-  const [isVerified, setIsVerified] = useState(false);  
-  const [verificationError, setVerificationError] = useState('');
-  const [sentCode, setSentCode] = useState('');
-
-  const [isLogin, setIsLogin] = useState(false);
-  
+  const [sentCode, setSentCode] = useState(''); 
  
   // Send the email verification code to the user
   const sendEmailVerification = async () => {
     try {
-      const response = await axios.post('/api/verify-email/', { email }, {
-        headers: {
-          'R-API-KEY': `${apiKey}`,
-        },
-      }); 
+      setError('');
+      const response = await sendEmail(email);  
       setSentCode(response.data.verification_code); // The code sent to the user 
-      setShowModal(true);  
-
+      setShowModal(true);   
     } catch (error) { 
       setError('Failed to send verification email.');
     }
-  }
+  } 
 
-  // Verify the email code, this code was sent to the user
-  const verifyEmail = async () => {
-    try {
-      const data = {
-        user_code: sentCode.toString().toUpperCase(),
-        secret_code: verificationCode.toString().toUpperCase(),
-      };
-      
-      const response = await axios.post('/api/verify-email-code/',data, { 
-        headers: {
-          'R-API-KEY': `${apiKey}`,
-        }, 
-      });
-     
-      if (response.status === 200) { 
-        setVerificationError('');
-        setIsVerified(true);
-        handleSignup(); 
-        setShowModal(false); 
-        
-      } 
+  const userData = {
+    user_id: userId,
+    first_name: firstName,
+    last_name: lastName,
+    email: email.toLocaleLowerCase(),
+    password: password,
+    phone_number: phoneNumber,
+  }; 
 
-    } catch (error) {
+  localStorage.setItem('reconnect_signup_data', JSON.stringify(userData));  
+
+  const handleVerifyEmail = async () => {
+    onVerifySignup();
     
-      setVerificationError('Invalid verification code.');
-    }
-  };  
-
-  const handleSignup = async () => {
-    const userData = {
-      user_id: userId,
-      first_name: firstName,
-      last_name: lastName,
-      email: email.toLocaleLowerCase(),
-      password: password,
-      phone_number: phoneNumber,
-    };
-    
-    if (!/^\d+$/.test(userId)) {
-      setError('ID must contain only digits');
-      return;
-    }
-
-    try { 
-      const response = await axios.post('/api/signup/', userData, {
-        headers: {
-          'R-API-KEY': `${apiKey}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      setUserId('');
-      setFirstName('');
-      setLastName('');
-      setEmail('');
-      setPassword('');
-      setPhoneNumber(''); 
-   
-      if (response.status === 200 || response.status === 201) {
-        window.location.href = '/signin?success=account_created';
-      }
-      
-    } catch (error) {  
-        setError(error.response.data || 'Signup failed'); 
-    }
   };
 
   const handleSubmit = async (e) => {
@@ -197,60 +138,21 @@ const SignupForm = () => {
                             />
                           </CCol>
                           <CCol xs={12} className='mb-3'>
-                            <CButton className='ccolor' type="submit" style={{position: 'relative', top:'20px'}}>
-                                Signup
+                            <CButton className='ccolor' type="submit" style={{position: 'relative', top:'20px'}}
+                              onClick={handleVerifyEmail}
+                            >
+                                Next
                             </CButton> 
                           </CCol>
                         </CForm>
                       </div>
                       {error && (
-                        <CCol xs={12} className="text-danger">
+                        <CCol xs={12} className="text-danger pt-3">
                           <p>{error}</p>
                         </CCol>
                       )}
                 </CCol>  
-              </CRow> 
-       
-
-          {/* Modal for email verification */}
-          <div style={{
-              transition: 'filter 0.5s', 
-          }}> 
-      
-            <CModal
-              visible={showModal}
-              onClose={() => setShowModal(false)}
-              alignment='center' 
-            > 
-              
-              <CModalHeader onClose={() => setShowModal(false)}>
-                <CModalTitle className='d-flex text-center'>Verify Your Email</CModalTitle>
-              </CModalHeader>
-              <CModalBody>
-                <p>Please enter the verification code sent to your email. </p>
-                <p>
-                  <span className='text-muted'>
-                    If you do not see the email in your inbox check your spam  <br /> 
-                    
-                  </span>
-                </p>
-                <CFormInput
-                  placeholder="Verification Code"
-                  value={verificationCode}
-                  onChange={(e) => setVerificationCode(e.target.value)}
-                  required
-                />
-                {verificationError && (
-                  <p className="text-danger">{verificationError}</p>
-                )}
-              </CModalBody>
-              <CModalFooter>
-                <CButton color="primary" onClick={verifyEmail}>
-                  Verify
-                </CButton> 
-              </CModalFooter>
-            </CModal>
-          </div>
+              </CRow>  
         </ div> 
       </div> 
   ); 

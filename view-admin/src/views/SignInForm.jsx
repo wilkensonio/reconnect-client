@@ -1,19 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios'; 
-import { 
-  CButton, CRow, CCol, CForm, 
-  CFormInput, CFormLabel, CCard, CCardBody,  
-  CModal,
-  CModalHeader,
-  CModalTitle,
-  CModalBody,
-  CModalFooter,
-  CFormCheck,
-  
-} from '@coreui/react';
+import { CButton, CRow, CCol, CForm, CFormInput } from '@coreui/react';
 import { useLocation } from 'react-router-dom';
-import qs from 'qs';
- 
+import {signinUser} from '../ApiService/SignService';
+import {getToken} from '../ApiService/TokenService';
 
 function SignInForm({onResetPassword}) {
   const [email, setEmail] = useState('');
@@ -22,19 +11,25 @@ function SignInForm({onResetPassword}) {
   const [lastName, setLastName] = useState('');
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
-  const location = useLocation(); 
-
-  const apiKey = import.meta.env.VITE_APP_API_KEY;  
+  const location = useLocation();  
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const success = params.get('success');
+    const smg = params.get('message');
 
-    if (success == 'account_created') {
+    if (smg == 'account_created') { 
       setMessage('Account created successfully. Please sign in.');
     }
+    else if (smg == 'password_reset') { 
+      setMessage('Password reset successfully. Please sign in.');
+    } else {
+      setMessage('');
+    }
+
     setEmail('');
     setPassword('');
+    setError(''); 
+
   }, [location]); 
   
   const handleSubmit = async (e) => {
@@ -46,46 +41,35 @@ function SignInForm({onResetPassword}) {
     } 
 
     try {
-      
-      const token = await axios.post('/api/token',
-        qs.stringify({username:email, password}),{ 
-          Headers: {
-            'R-API-KEY': `${apiKey}`,
-            'Content-Type': 'application/x-www-form-urlencoded',
-          }
-      });
-      
-      const {access_token, token_type} = token.data;
-      
-      localStorage.setItem('reconnect_access_token', access_token);
-      localStorage.setItem('reconnect_token_type', token_type); 
-      
-      const response = await axios.post('/api/signin/', {email, password},{
-        headers: {
-          'R-API-KEY': `${apiKey}`,
-          'Content-Type': 'application/json',
-        },
-      });
+      setError('');
+      await getToken(email, password); 
+    } catch (error) {
+      setError('Invalid email or password');
+      return;
+    }
+
+    try { 
+      setError('');
+      const response = await signinUser(email, password);  
       
       setEmail('');
       setPassword('');
-      
-      const {first_name, last_name} = response.data;
-      setFirstName(first_name);
-      setLastName(last_name);
 
+      const {first_name, last_name} = response.data;
+
+      setFirstName(first_name);
+      setLastName(last_name); 
       
-      if (response.status === 200 && token.status === 200) {
+      if (response.status === 200) {
         window.location.href = '/dashboard';
         localStorage.setItem('reconnect_first_name', first_name);
-        localStorage.setItem('reconnect_last_name', last_name);
       } 
       
-    } catch (error) {
+    } catch (error) {  
       if (error.response) 
         setError(error.response.data.detail || 'An error occurred');
       else  
-        setError('Error connecting to the server.'); 
+        setError('An error occurred while signing in'); 
     }     
   };
 
@@ -127,11 +111,11 @@ function SignInForm({onResetPassword}) {
                 <a as button className="text-decoration-none" onClick={handleResetPasswordClick} style={{cursor: 'pointer'}}>Reset password</a>
               </div>
             </CCol> 
-            {error && (
-              <div className="text-danger text-center">
+            {error ? (
+              <div className="text-danger text-center pt-5">
                 <p>{error}</p>
               </div>
-            )}
+            ) :  <div className="text-success text-center pt-5"> {message} </div>}
           </CForm>
         </CCol>
       </CRow> 
