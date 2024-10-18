@@ -11,6 +11,8 @@
     transition: opacity 0.5s ease-out, transform 0.5s ease-out;
 }
 
+
+
 /* Hover effect on days */
 .fc-theme-bootstrap .fc-daygrid-day:hover {
     background-color: #f0f8ff; 

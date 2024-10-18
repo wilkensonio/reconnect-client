@@ -94,66 +94,70 @@ export default function Calendar() {
           </div>
         </div>
       </CCard>
-        <CModal onClose={handleCloseForm} visible={visible} fade>
+      <CModal onClose={handleCloseForm} visible={visible} fade>
+        <div className="container">
           <div className="row justify-content-center">
-            <form onSubmit={handleFormSubmit} className="col-md-6">
-              <h3>{selectedDate ? selectedDate.toDateString() : ''}</h3>
+            <div className="col-14 col-md-12 col-lg-10"> {/* Adjusts for screen sizes */}
+              <form onSubmit={handleFormSubmit} className='p-5'>
+                <h3 className="text-center">{selectedDate ? selectedDate.toDateString() : ''}</h3>
 
-              <div className="form-group">
-                <label>Event Title:</label>
-                <input
-                  type="text"
-                  name="title"
-                  value={formData.title}
-                  onChange={handleInputChange}
-                  className="form-control"
-                  placeholder="Enter event title"
-                  required
-                />
-              </div>
+                <div className="form-group">
+                  <label>Event Title:</label>
+                  <input
+                    type="text"
+                    name="title"
+                    value={formData.title}
+                    onChange={handleInputChange}
+                    className="form-control w-100"
+                    placeholder="Enter event title"
+                    required
+                  />
+                </div>
 
-              <div className="form-group mt-2">
-                <label>Start Time:</label>
-                <input
-                  type="time"
-                  name="startTime"
-                  value={formData.startTime}
-                  onChange={handleInputChange}
-                  className="form-control"
-                />
-              </div>
+                <div className="form-group mt-2">
+                  <label>Start Time:</label>
+                  <input
+                    type="time"
+                    name="startTime"
+                    value={formData.startTime}
+                    onChange={handleInputChange}
+                    className="form-control w-100"
+                  />
+                </div>
 
-              <div className="form-group mt-2">
-                <label>End Time:</label>
-                <input
-                  type="time"
-                  name="endTime"
-                  value={formData.endTime}
-                  onChange={handleInputChange}
-                  className="form-control"
-                />
-              </div>
+                <div className="form-group mt-2">
+                  <label>End Time:</label>
+                  <input
+                    type="time"
+                    name="endTime"
+                    value={formData.endTime}
+                    onChange={handleInputChange}
+                    className="form-control w-100"
+                  />
+                </div>
 
-              <div className="form-group mt-2">
-                <label>Event Description:</label>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  className="form-control"
-                  placeholder="Enter event description"
-                />
-              </div>
+                <div className="form-group mt-2">
+                  <label>Event Description:</label>
+                  <textarea
+                    name="description"
+                    value={formData.description}
+                    onChange={handleInputChange}
+                    className="form-control w-100"
+                    placeholder="Enter event description"
+                  />
+                </div>
 
-              <div className="mt-3">
-                <button type="submit" className="btn btn-primary">Submit</button>
-                <button type="button" className="btn btn-secondary ml-2" onClick={handleCloseForm}>
-                  Cancel
-                </button>
-              </div>
-            </form>
+                <div className="mt-3 text-center"> {/* Centering buttons */}
+                  <button type="submit" className="btn btn-primary m-2">Submit</button>
+                  <button type="button" className="btn btn-secondary m-2" onClick={handleCloseForm}>
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-        </CModal>
+        </div>
+      </CModal>
     </>
   );
 }
