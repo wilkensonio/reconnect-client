@@ -45,15 +45,14 @@
 
 
 
-.fc-dayGridMonth-button, .fc-dayGridWeek-button, .fc-dayGridDay-button, .fc-prev-button, .fc-next-button, .fc-today-button {
+.fc-dayGridMonth-button, .fc-timeGridWeek-button, .fc-timeGridDay-button, .fc-prev-button, .fc-next-button, .fc-today-button {
     background-color: #98b3cd !important; 
     color: white !important;
     border-radius: 15% !important;
-    margin: 10px 0;
 }
 
-@media (max-width: 400px) {
-    .fc-dayGridMonth-button, .fc-dayGridWeek-button, .fc-dayGridDay-button, .fc-prev-button, .fc-next-button, .fc-today-button {
+/* @media (max-width: 400px) {
+    .fc-dayGridMonth-button, .fc-timeGridWeek-button, .fc-timeGridDay-button, .fc-prev-button, .fc-next-button, .fc-today-button {
         display: block !important;
         background-color: #98b3cd !important; 
         color: white !important;
@@ -61,17 +60,17 @@
         margin: 10px 0;
     }
     
-}
+} */ 
 
 
 
-.fc {
+/* .fc {
     border: 2px solid #B0B0B0; 
     border-radius: 8px; 
     padding: 10px; 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin-bottom: 3%;
-}
+} */
 
 
 .fc td, .fc th {  /* Removes the right border of the calendar */

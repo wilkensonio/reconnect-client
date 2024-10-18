@@ -3,8 +3,9 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import bootstrapPlugin from '@fullcalendar/bootstrap';
 import interactionPlugin from '@fullcalendar/interaction';
-import { CModal, CForm, CButton } from '@coreui/react';
+import { CModal, CForm, CButton, CCard} from '@coreui/react';
 import { CSSTransition } from 'react-transition-group';
+import timeGridPlugin from '@fullcalendar/timegrid';
 import './Calendar.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -12,12 +13,21 @@ export default function Calendar() {
   const [visible, setVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [formData, setFormData] = useState({ title: '', startTime: '', endTime: '', description: '' });
-
+  const [events, setEvents] = useState([]); 
   // Handle date click to show form
   const handleDateClick = (arg) => {
     setSelectedDate(arg.date);
     setVisible(true);
+    console.log("Clicked date:", arg.date); // Log clicked date
+    console.log("Today's date:", today);    
   };
+
+  const getDateTime = (date, time) => {
+    const [hours, minutes] = time.split(':'); 
+    const dateTime = new Date(date);
+    dateTime.setHours(hours, minutes);
+    return dateTime.toISOString(); 
+  }
 
   // Handle form input change
   const handleInputChange = (e) => {
@@ -31,7 +41,20 @@ export default function Calendar() {
   // Handle form submission
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    setVisible(false); // Hide the modal after form submission
+    const start = getDateTime(selectedDate, formData.startTime); 
+    const end = getDateTime(selectedDate, formData.endTime);
+
+    const newEvent = {
+      title: formData.title,
+      start: start,
+      end: end,
+      description: formData.description,
+      color: formData.color, 
+    }; 
+
+    setEvents([...events, newEvent]); 
+    setFormData({title: '', startTime: '', endTime: '', description: '', color: 'ff9f00'})
+    setVisible(false); 
   };
 
   const handleCloseForm = () => {
@@ -39,30 +62,39 @@ export default function Calendar() {
   };
 
   return (
-    <div>
-      <div className="row justify-content-center">
-        <FullCalendar
-          plugins={[dayGridPlugin, bootstrapPlugin, interactionPlugin]}
-          initialView="dayGridMonth"
-          headerToolbar={{
-            left: 'prev,next today',
-            center: 'title',
-            right: 'dayGridMonth dayGridWeek dayGridDay',
-          }}
-          buttonText={{
-            prev: '<',
-            next: '>',
-            today: 'Today',
-            month: 'Month',
-            week: 'Week',
-            day: 'Day',
-          }}
-          themeSystem="bootstrap"
-          dateClick={handleDateClick}
-        />
-      </div>
-
-      {/* Modal transition */}
+    <>
+      <CCard className='mb-3'>
+        <div className='container'>
+          <div className="row justify-content-center">
+            <div className='col-12 col-md-10 col-lg-8'> 
+            <FullCalendar
+              plugins={[dayGridPlugin,timeGridPlugin,bootstrapPlugin,interactionPlugin]}
+              initialView="dayGridMonth"
+              headerToolbar={{
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth timeGridWeek timeGridDay',
+              }}
+              buttonText={{
+                prev: '<', 
+                next: '>',
+                today: 'Today',
+                month: 'Month',
+                week: 'Week',
+                day: 'Day',
+                
+              }}
+              
+              themeSystem="bootstrap"
+              dateClick={handleDateClick}
+              events={events}
+              eventContent={renderEventContent}
+              
+            />
+            </div>
+          </div>
+        </div>
+      </CCard>
       <CSSTransition in={visible} timeout={1000} classNames="modal" unmountOnExit>
         <CModal visible={visible} onClose={handleCloseForm}>
           <div className="row justify-content-center">
@@ -125,6 +157,16 @@ export default function Calendar() {
           </div>
         </CModal>
       </CSSTransition>
-    </div>
+    </>
   );
+}
+
+const renderEventContent = (eventInfo) => {
+  return (
+    <div style={{backgroundColor: eventInfo.event.extendedProps.color, padding: '5px', borderRadius: '5px'}}>
+      <strong>{eventInfo.event.title}</strong>
+      <div>{eventInfo.event.extendedProps.description}</div>
+    </div>
+
+  )
 }
