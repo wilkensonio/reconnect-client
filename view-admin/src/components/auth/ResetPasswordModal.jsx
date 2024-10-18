@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { CModal, CModalHeader, CModalBody, CModalFooter, CButton, CForm, CFormInput } from '@coreui/react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; 
+import { resetPassword } from '../../ApiService/SignService';
+import { sendEmail, verifyEmailCode } from '../../ApiService/MailService';
+
 
 const ResetPasswordModal = ({ showModal, setShowModal }) => {
   const [step, setStep] = useState(1); 
@@ -10,6 +12,7 @@ const ResetPasswordModal = ({ showModal, setShowModal }) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
   const [error, setError] = useState('');
+ 
 
   const navigate = useNavigate();
 
@@ -29,19 +32,13 @@ const ResetPasswordModal = ({ showModal, setShowModal }) => {
       return;
     }  
    
-    if (password.length < 8 || !/[A-Z]/.test(password) || !/\d/.test(password)) {
+    if (newPassword.length < 8 || !/[A-Z]/.test(newPassword) || !/\d/.test(newPassword)) {
       setError('Password must be at least 8 characters long, with at least one uppercase letter and one number');
       return;
-    }
-
-    const data ={
-      email: email,
-      password: password 
-    }
+    } 
 
     try {
-      // await axios.post('/api/send-reset-email', { email, newPassword });
-
+      await sendEmail(email);
       setError('');
       setStep(2); // Move to step 2 after successful email send
     } catch (error) {
@@ -56,12 +53,16 @@ const ResetPasswordModal = ({ showModal, setShowModal }) => {
     }
 
     try {
-      // await axios.post('/api/verify-reset-code', { email, verificationCode });
-
+      const sentCode = localStorage.getItem('reconnect_email_verification_code');
+      await verifyEmailCode(sentCode, verificationCode); 
+      await resetPassword(email, newPassword); 
+      
       setError('');
       setShowModal(false);
-      alert('Password reset successfully.');
+
     } catch (error) {
+      step(1);
+      console.error(error);
       setError('Invalid code. Please try again.');
     }
   };
@@ -74,7 +75,7 @@ const ResetPasswordModal = ({ showModal, setShowModal }) => {
     setConfirmPassword('');
     setVerificationCode('');
     setError(''); 
-    navigate('/signin');
+    navigate('/signin?mesage=password_reset');
   };
 
   return (
@@ -89,14 +90,14 @@ const ResetPasswordModal = ({ showModal, setShowModal }) => {
           <CForm>
             <CFormInput
               type="email"
-              placeholder="Enter your email"
+              placeholder="johnd1@southernct.edu *"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
             <CFormInput
               type="password"
-              placeholder="Enter new password"
+              placeholder="Enter new password *"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               required
@@ -104,7 +105,7 @@ const ResetPasswordModal = ({ showModal, setShowModal }) => {
             />
             <CFormInput
               type="password"
-              placeholder="Confirm new password"
+              placeholder="Confirm new password *"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required

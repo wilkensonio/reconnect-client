@@ -3,16 +3,18 @@ import SwitchForm from './SwitchForm';
 import SignInForm from '../../views/SignInForm';
 import SignUpForm from '../../views/SignUpForm';
 import ResetPasswordModal from './ResetPasswordModal';
-import {CCard, CCardBody, CCardHeader, CCol, CForm, CFormInput, CModal, CModalBody, CModalFooter, CModalHeader, CRow } from '@coreui/react';
-
+import VerifyEmailModal from './VerifyEmailModal';
+import {CCard, CCardBody, CCardHeader, CCol, CRow } from '@coreui/react';
+ 
 
 function SignUpIn() {
    
     const [showModal, setShowModal] = useState(false); 
     const [isLogin, setIsLogin] = useState(true);
     const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 768);
-   
+
     useEffect(() => {
+        
         const handleResize = () => {
           setIsSmallScreen(window.innerWidth < 768);
         };
@@ -28,6 +30,10 @@ function SignUpIn() {
     }
 
     const handleResetPassword = () => {
+        setShowModal(!showModal);
+    }
+
+    const handleVerifyEmail = () => {
         setShowModal(!showModal);
     }
 
@@ -63,13 +69,15 @@ function SignUpIn() {
                             </CCol>
                         )}
                         <CCol> 
-                            {isLogin ? <div className='cmarginsignin'><SignInForm  onResetPassword={handleResetPassword} /></div> : <SignUpForm />}
+                            {isLogin ? <div className='cmarginsignin'><SignInForm  onResetPassword={handleResetPassword} /></div> : <SignUpForm onVerifySignup={handleVerifyEmail}/>}
                         </CCol>
                     </CRow>
                 </CCardBody>
             </CCard>
-          
-            <ResetPasswordModal showModal={showModal} setShowModal={setShowModal} />
+            {
+                isLogin? <ResetPasswordModal showModal={showModal} setShowModal={setShowModal} />
+                : <VerifyEmailModal showModal={showModal} setShowModal={setShowModal} />
+            }
 
         </div>
     )
