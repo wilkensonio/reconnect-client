@@ -89,7 +89,7 @@ const scheduleMeeting = async (studentId) => {
     } catch (error) {
         handleError(error);
     }
-};
+}; 
 
 const handleError = (error) => {
     const response = error.response;
@@ -103,12 +103,8 @@ const handleError = (error) => {
     }
 };
 
-
-
 export {
     fetchStudents, deleteStudent,
     scheduleMeeting, fakeStudents,
-    addStudent, uploadCsv 
-    
-    
+    addStudent, uploadCsv  
 };
