@@ -7,27 +7,8 @@
     border: 2px solid #E6E6FA;
 }
 
-.modal-enter {
-    opacity: 0 !important;
-    transform: scale(0.9) !important;
-    display: block !important;
-}
-
-.modal-enter-active {
-    opacity: 1 !important;
-    transform: scale(1) !important;
-    transition: opacity 1000ms ease-in, transform 1000ms ease-in-out !important; 
-}
-
-.modal-exit {
-    opacity: 1 !important;
-    transform: scale(1) !important;
-}
-
-.modal-exit-active {
-    opacity: 0 !important;
-    transform: scale(0.9) !important;
-    transition: opacity 1000ms ease-in-out, transform 1000ms ease-in-out !important;
+.modal.fade .modal.dialog {
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
 }
 
 /* Hover effect on days */

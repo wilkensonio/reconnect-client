@@ -7,7 +7,7 @@ import logo from '/assets/logo/rconnect.png'
 
 function sidebar() { 
   return ( 
-      <CSidebar className=" border-end" colorScheme="dark" unfoldable
+      <CSidebar className=" border-end-none" colorScheme="dark" unfoldable
       style={{
         transition: 'width 0.2s ease-in-out',
       }}

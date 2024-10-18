@@ -4,7 +4,9 @@ import Messages from './views/Messages';
 import Signup from './views/SignUpForm';
 import SignIn from './views/SignInForm';
 import Layout from './layout/Layout';
+import SignUpIn from './components/auth/SignUpIn';
 import { CSpinner } from '@coreui/react';
+ 
  
 function App() { 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -20,7 +22,7 @@ function App() {
       } else {
         setIsAuthenticated(false);
       }
-      setLoading(false);  // Set loading to false after token check
+      setLoading(false);   
     }, 500);  
   }, []);
 
@@ -42,8 +44,9 @@ function App() {
         }
     >
       <Routes> 
-        <Route path="/signin" element={<SignIn />} />             
-        <Route path="/signup" element={<Signup />}/>
+        <Route path="/signin" element={<SignUpIn />} />             
+        {/* <Route path="/signin" element={<SignIn />} />             
+        <Route path="/signup" element={<Signup />}/> */}
         <Route path="*" name="Home" element={isAuthenticated ? <Layout /> : <Navigate to="/signin"/>} /> 
       </Routes>
     </Suspense>  

@@ -18,8 +18,7 @@ export default function Calendar() {
   const handleDateClick = (arg) => {
     setSelectedDate(arg.date);
     setVisible(true);
-    console.log("Clicked date:", arg.date); // Log clicked date
-    console.log("Today's date:", today);    
+     
   };
 
   const getDateTime = (date, time) => {
@@ -95,8 +94,7 @@ export default function Calendar() {
           </div>
         </div>
       </CCard>
-      <CSSTransition in={visible} timeout={1000} classNames="modal" unmountOnExit>
-        <CModal visible={visible} onClose={handleCloseForm}>
+        <CModal onClose={handleCloseForm} visible={visible} fade>
           <div className="row justify-content-center">
             <form onSubmit={handleFormSubmit} className="col-md-6">
               <h3>{selectedDate ? selectedDate.toDateString() : ''}</h3>
@@ -156,7 +154,6 @@ export default function Calendar() {
             </form>
           </div>
         </CModal>
-      </CSSTransition>
     </>
   );
 }
