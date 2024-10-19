@@ -106,7 +106,7 @@ function SignInForm({onResetPassword}) {
               />
             </CCol>
             <CCol xs={12} className='mt-3'>
-              <CButton className='ccolor' type="submit" style={{position: 'relative', top:'10px'}}>Signn</CButton>
+              <CButton className='ccolor' type="submit" style={{position: 'relative', top:'10px'}}>Signin</CButton>
               <div className="mt-5 d-flex justify-content-center mb-3"> 
                 <a as button className="text-decoration-none" onClick={handleResetPasswordClick} style={{cursor: 'pointer'}}>Reset password</a>
               </div>
