@@ -1,6 +1,14 @@
 import qs from 'qs';
 import axios from 'axios';
 
+/**
+ * This function is used to get the token for the user
+ * 
+ * @param {String} email 
+ * @param {String} password 
+ * @returns  {Promise}
+ */
+
 export const getToken = async (email, password) => {
     let token = null;
     const apiKey = import.meta.env.VITE_APP_API_KEY;
