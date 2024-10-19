@@ -10,6 +10,7 @@
 :root {
     --cui-sidebar-occupy-start: 15px;
     --cui-sidebar-occupy-end: 15px;
+    --tooltipColor: #071689;
   }
 
 .ccolor{
@@ -213,7 +214,11 @@ input[type="radio"]{
   margin-bottom: 10px;
 }
 
- 
+/* tooltips */
+.bg-tooltip {
+  background-color: var(--tooltipColor);
+}
+
  
  
 
