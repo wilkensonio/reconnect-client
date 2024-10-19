@@ -3,30 +3,6 @@ const apikey = import.meta.env.VITE_APP_API_KEY;
 const token = localStorage.getItem('reconnect_access_token');
 const token_type = localStorage.getItem('reconnect_token_type');
 
-const fakeStudents = () => {
-    return [
-        {
-            id: 1,
-            studentId: '123456',    
-            firstName: 'John',
-            lastName: 'Doe',
-            email: 'johnd1@southernct.edu'
-        },
-        {
-            id: 2,
-            firstName: 'Jane',
-            lastName: 'Smith',
-            email: 'janes1@southernct.edu'
-        },
-        {
-            id: 3,
-            firstName: 'Alice',
-            lastName: 'Wonderland',
-            email: 'Alicew@southernct.edu'
-        }
-    ]
-} 
-
 
 const headers = {
     'R-API-KEY': `${apikey}`,
@@ -43,17 +19,9 @@ const fetchStudents = async () => {
                  
     } catch (error) { 
         handleError(error); 
+        return [];
     }      
-}
-
-const deleteStudent = async (studentId) => {
-    try {
-        const response = await axios.delete(`/api/students/${studentId}`, { headers });
-        return response.data;
-    } catch (error) {
-        handleError(error);
-    }
-};
+} 
 
 const addStudent = async (student) => {
     try {
@@ -78,7 +46,7 @@ const uploadCsv = async (csvFile) => {
     } catch (error) {
       throw new Error('Failed to upload CSV file');
     }
-  };
+};
   
  
 
@@ -90,6 +58,16 @@ const scheduleMeeting = async (studentId) => {
         handleError(error);
     }
 }; 
+
+const blacklistStudent = async (studentId) => { 
+    try {
+        const response = await axios.post(`/api/blacklist/${studentId}`, {}, { headers });
+        return response.data;
+    } catch (error) {
+        handleError(error);
+    }
+
+}
 
 const handleError = (error) => {
     const response = error.response;
@@ -104,7 +82,6 @@ const handleError = (error) => {
 };
 
 export {
-    fetchStudents, deleteStudent,
-    scheduleMeeting, fakeStudents,
-    addStudent, uploadCsv  
+    fetchStudents, scheduleMeeting, 
+    addStudent, uploadCsv, blacklistStudent 
 };
