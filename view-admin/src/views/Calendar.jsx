@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import bootstrapPlugin from '@fullcalendar/bootstrap';
 import interactionPlugin from '@fullcalendar/interaction';
 import { CModal, CForm, CButton, CCard} from '@coreui/react';
-import { CSSTransition } from 'react-transition-group';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import './Calendar.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -14,11 +13,20 @@ export default function Calendar() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [formData, setFormData] = useState({ title: '', startTime: '', endTime: '', description: '' });
   const [events, setEvents] = useState([]); 
+  const calendarRef = useRef(null);
   // Handle date click to show form
   const handleDateClick = (arg) => {
+    const today = new Date();
+    today.setHours(0,0,0,0); 
+
+    if (arg.date < today) {
+      alert('You can only schedule events for today or later.');
+      return; 
+    }
+
     setSelectedDate(arg.date);
     setVisible(true);
-     
+   
   };
 
   const getDateTime = (date, time) => {
@@ -60,44 +68,103 @@ export default function Calendar() {
     setVisible(false);
   };
 
+  const goprev = () => {
+    const calenderApi = calendarRef.current.getApi(); 
+    calenderApi.prev(); 
+  }
+
+  const gonext = () => {
+    const calenderApi = calendarRef.current.getApi(); 
+    calenderApi.next(); 
+  } 
+
+  const gotoday = () => {
+    const calenderApi = calendarRef.current.getApi(); 
+    calenderApi.today(); 
+  } 
+
+  const gomonth = () => {
+    const calendarApi = calendarRef.current.getApi();
+    calendarApi.changeView('dayGridMonth');
+  } 
+
+  const goweek = () => {
+    const calendarApi = calendarRef.current.getApi();
+    calendarApi.changeView('dayGridWeek');
+  } 
+
+  const goday = () => {
+    const calendarApi = calendarRef.current.getApi();
+    calendarApi.changeView('dayGridDay');
+  } 
+
   return (
     <>
-      <CCard className='mb-3'>
-        <div className='container'>
+      <CCard className='p-5 mt-5'>
           <div className="row justify-content-center">
             <div className='col-12 col-md-10 col-lg-8'> 
+              <div className="container mb-4">
+                <div className="row">
+                  <div className="col-1">
+                    <button className="btn btn-primary" onClick={goprev}>
+                      {'<'}
+                    </button>
+                  </div>
+
+                  <div className="col-1">
+                    <button className="btn btn-primary" onClick={gonext}>
+                      {'>'}
+                    </button>
+                  </div>
+                  <div className="col-2">
+                    <button className="btn btn-primary" onClick={gotoday}>
+                      Today
+                    </button>
+                  </div>
+                  <div className='col-2'>
+                    <h5>
+                      {calendarRef.current ? calendarRef.current.getApi().getCurrentData().currentDate.toLocaleString('default', { month: 'long' }) + ' ' + calendarRef.current.getApi().getCurrentData().currentDate.getFullYear() : ''}
+                    </h5>
+                  </div>
+                  <div className="col-2 ">
+                    <button className="btn btn-primary" onClick={gomonth}>
+                      Month
+                    </button>
+                  </div>
+                  <div className="col-2 ">
+                    <button className="btn btn-primary" onClick={goweek}>
+                      Week
+                    </button>
+                  </div>
+                  <div className="col-2 ">
+                    <button className="btn btn-primary" onClick={goday}>
+                      Day
+                    </button>
+                  </div>
+                </div>
+              </div>
             <FullCalendar
-              plugins={[dayGridPlugin,timeGridPlugin,bootstrapPlugin,interactionPlugin]}
+              ref={calendarRef} 
+              plugins={[dayGridPlugin, timeGridPlugin, bootstrapPlugin, interactionPlugin]}
               initialView="dayGridMonth"
-              headerToolbar={{
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth timeGridWeek timeGridDay',
-              }}
-              buttonText={{
-                prev: '<', 
-                next: '>',
-                today: 'Today',
-                month: 'Month',
-                week: 'Week',
-                day: 'Day',
-                
-              }}
-              
-              themeSystem="bootstrap"
               dateClick={handleDateClick}
               events={events}
               eventContent={renderEventContent}
-              
+              themeSystem="bootstrap"
+              headerToolbar={{
+                left: '',
+                center: '',
+                right: ''
+              }}
             />
-            </div>
-          </div>
+            
         </div>
+      </div>
       </CCard>
       <CModal onClose={handleCloseForm} visible={visible} fade>
         <div className="container">
           <div className="row justify-content-center">
-            <div className="col-14 col-md-12 col-lg-10"> {/* Adjusts for screen sizes */}
+            <div className="col-14 col-md-12 col-lg-10"> 
               <form onSubmit={handleFormSubmit} className='p-5'>
                 <h3 className="text-center">{selectedDate ? selectedDate.toDateString() : ''}</h3>
 
@@ -147,11 +214,10 @@ export default function Calendar() {
                   />
                 </div>
 
-                <div className="mt-3 text-center"> {/* Centering buttons */}
-                  <button type="submit" className="btn btn-primary m-2">Submit</button>
-                  <button type="button" className="btn btn-secondary m-2" onClick={handleCloseForm}>
-                    Cancel
-                  </button>
+                <div className="form-group mt-2"> 
+                  <button type="submit" className="btn btn-primary w-100 mb-2">Submit</button>
+                  <br></br>
+                  <button type="button" className="btn btn-primary w-100" onClick={handleCloseForm}>Cancel</button>
                 </div>
               </form>
             </div>

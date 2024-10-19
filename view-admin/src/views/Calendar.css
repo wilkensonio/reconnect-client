@@ -28,11 +28,7 @@
 
 
 
-.fc-dayGridMonth-button, .fc-timeGridWeek-button, .fc-timeGridDay-button, .fc-prev-button, .fc-next-button, .fc-today-button {
-    background-color: #98b3cd !important; 
-    color: white !important;
-    border-radius: 15% !important;
-}
+
 
 /* @media (max-width: 400px) {
     .fc-dayGridMonth-button, .fc-timeGridWeek-button, .fc-timeGridDay-button, .fc-prev-button, .fc-next-button, .fc-today-button {
