@@ -1,14 +1,10 @@
-import React, { useState } from 'react';
-import { CForm, CCol, CFormInput, CFormLabel, CButton, CRow, CCard, CCardBody, CModal, CModalHeader, CModalTitle, CModalBody, CModalFooter } from '@coreui/react';
-import axios from 'axios'; 
-import {sendEmail, verifyEmailCode} from '../ApiService/MailService';
-import { signupUser } from '../ApiService/SignService';
-import VerifyEmailModal from '../components/auth/VerifyEmailModal';
+import React, { useEffect, useState } from 'react';
+import { CForm, CCol, CFormInput, CButton, CRow} from '@coreui/react';
+import {sendEmail} from '../ApiService/MailService';
+import useFormValidation from '../components/validButton/useFormValidation';
  
 
-const SignupForm = ({onVerifySignup}) => {
- 
-
+const SignupForm = ({onVerifySignup}) => { 
   const [userId, setUserId] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -17,6 +13,28 @@ const SignupForm = ({onVerifySignup}) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [error, setError] = useState(''); 
   const [sentCode, setSentCode] = useState(''); 
+  
+
+  const validateFields = fiedls => {
+    const {userId, firstName, lastName, email, password, phoneNumber} = fiedls;
+    return (
+      /^\d{8}$/.test(userId) &&
+      firstName.trim() !== '' &&
+      lastName.trim() !== '' &&
+      email.trim() !== '' &&
+      email.toLocaleLowerCase().endsWith('@southernct.edu') &&
+      password.trim() !== '' &&
+      password.length >= 8 &&
+      /[A-Z]/.test(password) &&
+      /\d/.test(password) &&  
+      /^\d{10}$/.test(phoneNumber)
+    );
+  } 
+
+  const isFormValid = useFormValidation(
+    {userId, firstName, lastName, email, password, phoneNumber},
+    validateFields
+  );
  
   // Send the email verification code to the user
   const sendEmailVerification = async () => {
@@ -138,7 +156,10 @@ const SignupForm = ({onVerifySignup}) => {
                             />
                           </CCol>
                           <CCol xs={12} className='mb-3'>
-                            <CButton className='ccolor' type="submit" style={{position: 'relative', top:'20px'}}
+                            <CButton className='ccolor' 
+                              type="submit" 
+                              style={{position: 'relative', top:'20px'}}
+                              disabled={!isFormValid}
                               onClick={handleVerifyEmail}
                             >
                                 Next
