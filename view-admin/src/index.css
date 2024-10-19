@@ -33,6 +33,15 @@ body {
   background-size: 10rem 10rem;  
 } 
 
+.header {
+  background-color: #071689; 
+  color: #fff;
+  border: 0;
+  /* text-align: center;
+  padding: 10px;
+  margin-bottom: 10px; */
+}
+
 .sidebar {
     width: 250px;  
     position: fixed;  

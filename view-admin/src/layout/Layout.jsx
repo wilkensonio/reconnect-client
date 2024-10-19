@@ -6,7 +6,7 @@ function Layout() {
     <div>
         <Sidebar className="sidebar"/>
         <div className="wrapper d-flex flex-column min-vh-100">
-          <header className="d-flex  d-lg-none" style={{background: '#e9e9e9'}}>
+          <header className="d-flex sticky-top boder-0 d-lg-none" style={{background: '#e9e9e9'}}>
             <Header  />  
           </header>
           <div className="body flex-grow-1 pt-2" 

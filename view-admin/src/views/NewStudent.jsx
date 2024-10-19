@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { CButton, CFormInput, CFormLabel, CContainer, CRow, CCol } from '@coreui/react';
-import { addStudent, uploadCsv } from '../ApiService/StudentService'; // Adjust the path as needed
+import { CButton, CFormInput, CFormLabel, CContainer, CRow, CCol, CTooltip } from '@coreui/react';
+import { addStudent, uploadCsv } from '../ApiService/StudentService';  
+import customTooltipStyle from '../components/tooltip/CustomToolTip';
 
 function NewStudent() {
   const [firstName, setFirstName] = useState('');
@@ -85,7 +86,35 @@ function NewStudent() {
   return (
     <CContainer className='d-flex justify-content-center align-items-center min-vh-100 w-100'>
       <div className='card shadow '>
-      <h3 className="text-center mt-4">Add New Student</h3>
+        <h3  className='text-center  d-flex justify-content-center mt-3 mb-5'> 
+            <>      
+            Add students
+              <CTooltip 
+                  style={customTooltipStyle}
+                  content={
+                      <div>
+                          <p className='text-start mb-1'> <span className='text-danger'>
+                              * </span>Upload students via csv or add a student.</p>
+                          <p className='text-start mb-1'> <span className='text-danger'>
+                              1.</span>CSV must have student_id , first_name, last_name and scsu email.</p>
+                          <p className='text-start mb-1'> <span className='text-danger'>
+                              2.</span>Phone number is not required to add student.</p>
+                          <p className='text-start mb-1'> <span className='text-danger'>
+                              3.</span>Once students are added they can be seen in the student dashboard.</p>
+                      </div>
+                  }
+                      placement="bottom"
+                        
+                      >
+                  <span className="border border-primary bg-tooltip rounded-circle text-white d-flex justify-content-center align-items-center"
+                      style={{ cursor: 'pointer', color: '#007bff', 
+                      marginLeft: '10px', width:'2rem', 
+                      height: '2rem', paddingTop:'.2rem' }}>
+                      ?
+                  </span>
+              </CTooltip>
+            </>
+        </h3>
 
         <CRow className='m-3'> 
           <CCol md={5}>
