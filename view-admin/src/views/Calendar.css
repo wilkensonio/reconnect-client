@@ -1,8 +1,7 @@
 
-/* Make the calendar grid cells more visually appealing */
 .fc-theme-bootstrap .fc-daygrid-day-frame {
     border-radius: 4px; 
-    padding: 10px; 
+    padding: 5px; 
     transition: background-color 0.3s ease; 
     border: 2px solid #E6E6FA;
 }
@@ -11,14 +10,10 @@
     transition: opacity 0.5s ease-out, transform 0.5s ease-out;
 }
 
-
-
-/* Hover effect on days */
 .fc-theme-bootstrap .fc-daygrid-day:hover {
     background-color: #f0f8ff; 
 }
 
-/* Event styling */
 .fc-theme-bootstrap .fc-event {
     background-color: #007bff !important; 
     border: none; 
@@ -26,33 +21,7 @@
     border-radius: 4px; 
 }
 
-
-
-
-
-/* @media (max-width: 400px) {
-    .fc-dayGridMonth-button, .fc-timeGridWeek-button, .fc-timeGridDay-button, .fc-prev-button, .fc-next-button, .fc-today-button {
-        display: block !important;
-        background-color: #98b3cd !important; 
-        color: white !important;
-        border-radius: 15% !important;
-        margin: 10px 0;
-    }
-    
-} */ 
-
-
-
-/* .fc {
-    border: 2px solid #B0B0B0; 
-    border-radius: 8px; 
-    padding: 10px; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 3%;
-} */
-
-
-.fc td, .fc th {  /* Removes the right border of the calendar */
+.fc td, .fc th {
     border-style: none !important;
 }
 

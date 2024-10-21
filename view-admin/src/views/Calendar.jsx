@@ -1,12 +1,13 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import bootstrapPlugin from '@fullcalendar/bootstrap';
 import interactionPlugin from '@fullcalendar/interaction';
 import { CModal, CForm, CButton, CCard} from '@coreui/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
+import 'bootstrap/dist/css/bootstrap.min.css'; 
 import './Calendar.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 export default function Calendar() {
   const [visible, setVisible] = useState(false);
@@ -14,6 +15,10 @@ export default function Calendar() {
   const [formData, setFormData] = useState({ title: '', startTime: '', endTime: '', description: '' });
   const [events, setEvents] = useState([]); 
   const calendarRef = useRef(null);
+  const [currentDate, setCurrentDate] = useState(new Date()); 
+
+
+
   // Handle date click to show form
   const handleDateClick = (arg) => {
     const today = new Date();
@@ -35,6 +40,7 @@ export default function Calendar() {
     dateTime.setHours(hours, minutes);
     return dateTime.toISOString(); 
   }
+
 
   // Handle form input change
   const handleInputChange = (e) => {
@@ -71,16 +77,28 @@ export default function Calendar() {
   const goprev = () => {
     const calenderApi = calendarRef.current.getApi(); 
     calenderApi.prev(); 
+    updateCurrentDate();
   }
 
   const gonext = () => {
     const calenderApi = calendarRef.current.getApi(); 
     calenderApi.next(); 
+    updateCurrentDate();
   } 
+
+  const updateCurrentDate = () => {
+    const calenderApi = calendarRef.current.getApi();
+    setCurrentDate(calenderApi.getDate());
+  }; 
+
+  useEffect(() => {
+    updateCurrentDate(); 
+  }, []); 
 
   const gotoday = () => {
     const calenderApi = calendarRef.current.getApi(); 
     calenderApi.today(); 
+    updateCurrentDate(); 
   } 
 
   const gomonth = () => {
@@ -90,56 +108,49 @@ export default function Calendar() {
 
   const goweek = () => {
     const calendarApi = calendarRef.current.getApi();
-    calendarApi.changeView('dayGridWeek');
+    calendarApi.changeView('timeGridWeek');
   } 
 
   const goday = () => {
     const calendarApi = calendarRef.current.getApi();
-    calendarApi.changeView('dayGridDay');
+    calendarApi.changeView('timeGridDay');
   } 
 
   return (
     <>
-      <CCard className='p-5 mt-5'>
-          <div className="row justify-content-center">
+      <CCard className='p-2 mb-5 mt-3 col-8 mx-auto min-vh-50'>
+          <div className="row justify-content-center mb-5">
             <div className='col-12 col-md-10 col-lg-8'> 
-              <div className="container mb-4">
-                <div className="row">
-                  <div className="col-1">
-                    <button className="btn btn-primary" onClick={goprev}>
+              <div className="container mb-2">
+                <div className="row align-items-center">
+                  <div className="col-auto d-flex justify-content-start gap-2">
+                    <button className="btn btn-outline-dark" onClick={goprev}>
                       {'<'}
                     </button>
-                  </div>
-
-                  <div className="col-1">
-                    <button className="btn btn-primary" onClick={gonext}>
+                    <button className="btn btn-outline-dark" onClick={gonext}>
                       {'>'}
                     </button>
-                  </div>
-                  <div className="col-2">
-                    <button className="btn btn-primary" onClick={gotoday}>
+                    <button className="btn btn-outline-dark" onClick={gotoday}>
                       Today
                     </button>
                   </div>
-                  <div className='col-2'>
-                    <h5>
-                      {calendarRef.current ? calendarRef.current.getApi().getCurrentData().currentDate.toLocaleString('default', { month: 'long' }) + ' ' + calendarRef.current.getApi().getCurrentData().currentDate.getFullYear() : ''}
+                  <div className='col text-center '>
+                    <h5 className="calendar-title mb-0">
+                      {currentDate.toLocaleString('default', { month: 'long' })} {currentDate.getFullYear()}
                     </h5>
                   </div>
-                  <div className="col-2 ">
-                    <button className="btn btn-primary" onClick={gomonth}>
-                      Month
-                    </button>
-                  </div>
-                  <div className="col-2 ">
-                    <button className="btn btn-primary" onClick={goweek}>
-                      Week
-                    </button>
-                  </div>
-                  <div className="col-2 ">
-                    <button className="btn btn-primary" onClick={goday}>
-                      Day
-                    </button>
+                  <div className="col-auto d-flex justify-content-end">
+                    <div className="d-flex gap-2">
+                      <button className="btn btn-outline-dark" onClick={gomonth}>
+                        Month
+                      </button>
+                      <button className="btn btn-outline-dark" onClick={goweek}>
+                        Week
+                      </button>
+                      <button className="btn btn-outline-dark" onClick={goday}>
+                        Day
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -215,9 +226,9 @@ export default function Calendar() {
                 </div>
 
                 <div className="form-group mt-2"> 
-                  <button type="submit" className="btn btn-primary w-100 mb-2">Submit</button>
+                  <button type="submit" className="btn ccolor w-100 mb-2">Submit</button>
                   <br></br>
-                  <button type="button" className="btn btn-primary w-100" onClick={handleCloseForm}>Cancel</button>
+                  <button type="button" className="btn ccolor w-100" onClick={handleCloseForm}>Cancel</button>
                 </div>
               </form>
             </div>
