@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { CButton, CRow, CCol, CForm, CFormInput } from '@coreui/react';
 import { useLocation } from 'react-router-dom';
-import {signinUser} from '../ApiService/SignService';
-import {getToken} from '../ApiService/TokenService';
+import {signinUser} from '../apiservice/SignService';
+import {getToken} from '../apiservice/TokenService';
 import useFormValidation from '../components/validButton/useFormValidation';
 
 function SignInForm({onResetPassword}) {
