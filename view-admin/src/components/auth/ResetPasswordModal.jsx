@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { CModal, CModalHeader, CModalBody, CModalFooter, CButton, CForm, CFormInput } from '@coreui/react';
 import { useNavigate } from 'react-router-dom'; 
-import { resetPassword } from '../../ApiService/SignService';
-import { sendEmail, verifyEmailCode } from '../../ApiService/MailService';
+import { resetPassword } from '../../apiservice/SignService';
+import { sendEmail, verifyEmailCode } from '../../apiservice/MailService';
+import { getUserByEmail } from '../../apiservice/UserService';
 
 
 const ResetPasswordModal = ({ showModal, setShowModal }) => {
@@ -38,10 +39,19 @@ const ResetPasswordModal = ({ showModal, setShowModal }) => {
     } 
 
     try {
+      setError('');
+      // check that user exists
+      const response = await getUserByEmail(email); 
+      
+      if (response.status === 400) {
+        setError('No user found with this email.');
+        return;
+      }
+
       await sendEmail(email);
       setError('');
       setStep(2); // Move to step 2 after successful email send
-    } catch (error) {
+    } catch (error) { 
       setError('Error sending email, please try again.');
     }
   };

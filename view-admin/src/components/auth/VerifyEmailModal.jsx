@@ -4,8 +4,9 @@ import { CButton, CFormInput,
     CModalBody, CModalFooter, 
     CModalHeader, CModalTitle } from "@coreui/react";
 
-import { verifyEmailCode } from "../../ApiService/MailService";
-import { signupUser } from '../../ApiService/SignService';
+
+import { verifyEmailCode } from "../../apiservice/MailService";
+import { signupUser } from '../../apiservice/SignService';
 
 /**
  * Handles the verification of the email code sent to the user
@@ -22,6 +23,10 @@ function VerifyEmailModal({ showModal, setShowModal}) {
 
     const verifyEmail = async () => {
         const sentCode = localStorage.getItem('reconnect_eamil_verification_code');
+        if (!verificationCode) {
+            setError('Please enter the verification code.');
+            return;
+        }
        
         try {
             setError('')
