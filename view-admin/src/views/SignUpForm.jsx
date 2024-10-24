@@ -70,8 +70,13 @@ const SignupForm = ({onVerifySignup}) => {
     setError('');
     
     // check user don't already exist in the database
-    const userExist = await getUserByEmail(email);
-    if (userExist.status === 200) {
+    const response = await getUserByEmail(email);
+    if (response.email.toLocaleLowerCase() === email.toLocaleLowerCase()) {
+      setError('User already exists, please ign in.');
+      return;
+    }
+
+    if (response.status === 200) {
       setError('User already exists, please ign in.');
       return;
     }
@@ -145,34 +150,6 @@ const SignupForm = ({onVerifySignup}) => {
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   setError('');  
-
-  //   if (!/^\d{8}$/.test(userId)) {
-  //     setError('Invalid HootLoot ID' );
-  //     return;
-  //   } 
-    
-  //   if (!email.toLocaleLowerCase().endsWith('@southernct.edu')) {
-  //     setError('Please enter a valid email ending with @southernct.edu');
-  //     return;
-  //   }  
-   
-  //   if (password.length < 8 || !/[A-Z]/.test(password) || !/\d/.test(password)) {
-  //     setError('Password must be at least 8 characters long, with at least one uppercase letter and one number');
-  //     return;
-  //   }
-
-  //   if (!/^\d{10}$/.test(phoneNumber)) {
-  //     setError('Invalid phone number');
-  //     return;
-  //   }
-   
-  //   await sendEmailVerification(); 
-  // };  
-  // onSubmit={handleSubmit}
   
   return ( 
     <div className=""> 
