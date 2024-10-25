@@ -109,7 +109,7 @@ function SignUpIn() {
                           
                         </p>
                     </div>
-                        <SwitchForm isLogin={isLogin} handleSwitch={handleSwitch} />
+                <SwitchForm isLogin={isLogin} handleSwitch={handleSwitch} />
                 </CCardHeader>
                 <CCardBody className="mt-5" style={{marginBottom:'35px !importan'}}> 
                     <CRow>

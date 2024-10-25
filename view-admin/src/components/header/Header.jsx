@@ -10,7 +10,7 @@ function Header() {
       <CNavbar expand="lg" className='header border-0 text-white'>
         <CContainer> 
           <Link to='/dashboard' className="text-decoration-none">
-            <CNavbarBrand className>
+            <CNavbarBrand>
               <img src='/assets/logo/rconnect.png' alt="Reconnect logo"
                 style={{
                   width: '25%', 
