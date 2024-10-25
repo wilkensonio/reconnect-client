@@ -40,9 +40,15 @@ function SignInForm({onResetPassword}) {
 
     if (smg == 'account_created') { 
       setMessage('Account created successfully. Please sign in.');
+      setTimeout(() => {
+        setMessage('');
+      }, 5000);
     }
     else if (smg == 'password_reset') { 
       setMessage('Password reset successfully. Please sign in.');
+      setTimeout(() => {
+        setMessage('');
+      }, 5000);
     } else {
       setMessage('');
     }

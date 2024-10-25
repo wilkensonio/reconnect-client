@@ -170,7 +170,7 @@ const ResetPasswordModal = ({ showModal, setShowModal }) => {
 
       <CModalFooter className='border-0'>
         <CButton color="primary" onClick={step === 1 ? handleNextStep : handleConfirmCode}>
-          {step === 1 ? 'Next' : 'Reset Password'}
+          {step === 1 ? 'Next' : 'Reset  Password'}
         </CButton>
       </CModalFooter>
     </CModal>

@@ -20,7 +20,23 @@ export const getUserByEmail = async email => {
     } catch (error) {  
         return handleError(error); 
     }      
-} 
+}
+
+
+export const updateUser = async (userData) => { 
+    console.log(userData.user_id, "user_id form api service");
+    
+    try {
+        const response = await axios.put(`/api/user/update/${userData.user_id}`, userData, {
+            headers: headers
+        }); 
+        
+        return response.data;
+                 
+    } catch (error) {  
+        return handleError(error); 
+    }      
+}
 
 
 const handleError = (error) => {

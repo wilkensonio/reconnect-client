@@ -58,7 +58,7 @@ const SignupForm = ({onVerifySignup}) => {
     user_id: userId,
     first_name: firstName,
     last_name: lastName,
-    email: email.toLocaleLowerCase(),
+    email: email.toLowerCase(),
     password: password,
     phone_number: phoneNumber,
   }; 
@@ -70,7 +70,7 @@ const SignupForm = ({onVerifySignup}) => {
     
     // check user don't already exist in the database
     const response = await getUserByEmail(email);
-    if (response.email.toLocaleLowerCase() === email.toLocaleLowerCase()) {
+    if (response.email === email.toLowerCase()) {
       setError('User already exists, please ign in.');
       return;
     }
@@ -109,7 +109,7 @@ const SignupForm = ({onVerifySignup}) => {
       return;
     }
     
-    if (!email.toLocaleLowerCase().endsWith('@southernct.edu')) {
+    if (!email.toLowerCase().endsWith('@southernct.edu')) {
       setError('Please enter a valid southern email');
       return;
     }
