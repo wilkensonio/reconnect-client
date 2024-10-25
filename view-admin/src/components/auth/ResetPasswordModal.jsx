@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
-import { CModal, CModalHeader, CModalBody, CModalFooter, CButton, CForm, CFormInput } from '@coreui/react';
+import { CModal, CModalHeader, CModalBody, CModalFooter, CButton, CForm, CFormInput, CInputGroupText, CInputGroup, CCol } from '@coreui/react';
 import { useNavigate } from 'react-router-dom'; 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'; 
 import { resetPassword } from '../../apiservice/SignService';
 import { sendEmail, verifyEmailCode } from '../../apiservice/MailService';
 import { getUserByEmail } from '../../apiservice/UserService';
+
 
 
 const ResetPasswordModal = ({ showModal, setShowModal }) => {
@@ -13,6 +16,8 @@ const ResetPasswordModal = ({ showModal, setShowModal }) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);   
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);  
  
 
   const navigate = useNavigate();
@@ -88,6 +93,14 @@ const ResetPasswordModal = ({ showModal, setShowModal }) => {
     navigate('/signin?mesage=password_reset');
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
   return (
     <CModal visible={showModal} onClose={handleCloseModal} alignment="center">
       <CModalHeader onClose={handleCloseModal}>
@@ -98,29 +111,44 @@ const ResetPasswordModal = ({ showModal, setShowModal }) => {
         <CModalBody>
           <p>Enter your email and new password to reset your password.</p>
           <CForm>
-            <CFormInput
-              type="email"
-              placeholder="johnd1@southernct.edu *"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <CFormInput
-              type="password"
-              placeholder="Enter new password *"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              required
-              className="mt-3"
-            />
-            <CFormInput
-              type="password"
-              placeholder="Confirm new password *"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-              className="mt-3"
-            />
+              <CFormInput
+              className='mb-3'
+                type="email"
+                placeholder="johnd1@southernct.edu *"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+           
+              <CInputGroup className='mb-3'>
+                <CFormInput
+                  id="passwordInput"
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Enter new password *"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  required
+                 
+                />
+                <CInputGroupText onClick={togglePasswordVisibility} style={{ cursor: 'pointer' }}>
+                  <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+                </CInputGroupText>
+              </CInputGroup>
+             
+            <CInputGroup>
+              <CFormInput
+                id="confirmPasswordInput"
+                type={showConfirmPassword ? 'text' : 'password'}
+                placeholder="Confirm new password *"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                // className="mt-3"
+              />
+              <CInputGroupText onClick={toggleConfirmPasswordVisibility} style={{ cursor: 'pointer' }}>  
+                <FontAwesomeIcon icon={showConfirmPassword ? faEyeSlash : faEye} />
+              </CInputGroupText>
+            </CInputGroup>
             {error && <p className="text-danger mt-2">{error}</p>}
           </CForm>
         </CModalBody>
@@ -140,7 +168,7 @@ const ResetPasswordModal = ({ showModal, setShowModal }) => {
         </CModalBody>
       )}
 
-      <CModalFooter>
+      <CModalFooter className='border-0'>
         <CButton color="primary" onClick={step === 1 ? handleNextStep : handleConfirmCode}>
           {step === 1 ? 'Next' : 'Reset Password'}
         </CButton>

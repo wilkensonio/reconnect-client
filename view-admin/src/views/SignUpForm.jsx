@@ -62,8 +62,7 @@ const SignupForm = ({onVerifySignup}) => {
     password: password,
     phone_number: phoneNumber,
   }; 
-
-  
+ 
   
   const handleVerifyEmail = async (e) => {
     e.preventDefault();
