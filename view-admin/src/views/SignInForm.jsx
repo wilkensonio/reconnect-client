@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { CButton, CRow, CCol, CForm, CFormInput } from '@coreui/react';
+import { CButton, CRow, CCol, CForm, CFormInput, CInputGroup, CInputGroupText } from '@coreui/react';
 import { useLocation } from 'react-router-dom';
 import {signinUser} from '../apiservice/SignService';
 import {getToken} from '../apiservice/TokenService';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'; 
 import useFormValidation from '../components/validButton/useFormValidation';
 
 function SignInForm({onResetPassword}) {
@@ -13,6 +15,7 @@ function SignInForm({onResetPassword}) {
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const location = useLocation();  
+  const [showPassword, setShowPassword] = useState(false);  
 
   const validateFields = (fields) => {
     const {email, password} = fields;
@@ -93,7 +96,11 @@ function SignInForm({onResetPassword}) {
 
   const handleResetPasswordClick = () => {
     onResetPassword();  
-  }; 
+  };
+  
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
  
 
   return (
@@ -113,15 +120,19 @@ function SignInForm({onResetPassword}) {
               />
             </CCol>
             <CCol xs={12} className='mb-4'>
-              <CFormInput
-                id="passwordInput"
-                type="password"
-                placeholder="Password *"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                style={{ width: '100%' }}
-                required
-              />
+              <CInputGroup>
+                <CFormInput
+                  id="passwordInput"
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Password *"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <CInputGroupText onClick={togglePasswordVisibility} style={{ cursor: 'pointer' }}>
+                  <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+                </CInputGroupText>
+              </CInputGroup>
             </CCol>
             <CCol xs={12} className='mt-3'>
               <CButton className='ccolor' type="submit" 
