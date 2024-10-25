@@ -14,8 +14,8 @@ export default function Calendar() {
   const [visible, setVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [formData, setFormData] = useState({ title: '', startTime: '', endTime: '', description: '' });
-  const [events, setEvents] = useState([]);
   const calendarRef = useRef(null);
+  const [events, setEvents] = useState([]);
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const handleDateClick = (arg) => {
@@ -46,23 +46,51 @@ export default function Calendar() {
     });
   };
 
+  const newEvent = [
+    {
+    id: '1',
+    title: 'Advising with Dr.Wilk',
+    start: '2024-10-25T10:00:00',
+    end: '2024-10-25T12:00:00',
+    description: 'Wilkenson is the goat',
+    color: '#ff9f00',
+    },
+    
+
+    
+      {
+      id: '2',
+      title: 'Meeting with Hacker Escobar',
+      start: '2024-10-26T11:00:00',
+      end: '2024-10-26T13:00:00',
+      description: 'Jonny is the goat',
+      color: '#ff9f00',
+      }
+  ];
+
+  useEffect(() => {
+    setEvents(newEvent); 
+    updateCurrentDate(); 
+  }, []); 
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    const start = getDateTime(selectedDate, formData.startTime);
-    const end = getDateTime(selectedDate, formData.endTime);
-
     const newEvent = {
-      title: formData.title,
-      start: start,
-      end: end,
-      description: formData.description,
-      color: formData.color,
-    };
+      title: formData.title, 
+      start: `${selectedDate.toISOString().split('T')[0]}T${formData.startTime}`,
+      end: `${selectedDate.toISOString().split('T')[0]}T${formData.endTime}`, 
+      description: formData.description, 
+      color: '#ff9f00'
+    }
+
 
     setEvents([...events, newEvent]);
-    setFormData({ title: '', startTime: '', endTime: '', description: '', color: 'ff9f00' });
+    setFormData({ title: '', startTime: '', endTime: '', description: ''});
     setVisible(false);
   };
+
+
+
 
   const handleCloseForm = () => {
     setVisible(false);
@@ -136,7 +164,6 @@ export default function Calendar() {
           <CCol lg={10} className="mx-auto">
             <CCard className="p-4 mb-3 mt-3 mx-auto">
               <CRow className="align-items-center justify-content-between text-center text-md-start">
-                {/* Title in the center for mobile view */}
                 <CCol xs={12} md={4} lg={3} className="d-flex justify-content-center justify-content-md-start gap-2">
                   <button className="btn btn-outline-dark" onClick={goprev}>{'<'}</button>
                   <button className="btn btn-outline-dark" onClick={gonext}>{'>'}</button>
@@ -185,7 +212,7 @@ export default function Calendar() {
                 <h3 className="text-center">{selectedDate ? selectedDate.toDateString() : ''}</h3>
 
                 <div className="form-group">
-                  <label>Event Title:</label>
+                  <label>Display Availability:</label>
                   <input
                     type="text"
                     name="title"
@@ -234,6 +261,7 @@ export default function Calendar() {
 
                 <div className="form-group mt-2">
                   <button type="submit" className="btn ccolor w-100 mb-2">Submit</button>
+                  <button type="cancel" className="btn ccolor w-100 mb-2">Cancel</button>
                 </div>
               </form>
             </div>
