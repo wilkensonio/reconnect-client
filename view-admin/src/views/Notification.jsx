@@ -2,14 +2,19 @@ import React, {useEffect, useState} from 'react';
 import { CAlert, CBadge, CButton, CCard, CCardBody, CCol, CRow } from '@coreui/react';
 import { Link } from 'react-router-dom';
 import { userNotifications, deleteNotification, deleteNotifications } from '../apiservice/NotificationService'; 
- import { getUserByEmail } from '../apiservice/UserService';
+import { getUserByEmail } from '../apiservice/UserService';
+import { tokenExpired } from '../apiservice/TokenService';
 
 function Notification() {
   const [notifications, setNotifications] = useState([]);
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [user, setUser] = useState('');
+  const [loading, setLoading] = useState(false);
 
+ 
+ 
+ 
   useEffect(() => {
     const loggedInUser = localStorage.getItem('reconnect_signin_email');
     const getUser = async () => {
@@ -17,6 +22,7 @@ function Notification() {
         const user = await getUserByEmail(loggedInUser);  
         setUser(user); 
       } catch (error) {
+        tokenExpired(error.datail); 
         console.error(error);
       }
     }
@@ -24,46 +30,57 @@ function Notification() {
 
   }, []);  
   
+  
   useEffect(() => { 
     const getUserNotifications = async () => {
       try { 
         const notifications = await userNotifications(user.user_id); 
-        setNotifications(notifications);
+        console.log(notifications, "notifications");
+        
+        setNotifications(notifications.reverse());  
       } catch (error) {
+        tokenExpired(error.detail);
         console.error(error);
       }
     };
-    if (user.user_id) getUserNotifications();
-  }, [user]); 
+    if (user.user_id){
+      const intervalId = setInterval(() => {
+        getUserNotifications(); 
+      }, 1000);  
+      return () => clearInterval(intervalId);
+    }  
+  }, [user]);  
 
-  // const handleClearAll = () => {
-  //   setNotifications([]);
-  // };
+  const handleDeleteNotification = async (notification_id) => {
+    try {
+      setLoading(true);
+      await deleteNotification(notification_id);
+      setNotifications(notifications.filter(n => n.id !== notification_id)); 
+      setLoading(false);
+    }
+    catch (error) { 
+      console.error(error);
+    } finally {
+      setLoading(false);
+    } 
 
- 
+  }
 
-
-  useEffect(() => {
-    // Simulate receiving new notifications every 5 seconds
-    const notificationInterval = setInterval(() => {
-      const newMsg = `New Notification: Appointment scheduled at ${new Date().toLocaleTimeString()}`; 
-      
-      setAlertMessage(newMsg);
-      setShowAlert(true); 
-       
-      setNotifications((prevNotifications) => [...prevNotifications, newMsg]);
-      
-      // Automatically hide the alert after 5 seconds
-      setTimeout(() => {
-        setShowAlert(false);
-      }, 5000);  
-    }, 10000);  
-
-    // Clean up the interval when component unmounts
-    return () => clearInterval(notificationInterval);
-  }, []);
-  
-
+  // Clear all notifications
+  const handleDeleteNotifications = async () => {
+    try {
+      setLoading(true);
+      await deleteNotifications(user.user_id);
+      setNotifications(nottifications);
+      setLoading(false);
+    }
+    catch (error) { 
+      console.error(error);
+    } finally {
+      setLoading(false
+      );
+    }
+  }
 
 
   return (
@@ -73,14 +90,16 @@ function Notification() {
           <CCol className='mb-3'>
             <CButton color="primary" className="position-relative me-4">
               Notifications
-              <CBadge color="danger" position="top-end" shape="rounded-pill">
-                {notifications.length} <span className="visually-hidden">unread messages</span>
+              <CBadge color={notifications.length > 0 ? "danger": ''}position="top-end" shape="rounded-pill">
+                {notifications.length > 0 && notifications.length} <span className="visually-hidden">unread messages</span>
               </CBadge>
             </CButton> 
           </CCol>
           
           <CCol className='mb-3'>
-            <CButton color='primary'>
+            <CButton color='primary'
+            onClick={handleDeleteNotifications}
+            >
               Clear All 
             </CButton>
           </CCol>
@@ -104,24 +123,27 @@ function Notification() {
         </CAlert>
       )}
 
-      <div className="d-flex flex-column align-items-center w-100 ">
+      {notifications.length > 0 ? (<div className="d-flex flex-column align-items-center w-100 ">
         {notifications.map((notification, index) => (
           <CCard key={index} className="mb-3 card-color" 
           style={{ width: '70%',
+          height: '100%',
           display: 'flex', flexDirection: 
           'row', justifyContent: 'space-between', 
           alignItems: 'center',
           background: '#e9e9e9',
+          padding: '0rem' 
           
           }}>
-            <CCardBody style={{ flex: '1' }}>{notification}</CCardBody>
-            <CButton color="danger" size="sm" className="text-white me-3" 
-              style={{ width: '3rem', marginLeft: 'auto' }}>
+            <CCardBody style={{ flex: '1' }}>{notification.message}</CCardBody>
+            <CButton color="danger" size="sm" className="text-white me-0" 
+              style={{ width: 'auto', marginRight: '0', height: '50px' }}
+              onClick={() => handleDeleteNotification(notification.id) }>
               X
             </CButton>
           </CCard>
         ))}
-      </div>
+      </div>): <p className='text-white text-center h2'>You have no notifications </p> }
     </div>
   );
 }

@@ -23,14 +23,14 @@ export const newNotification = async (data) => {
 
 export const userNotifications = async (hootloot_id) => {    
     try {
-        const response = await axios.get(`/api/get/notifications/${hootloot_id}`, {
+        const response = await axios.get(`/api/notifications_by_user/${hootloot_id}`, {
             headers: {
                 'R-API-KEY': `${apiKey}`,
                 'Content-Type': 'application/json',
                 'Authorization': `${token_type} ${token}`
             },
         }); 
-        
+        console.log(response, "response from userNotifications");
         return response.data;
                  
     } catch (error) {  
