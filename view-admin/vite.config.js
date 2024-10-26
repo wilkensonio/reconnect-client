@@ -24,6 +24,7 @@ export default defineConfig({
           target: 'ws://ec2-3-82-206-23.compute-1.amazonaws.com:8000',
           ws: true,
           changeOrigin: true,
+          
         }
     }
   }
