@@ -1,8 +1,5 @@
 import React, { Suspense, useState , useEffect} from 'react';
-import { Route, Routes, Navigate } from 'react-router-dom'; 
-import Messages from './views/Messages'; 
-import Signup from './views/SignUpForm';
-import SignIn from './views/SignInForm';
+import { Route, Routes, Navigate } from 'react-router-dom';   
 import Layout from './layout/Layout';
 import SignUpIn from './components/auth/SignUpIn';
 import { CSpinner } from '@coreui/react';
@@ -44,9 +41,7 @@ function App() {
         }
     >
       <Routes> 
-        <Route path="/signin" element={<SignUpIn />} />             
-        {/* <Route path="/signin" element={<SignIn />} />             
-        <Route path="/signup" element={<Signup />}/> */}
+        <Route path="/signin" element={<SignUpIn />} />  
         <Route path="*" name="Home" element={isAuthenticated ? <Layout /> : <Navigate to="/signin"/>} /> 
       </Routes>
     </Suspense>  

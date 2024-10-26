@@ -2,6 +2,8 @@ import React from 'react'
 import { CSidebar, CSidebarBrand, CSidebarHeader, CSidebarNav, CNavItem, CNavTitle, CBadge } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilEnvelopeClosed, cilCalendar, cilPeople, cilAccountLogout, cilSettings, cilLaptop } from '@coreui/icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'; 
 import {Link} from 'react-router-dom'
 import logo from '/assets/logo/rconnect.png'
 
@@ -34,11 +36,18 @@ function sidebar() {
               <CIcon className='d-flex justify-content-center' customClassName="nav-icon" icon={cilLaptop} />  Dashboard
             </CNavItem> 
           </Link> 
+
+          <Link to="/notifications" className="text-decoration-none text-light ms-3 mb-3">
+            <CNavItem className="d-flex  align-items-center me-3">
+              <CIcon className='d-flex justify-content-center' customClassName="nav-icon" icon={cilLaptop} />
+                Notifications&nbsp;<span class="badge text-bg-success">4</span>
+            </CNavItem> 
+          </Link> 
+           
           
           <Link to="/students" className="text-decoration-none text-light ms-3 mb-3">
             <CNavItem className="d-flex align-items-center me-3">
-              <CIcon customClassName="nav-icon" icon={cilEnvelopeClosed} /> Students
-              <CBadge color="primary ms-auto">12</CBadge> 
+              <CIcon customClassName="nav-icon" icon={cilEnvelopeClosed} /> Students 
             </CNavItem> 
           </Link>
 
