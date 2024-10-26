@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { CButton, CModal,CModalBody, CModalFooter, CTooltip } from '@coreui/react'
 import { fetchStudents, blacklistStudent} from '../ApiService/StudentService'
 import customTooltipStyle from '../components/tooltip/CustomToolTip'
+import { Link } from 'react-router-dom';
+
 // Function to generate fake student data remove after 
 const generateFakeStudents = (count) => {
     const fakeStudent = [];
@@ -47,11 +49,7 @@ function Students() {
     const handleScroll = () => {
         const scrollTop = window.scrollY;
         const windowHeight = window.innerHeight;
-        const documentHeight = document.documentElement.scrollHeight;
-
-        console.log(scrollTop, windowHeight, documentHeight);
-        
-
+        const documentHeight = document.documentElement.scrollHeight;  
 
         if (scrollTop + windowHeight >= documentHeight - 200) {
             setVisibleRange((prevRange) => ({
@@ -91,12 +89,12 @@ function Students() {
     }
 
     const currentStudents = filteredStudents.slice(visibleRange.start, visibleRange.end);
-  
+    const numberOfStudents = filteredStudents.length;
     return (
         <div>
-            <h3 className='text-center text-white  d-flex justify-content-center mt-3 mb-5'>
+            <h3 className='text-center text-white  d-flex justify-content-center mt-3 mb-2'>
                 <>      
-                    Students
+                    <span>{numberOfStudents}&nbsp;</span> Students
                     <CTooltip 
                         style={customTooltipStyle}
                         content={
@@ -123,6 +121,11 @@ function Students() {
                     </CTooltip>
                 </>
             </h3>
+            <div className='mb-5 container'>
+                <Link to='/dashboard'>
+                    <span className='text-white'>Back to dashboard</span>
+                </Link>
+            </div>
             <div className="container">
                 <div className='mb-3'>
                     <input
@@ -162,7 +165,7 @@ function Students() {
                                         className='m-0  pt-0 pb-0 ccolor' 
                                             onClick={() => scheduleMeeting(student.id)}
                                         >
-                                            Schedule
+                                            History
                                         </CButton> 
                                     </div>
                                 </div>

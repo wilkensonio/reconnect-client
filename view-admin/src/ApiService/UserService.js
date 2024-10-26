@@ -39,8 +39,7 @@ export const updateUser = async (userData) => {
 }
 
 
-const handleError = (error) => {
-    
+const handleError = (error) => { 
     if (error.response) {
         console.error(error.response.data);
         console.error(error.response.status);
