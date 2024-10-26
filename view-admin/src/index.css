@@ -28,10 +28,19 @@
 body {
   background-color: #333333; 
   background: #071689;
-  /* background-image: url('/assets/logo/reconnect.png');    */
+  background-image: url('/assets/logo/compsci-logo.png');   
   height: 100vh; 
   background-size: 10rem 10rem;  
 } 
+
+.header {
+  background-color: #071689; 
+  color: #fff;
+  border: 0;
+  /* text-align: center;
+  padding: 10px;
+  margin-bottom: 10px; */
+}
 
 .sidebar {
     width: 250px;  

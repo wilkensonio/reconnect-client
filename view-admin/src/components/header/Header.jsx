@@ -6,46 +6,72 @@ import { Link } from 'react-router-dom';
 function Header() {
   const [visible, setVisible] = React.useState(false)
   return (
-    <div>
-      <CNavbar expand="lg">
-        <CContainer fluid> 
-          <CNavbarToggler onClick={() => setVisible(!visible)} />
+    <div className='w-100 sticky-top'> 
+      <CNavbar expand="lg" className='header border-0 text-white'>
+        <CContainer> 
+          <Link to='/dashboard' className="text-decoration-none">
+            <CNavbarBrand>
+              <img src='/assets/logo/rconnect.png' alt="Reconnect logo"
+                style={{
+                  width: '25%', 
+                }}
+              />
+            </CNavbarBrand>
+          </Link>
+          <CNavbarToggler onClick={() => setVisible(!visible)}
+            className='bg-white border-0'
+          />
           <CCollapse className="navbar-collapse" visible={visible}>
-            <CNavbarNav>
-              <CNavItem>
-                <CNavLink component={Link} to="/dashboard" active>
-                  Dashboard
-                </CNavLink>
-              </CNavItem>
-              <CNavItem>
-                <CNavLink component={Link} to="/messages">
-                  <BsEnvelope className='me-2'/>Messages&nbsp;
-                  <span className="badge text-bg-secondary">4</span>
-                </CNavLink>
-              </CNavItem>
-              <CNavItem> 
-                <CNavLink component={Link} to="/calendar">
-                  <BsCalendar className='me-2'/>
-                  Calendar
-                </CNavLink>
-              </CNavItem> 
-              <CNavItem>
-                <CNavLink component={Link} to="/new-student">
-                <BsPeople  className='me-2'/>Add student
-                </CNavLink>
-              </CNavItem>
-              <CNavItem>
-                <CNavLink component={Link} to="/account">
-                <BsGearFill className='me-2'/>
-                  Account
-                </CNavLink>
-              </CNavItem>
-            </CNavbarNav> 
-          </CCollapse>
+            <CNavbarNav className='text-white' color='white'>
+              <Link to='/dashboard' className="text-decoration-none">
+                <CNavItem>
+                  <CNavLink className='text-white' component={Link} to="/dashboard" active>
+                    Dashboard
+                  </CNavLink>
+                </CNavItem>
+              </Link>
+
+              <Link to='/students' className="text-decoration-none">
+                <CNavItem>
+                  <CNavLink className='text-white'>
+                    <BsPeople className='me-2'/>Students 
+                  </CNavLink>
+                </CNavItem>
+              </Link>
+
+              <Link to='/calendar' className="text-decoration-none">
+                <CNavItem>
+                  <CNavLink className='text-white'>
+                    <BsCalendar className='me-2'/>Calendar
+                  </CNavLink>
+                </CNavItem>
+              </Link>
+
+              <Link to='/new-student' className="text-decoration-none">
+                <CNavItem>
+                  <CNavLink className='text-white'>
+                    <BsPeople className='me-2'/>Add student
+                  </CNavLink>
+                </CNavItem>
+              </Link>
+               
+
+              <Link to='/account' className="text-decoration-none">
+                <CNavItem>
+                  <CNavLink className='text-white'>
+                    <BsGearFill className='me-2'/> Account
+                  </CNavLink>
+                </CNavItem>
+              </Link> 
+               
+              </CNavbarNav> 
+            </CCollapse>
         </CContainer>
-      </CNavbar>
-    </div> 
+    </CNavbar>
+    </div>
   )
+ 
+  
 }
 
 export default Header

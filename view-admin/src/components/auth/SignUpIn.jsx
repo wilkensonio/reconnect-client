@@ -4,8 +4,8 @@ import SignInForm from '../../views/SignInForm';
 import SignUpForm from '../../views/SignUpForm';
 import ResetPasswordModal from './ResetPasswordModal';
 import VerifyEmailModal from './VerifyEmailModal';
-import {CButton, CCard, CCardBody, CCardHeader, CCol, CRow, CTooltip } from '@coreui/react';
- 
+import {CCard, CCardBody, CCardHeader, CCol, CRow, CTooltip } from '@coreui/react';
+import customTooltipStyle from '../../components/tooltip/CustomToolTip'
 
 function SignUpIn() {
    
@@ -57,36 +57,59 @@ function SignUpIn() {
                     <div className="">    
                         <p className='h3 d-flex justify-content-center mt-3 mb-5'>
                             {isLogin ? (
-                                <>
+                                <> 
                                     Sign In{'  '}
-                                    <CTooltip content="To Reset password clicked on the reset password link on this page
-                                        You will see a popup to enter your email address and new password. 
-                                        Then click Next and you will receive a code though email to reset your password."
+                                    <CTooltip 
+                                        style={customTooltipStyle}
+                                        content={
+                                            <div>
+                                                <p className='text-start mb-1'> <span className='text-danger'>
+                                                    * </span>All Fields are required</p>
+                                                <p className='text-start mb-1'> <span className='text-danger'>
+                                                    1.</span>To Reset password clicked on the reset password link on this page.</p>
+                                                <p className='text-start mb-1'> <span className='text-danger'>
+                                                    2.</span>You will see a popup to enter your email address and new password.</p>
+                                                <p className='text-start mb-1'> <span className='text-danger'>
+                                                    3.</span>Then click Next and you will receive a code through email to reset your password.</p>
+                                                <p className='text-start mb-1'> <span className='text-danger'> 
+                                                    4.</span>Login button is not active until a valid email is entered ans at list 1 character for password.</p>
+                                            </div>
+                                        }
                                          placement="bottom">
                                         <span className="border border-primary bg-tooltip rounded-circle text-white d-flex justify-content-center align-items-center"
                                             style={{ cursor: 'pointer', color: '#007bff', marginLeft: '10px', width:'2rem', height: '2rem', paddingTop:'.2rem' }}>
                                             ?
                                         </span>
                                     </CTooltip>
-                                </>) : 
-                                <>
+                                </>) :
+                                <> 
                                     Sign Up{'  '}
-                                    <CTooltip content="Next button is not active until
-                                     all field are validated. password must be 8 characters long, 
-                                     with at least one uppercase letter and one number.
-                                     Once you click on next, you will receive an email to verify your account." 
-                                     placement="bottom">
+                                    <CTooltip 
+                                        style={customTooltipStyle}
+                                        content={
+                                            <div>
+                                                <p className='text-start mb-1'> <span className='text-danger'>
+                                                * </span>All Fields are required</p>
+                                                <p className='text-start mb-1'> <span className='text-danger'>
+                                                    1.</span>Next button is not active until all fields are validated.</p>
+                                                <p className='text-start mb-1'> <span className='text-danger'>
+                                                    2.</span>password must be  at least 8 characters long, 1 uppercase letter and a number.</p>
+                                                <p className='text-start mb-1'> <span className='text-danger'>
+                                                    3.</span>Once you click on next, you will receive an email to verify your account.</p> 
+                                            </div>
+                                        }
+                                        placement="bottom">
                                         <span className="border border-primary bg-tooltip rounded-circle text-white d-flex justify-content-center align-items-center"
                                             style={{ cursor: 'pointer', color: '#007bff', marginLeft: '10px', width:'2rem', height: '2rem', paddingTop:'.2rem' }}>
-                                                ?
+                                            ?
                                         </span>
                                     </CTooltip>
-                                </>
+                                </>  
                             }
                           
                         </p>
                     </div>
-                        <SwitchForm isLogin={isLogin} handleSwitch={handleSwitch} />
+                <SwitchForm isLogin={isLogin} handleSwitch={handleSwitch} />
                 </CCardHeader>
                 <CCardBody className="mt-5" style={{marginBottom:'35px !importan'}}> 
                     <CRow>

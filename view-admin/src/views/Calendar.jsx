@@ -164,12 +164,12 @@ export default function Calendar() {
           <CCol lg={10} className="mx-auto">
             <CCard className="p-4 mb-3 mt-3 mx-auto">
               <CRow className="align-items-center justify-content-between text-center text-md-start">
-                <CCol xs={12} md={4} lg={3} className="d-flex justify-content-center justify-content-md-start gap-2">
+                <CCol xs={12} md={3} lg={3} className="d-flex justify-content-center justify-content-md-start gap-2">
                   <button className="btn btn-outline-dark" onClick={goprev}>{'<'}</button>
                   <button className="btn btn-outline-dark" onClick={gonext}>{'>'}</button>
                   <button className="btn btn-outline-dark" onClick={gotoday}>Today</button>
                 </CCol>
-                <CCol xs={12} md={4} lg={6} className="mt-2 mt-md-0 text-center">
+                <CCol xs={12} md={3}  lg={4} className="my-2 my-md-0 text-center">
                   <h5>{currentDate.toLocaleString('default', { month: 'long' })} {currentDate.getFullYear()}</h5>
                 </CCol>
                 <CCol xs={12} md={4} lg={3} className="d-flex justify-content-center justify-content-md-end gap-2 mt-2 mt-md-0">
@@ -274,9 +274,11 @@ export default function Calendar() {
 
 const renderEventContent = (eventInfo) => {
   return (
-    <div style={{backgroundColor: eventInfo.event.extendedProps.color, padding: '5px', borderRadius: '5px'}}>
-      <strong>{eventInfo.event.title}</strong>
-      <div>{eventInfo.event.extendedProps.description}</div>
+    <div>
+      <h5 style={{ marginBottom: '0.5rem', fontWeight: 'bold' }}>
+        {eventInfo.event.title}
+      </h5>
+      {eventInfo.event.extendedProps.description} 
     </div>
   )
 }
