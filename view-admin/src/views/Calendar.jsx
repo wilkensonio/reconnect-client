@@ -4,7 +4,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import listPlugin from '@fullcalendar/list';
 import bootstrapPlugin from '@fullcalendar/bootstrap';
 import interactionPlugin from '@fullcalendar/interaction';
-import { CModal, CForm, CButton, CCard, CCol, CRow, CContainer } from '@coreui/react';
+import { CModal, CButton, CCard, CCol, CRow, CContainer } from '@coreui/react';
 import Select from 'react-select';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import 'bootstrap/dist/css/bootstrap.min.css'; 
@@ -17,7 +17,11 @@ export default function Calendar() {
   const calendarRef = useRef(null);
   const [events, setEvents] = useState([]);
   const [currentDate, setCurrentDate] = useState(new Date());
-
+  const [isAllDay, setIsAllDay] = useState(false); 
+  const [startDate, setStartDate] = useState(null); 
+  const [endDate, setEndDate] = useState(null);
+ 
+ 
   const handleDateClick = (arg) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -72,29 +76,6 @@ export default function Calendar() {
     setEvents(newEvent); 
     updateCurrentDate(); 
   }, []); 
-
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    const newEvent = {
-      title: formData.title, 
-      start: `${selectedDate.toISOString().split('T')[0]}T${formData.startTime}`,
-      end: `${selectedDate.toISOString().split('T')[0]}T${formData.endTime}`, 
-      description: formData.description, 
-      color: '#ff9f00'
-    }
-
-
-    setEvents([...events, newEvent]);
-    setFormData({ title: '', startTime: '', endTime: '', description: ''});
-    setVisible(false);
-  };
-
-
-
-
-  const handleCloseForm = () => {
-    setVisible(false);
-  };
 
   const goprev = () => {
     const calendarApi = calendarRef.current.getApi();
@@ -157,6 +138,52 @@ export default function Calendar() {
     return options;
   };
 
+  const handleSelect = (selectionInfo) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); 
+
+    if (selectionInfo.start < today) {
+      return; 
+    }
+
+    const isInTimeGridView = selectionInfo.view.type === 'timeGridDay' || selectionInfo.view.type === 'timeGridWeek';
+    const isAllDaySelection = selectionInfo.allDay && isInTimeGridView; 
+
+    if (isAllDaySelection) {
+      setIsAllDay(true);
+      setStartDate(selectionInfo.start);
+      setEndDate(selectionInfo.end);
+      setSelectedDate(selectionInfo.start);
+      setVisible(true); 
+    } else if (selectionInfo.view.type !== 'dayGridMonth') {
+      setIsAllDay(false);
+      setSelectedDate(selectionInfo.start);
+      setVisible(true); 
+    }
+  };
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    const newEvent = {
+      title: formData.title, 
+      start: isAllDay ? startDate.toISOString() : `${selectedDate.toISOString().split('T')[0]}T${formData.startTime}`,
+      end: isAllDay ? endDate.toISOString() : `${selectedDate.toISOString().split('T')[0]}T${formData.endTime}`,
+      description: formData.description, 
+      allDay: isAllDay,
+      color: '#ff9f00'
+    }
+
+    setEvents([...events, newEvent]);
+    setFormData({ title: '', startTime: '', endTime: '', description: ''});
+    setIsAllDay(false);
+    setVisible(false);
+  };
+
+  const handleCloseForm = () => {
+    setVisible(false);
+    setIsAllDay(false);
+  };
+
   return (
     <>
       <CContainer fluid>
@@ -186,8 +213,15 @@ export default function Calendar() {
                     plugins={[dayGridPlugin, timeGridPlugin, bootstrapPlugin, interactionPlugin, listPlugin]}
                     initialView="dayGridMonth"
                     dateClick={handleDateClick}
+                    selectable
+                    select={handleSelect}
                     events={events}
-                    eventContent={renderEventContent}
+                    eventContent={(eventInfo) => (
+                      <div>
+                        <b>{eventInfo.timeText}</b>
+                        <i>{eventInfo.event.title}</i>
+                      </div>
+                    )}
                     eventDisplay="block"
                     dayHeaderFormat={{
                       weekday: 'short'
@@ -206,79 +240,47 @@ export default function Calendar() {
 
       <CModal onClose={handleCloseForm} visible={visible} fade>
         <div className="container">
-          <div className="row justify-content-center">
-            <div className="col-14 col-md-12 col-lg-10">
-              <form onSubmit={handleFormSubmit} className="p-5">
-                <h3 className="text-center">{selectedDate ? selectedDate.toDateString() : ''}</h3>
-
-                <div className="form-group">
-                  <label>Display Availability:</label>
-                  <input
-                    type="text"
-                    name="title"
-                    value={formData.title}
-                    onChange={handleInputChange}
-                    className="form-control w-100"
-                    placeholder="Enter event title"
-                    required
-                  />
+          <form onSubmit={handleFormSubmit} className="p-5">
+            <h3 className="text-center">{selectedDate ? selectedDate.toDateString() : ''}</h3>
+            <div className="form-group">
+              <label>Event Title:</label>
+              <input type="text" name="title" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} className="form-control w-100" placeholder="Enter event title" required />
+            </div>
+            {isAllDay ? (
+              <>
+                <div className="form-group mt-2">
+                  <label>Start Date:</label>
+                  <input type="date" value={startDate ? startDate.toISOString().split('T')[0] : ''} onChange={(e) => setStartDate(new Date(e.target.value))} className="form-control" required />
                 </div>
-
+                <div className="form-group mt-2">
+                  <label>End Date:</label>
+                  <input type="date" value={endDate ? endDate.toISOString().split('T')[0] : ''} onChange={(e) => setEndDate(new Date(e.target.value))} className="form-control" required />
+                </div>
+              </>
+            ) : (
+              <>
                 <div className="form-group mt-2">
                   <label>Start Time:</label>
-                  <Select
-                    options={generateTimeOptions()}
-                    value={formData.startTime ? { value: formData.startTime, label: formData.startTime } : null}
-                    onChange={(selected) => setFormData({ ...formData, startTime: selected.value })}
-                    className="form-control"
-                    placeholder="Select Start Time"
-                    required
-                  />
+                  <Select options={generateTimeOptions()} value={formData.startTime ? { value: formData.startTime, label: formData.startTime } : null} onChange={(selected) => setFormData({ ...formData, startTime: selected.value })} className="form-control" placeholder="Select Start Time" required />
                 </div>
-
                 <div className="form-group mt-2">
                   <label>End Time:</label>
-                  <Select
-                    options={generateTimeOptions()}
-                    value={formData.endTime ? { value: formData.endTime, label: formData.endTime } : null}
-                    onChange={(selected) => setFormData({ ...formData, endTime: selected.value })}
-                    className="form-control"
-                    placeholder="Select End Time"
-                    required
-                  />
+                  <Select options={generateTimeOptions()} value={formData.endTime ? { value: formData.endTime, label: formData.endTime } : null} onChange={(selected) => setFormData({ ...formData, endTime: selected.value })} className="form-control" placeholder="Select End Time" required />
                 </div>
-
-                <div className="form-group mt-2">
-                  <label>Event Description:</label>
-                  <textarea
-                    name="description"
-                    value={formData.description}
-                    onChange={handleInputChange}
-                    className="form-control w-100"
-                    placeholder="Enter event description"
-                  />
-                </div>
-
-                <div className="form-group mt-2">
-                  <button type="submit" className="btn ccolor w-100 mb-2">Submit</button>
-                  <button type="cancel" className="btn ccolor w-100 mb-2">Cancel</button>
-                </div>
-              </form>
+              </>
+            )}
+            <div className="form-group mt-2">
+              <label>Event Description:</label>
+              <textarea name="description" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} className="form-control w-100" placeholder="Enter event description" />
             </div>
-          </div>
+            <div className="form-group mt-2">
+              <button type="submit" className="btn btn-primary w-100 mb-2">Submit</button>
+              <button type="button" className="btn btn-secondary w-100" onClick={handleCloseForm}>Cancel</button>
+            </div>
+          </form>
         </div>
       </CModal>
     </>
   );
 }
 
-const renderEventContent = (eventInfo) => {
-  return (
-    <div>
-      <h5 style={{ marginBottom: '0.5rem', fontWeight: 'bold' }}>
-        {eventInfo.event.title}
-      </h5>
-      {eventInfo.event.extendedProps.description} 
-    </div>
-  )
-}
