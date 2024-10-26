@@ -30,3 +30,17 @@ export const getToken = async (email, password) => {
         throw error.response?.data || new Error('Failed to get token'); 
     }
 }
+
+export const tokenExpired = msg => {
+    if (msg === 'Token has expired') {
+      localStorage.removeItem('reconnect_signin_email');
+      localStorage.removeItem('reconnect_access_token');
+      localStorage.removeItem('reconnect_first_name');
+      localStorage.removeItem('reconnect_signup_data');
+      localStorage.removeItem('reconnect_token_type');
+      localStorage.removeItem('reconnect_email_verification_code');
+      localStorage.setItem('reconnect_token_expired', 'true');  
+      window.location.reload();
+      window.location.href = '/';
+    }
+  } 

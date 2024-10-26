@@ -19,9 +19,15 @@ export default defineConfig({
         target: 'http://ec2-3-82-206-23.compute-1.amazonaws.com:8000',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '/api/v1')
-      }
+      },
+      '/ws': { 
+          target: 'ws://ec2-3-82-206-23.compute-1.amazonaws.com:8000',
+          ws: true,
+          changeOrigin: true,
+        }
     }
   }
 })
 
+ 
  

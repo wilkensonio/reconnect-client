@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDashboard, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'; 
 import customTooltipStyle from '../components/tooltip/CustomToolTip'
 import { updateUser } from '../apiservice/UserService';
+import { Link } from 'react-router-dom';
 
 function Account() {
   const [user_id, setUserId] = useState('');
@@ -80,7 +81,7 @@ function Account() {
   };
 
   return ( 
-      <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+      <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}> 
         <CCard style={{ width: '40rem' }} className='shadow'>
           <div className='mt-3 h3 d-flex justify-content-center'>
              <>   
@@ -207,6 +208,11 @@ function Account() {
                     )}
                   </div>
               </CForm>
+              <div className='mt-3 mb-3'>
+                <Link to='/dashboard'>
+                        Back to dashboard
+                </Link>
+              </div>
             </CCol>
           </CRow> 
           </CCardBody>
