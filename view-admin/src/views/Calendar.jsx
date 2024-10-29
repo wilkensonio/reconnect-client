@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import listPlugin from '@fullcalendar/list';
@@ -7,8 +7,9 @@ import interactionPlugin from '@fullcalendar/interaction';
 import { CModal, CButton, CCard, CCol, CRow, CContainer } from '@coreui/react';
 import Select from 'react-select';
 import timeGridPlugin from '@fullcalendar/timegrid';
-import 'bootstrap/dist/css/bootstrap.min.css'; 
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './Calendar.css';
+import { getAppointmentById } from '../apiservice/CalendarService';
 
 export default function Calendar() {
   const [visible, setVisible] = useState(false);
@@ -17,11 +18,10 @@ export default function Calendar() {
   const calendarRef = useRef(null);
   const [events, setEvents] = useState([]);
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [isAllDay, setIsAllDay] = useState(false); 
-  const [startDate, setStartDate] = useState(null); 
+  const [isAllDay, setIsAllDay] = useState(false);
+  const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
- //show appointment by Id
- 
+
   const handleDateClick = (arg) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -44,38 +44,61 @@ export default function Calendar() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prevFormData) => ({
+      ...prevFormData,
       [name]: value,
-    });
+    }));
   };
 
-  const newEvent = [
-    {
-    id: '1',
-    title: 'Advising with Dr.Wilk',
-    start: '2024-10-25T10:00:00',
-    end: '2024-10-25T12:00:00',
-    description: 'Wilkenson is the goat',
-    color: '#ff9f00',
-    },
-    
+  const handleSelect = (selectionInfo) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); 
 
-    
-      {
-      id: '2',
-      title: 'Meeting with Hacker Escobar',
-      start: '2024-10-26T11:00:00',
-      end: '2024-10-26T13:00:00',
-      description: 'Jonny is the goat',
+    if (selectionInfo.start < today) {
+      return; 
+    }
+
+    const isInTimeGridView = selectionInfo.view.type === 'timeGridDay' || selectionInfo.view.type === 'timeGridWeek';
+    const isAllDaySelection = selectionInfo.allDay && isInTimeGridView;
+
+    if (isAllDaySelection) {
+      setIsAllDay(true);
+      setStartDate(selectionInfo.start);
+      setEndDate(selectionInfo.end);
+      setSelectedDate(selectionInfo.start);
+      setVisible(true);
+    } else if (selectionInfo.view.type !== 'dayGridMonth') {
+      setIsAllDay(false);
+      setSelectedDate(selectionInfo.start);
+      setVisible(true);
+    }
+  };
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    const newEvent = {
+      title: formData.title,
+      start: isAllDay ? startDate.toISOString() : `${selectedDate.toISOString().split('T')[0]}T${formData.startTime}`,
+      end: isAllDay ? endDate.toISOString() : `${selectedDate.toISOString().split('T')[0]}T${formData.endTime}`,
+      description: formData.description,
+      student_id,
+      faculty_id,
+      reason,
       color: '#ff9f00',
-      }
-  ];
+      allDay: isAllDay,
+    };
 
-  useEffect(() => {
-    setEvents(newEvent); 
-    updateCurrentDate(); 
-  }, []); 
+    setEvents((prevEvents) => [...prevEvents, newEvent]);
+  
+    setFormData({ title: '', startTime: '', endTime: '', description: '' });
+    setIsAllDay(false);
+    setVisible(false);
+  };
+
+  const handleCloseForm = () => {
+    setVisible(false);
+    setIsAllDay(false);
+  };
 
   const goprev = () => {
     const calendarApi = calendarRef.current.getApi();
@@ -97,11 +120,7 @@ export default function Calendar() {
   const listview = () => {
     const calendarApi = calendarRef.current.getApi(); 
     calendarApi.changeView('listYear');
-  }
-
-  useEffect(() => {
-    updateCurrentDate();
-  }, []);
+  };
 
   const gotoday = () => {
     const calendarApi = calendarRef.current.getApi();
@@ -138,52 +157,6 @@ export default function Calendar() {
     return options;
   };
 
-  const handleSelect = (selectionInfo) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); 
-
-    if (selectionInfo.start < today) {
-      return; 
-    }
-
-    const isInTimeGridView = selectionInfo.view.type === 'timeGridDay' || selectionInfo.view.type === 'timeGridWeek';
-    const isAllDaySelection = selectionInfo.allDay && isInTimeGridView; 
-
-    if (isAllDaySelection) {
-      setIsAllDay(true);
-      setStartDate(selectionInfo.start);
-      setEndDate(selectionInfo.end);
-      setSelectedDate(selectionInfo.start);
-      setVisible(true); 
-    } else if (selectionInfo.view.type !== 'dayGridMonth') {
-      setIsAllDay(false);
-      setSelectedDate(selectionInfo.start);
-      setVisible(true); 
-    }
-  };
-
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    const newEvent = {
-      title: formData.title, 
-      start: isAllDay ? startDate.toISOString() : `${selectedDate.toISOString().split('T')[0]}T${formData.startTime}`,
-      end: isAllDay ? endDate.toISOString() : `${selectedDate.toISOString().split('T')[0]}T${formData.endTime}`,
-      description: formData.description, 
-      allDay: isAllDay,
-      color: '#ff9f00'
-    }
-
-    setEvents([...events, newEvent]);
-    setFormData({ title: '', startTime: '', endTime: '', description: ''});
-    setIsAllDay(false);
-    setVisible(false);
-  };
-
-  const handleCloseForm = () => {
-    setVisible(false);
-    setIsAllDay(false);
-  };
-
   return (
     <>
       <CContainer fluid>
@@ -196,7 +169,7 @@ export default function Calendar() {
                   <button className="btn btn-outline-dark" onClick={gonext}>{'>'}</button>
                   <button className="btn btn-outline-dark" onClick={gotoday}>Today</button>
                 </CCol>
-                <CCol xs={12} md={3}  lg={4} className="my-2 my-md-0 text-center">
+                <CCol xs={12} md={3} lg={4} className="my-2 my-md-0 text-center">
                   <h5>{currentDate.toLocaleString('default', { month: 'long' })} {currentDate.getFullYear()}</h5>
                 </CCol>
                 <CCol xs={12} md={4} lg={3} className="d-flex justify-content-center justify-content-md-end gap-2 mt-2 mt-md-0">
@@ -216,20 +189,11 @@ export default function Calendar() {
                     selectable
                     select={handleSelect}
                     events={events}
-                    eventContent={(eventInfo) => (
-                      <div>
-                        <b>{eventInfo.timeText}</b>
-                        <i>{eventInfo.event.title}</i>
-                      </div>
-                    )}
                     eventDisplay="block"
-                    dayHeaderFormat={{
-                      weekday: 'short'
-                    }}
+                    dayHeaderFormat={{ weekday: 'short' }}
                     themeSystem="bootstrap"
-                    headerToolbar={false} 
+                    headerToolbar={false}
                     height="auto"
-                    
                   />
                 </CCol>
               </CRow>
@@ -238,49 +202,32 @@ export default function Calendar() {
         </CRow>
       </CContainer>
 
-      <CModal onClose={handleCloseForm} visible={visible} fade>
-        <div className="container">
-          <form onSubmit={handleFormSubmit} className="p-5">
-            <h3 className="text-center">{selectedDate ? selectedDate.toDateString() : ''}</h3>
-            <div className="form-group">
-              <label>Event Title:</label>
-              <input type="text" name="title" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} className="form-control w-100" placeholder="Enter event title" required />
+      <CModal visible={visible} onClose={handleCloseForm}>
+        <CModal.Header closeButton>
+          <CModal.Title>Schedule Event</CModal.Title>
+        </CModal.Header>
+        <CModal.Body>
+          <form onSubmit={handleFormSubmit}>
+            <div className="mb-3">
+              <label htmlFor="title" className="form-label">Event Title</label>
+              <input type="text" className="form-control" id="title" name="title" value={formData.title} onChange={handleInputChange} required />
             </div>
-            {isAllDay ? (
-              <>
-                <div className="form-group mt-2">
-                  <label>Start Date:</label>
-                  <input type="date" value={startDate ? startDate.toISOString().split('T')[0] : ''} onChange={(e) => setStartDate(new Date(e.target.value))} className="form-control" required />
-                </div>
-                <div className="form-group mt-2">
-                  <label>End Date:</label>
-                  <input type="date" value={endDate ? endDate.toISOString().split('T')[0] : ''} onChange={(e) => setEndDate(new Date(e.target.value))} className="form-control" required />
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="form-group mt-2">
-                  <label>Start Time:</label>
-                  <Select options={generateTimeOptions()} value={formData.startTime ? { value: formData.startTime, label: formData.startTime } : null} onChange={(selected) => setFormData({ ...formData, startTime: selected.value })} className="form-control" placeholder="Select Start Time" required />
-                </div>
-                <div className="form-group mt-2">
-                  <label>End Time:</label>
-                  <Select options={generateTimeOptions()} value={formData.endTime ? { value: formData.endTime, label: formData.endTime } : null} onChange={(selected) => setFormData({ ...formData, endTime: selected.value })} className="form-control" placeholder="Select End Time" required />
-                </div>
-              </>
-            )}
-            <div className="form-group mt-2">
-              <label>Event Description:</label>
-              <textarea name="description" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} className="form-control w-100" placeholder="Enter event description" />
+            <div className="mb-3">
+              <label htmlFor="description" className="form-label">Description</label>
+              <input type="text" className="form-control" id="description" name="description" value={formData.description} onChange={handleInputChange} />
             </div>
-            <div className="form-group mt-2">
-              <button type="submit" className="btn btn-primary w-100 mb-2">Submit</button>
-              <button type="button" className="btn btn-secondary w-100" onClick={handleCloseForm}>Cancel</button>
+            <div className="mb-3">
+              <label htmlFor="startTime" className="form-label">Start Time</label>
+              <Select id="startTime" name="startTime" options={generateTimeOptions()} onChange={(option) => setStart_time(option.value)} />
             </div>
+            <div className="mb-3">
+              <label htmlFor="endTime" className="form-label">End Time</label>
+              <Select id="endTime" name="endTime" options={generateTimeOptions()} onChange={(option) => setEnd_time(option.value)} />
+            </div>
+            <button type="submit" className="btn btn-primary">Save</button>
           </form>
-        </div>
+        </CModal.Body>
       </CModal>
     </>
   );
 }
-
