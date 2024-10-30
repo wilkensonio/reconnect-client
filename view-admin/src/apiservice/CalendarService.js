@@ -1,20 +1,30 @@
-import axios from 'axios';
-const apiKey = import.meta.env.VITE_APP_API_KEY;
+import axios from 'axios'; 
+import { handleUnauthorizedError } from './ErrorService';
+
+const apikey = import.meta.env.VITE_APP_API_KEY;
 const token = localStorage.getItem('reconnect_access_token');
 const token_type = localStorage.getItem('reconnect_token_type');
 
-export const getAllAppointments = async () => {
-  try {
-    const response = await axios.get('/api/appointment/get-all', {
-      headers: {
-        'R-API-KEY': apiKey,
-        'Content-Type': 'application/json',
-        'Authorization': `${token_type} ${token}`,
-      },
-    });
-    return response.data; // Assume this returns an array of appointment objects
-  } catch (error) {
-    const message = error.response?.data?.message || 'Failed to fetch appointments';
-    throw new Error(message);
-  }
-};
+
+
+const headers = {
+    'R-API-KEY': `${apikey}`,
+    'Authorization': `${token_type} ${token}`
+}
+
+/**
+ * 
+ * @param {String} faculty_id 
+ * @returns {JSON} 
+ */
+export const getAppointments = async (faculty_id) => {
+
+    try {
+        console.log(response.data, "data")
+        const response = await axios.get(`/api/appointments/get_by_user/${faculty_id}`, { headers });
+        return response.data;
+    } catch (error) {
+        handleUnauthorizedError(error);
+        throw error.response?.data || new Error('Failed to get appointments');
+    }
+}

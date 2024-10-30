@@ -13,8 +13,6 @@ function Notification() {
   const [loading, setLoading] = useState(false);
 
  
- 
- 
   useEffect(() => {
     const loggedInUser = localStorage.getItem('reconnect_signin_email');
     const getUser = async () => {
@@ -27,7 +25,6 @@ function Notification() {
       }
     }
     getUser();
-
   }, []);  
   
   
