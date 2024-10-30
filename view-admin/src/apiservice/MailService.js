@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { handleUnauthorizedError } from './ErrorService';
 
 const apiKey = import.meta.env.VITE_APP_API_KEY;
  
@@ -13,9 +14,9 @@ export const sendEmail= async (email) => {
     localStorage.setItem('reconnect_email_verification_code', response.data.verification_code);
 
     return response 
-  } catch (error) {
-    console.log(error); 
-    handleError(error);
+  } catch (error) { 
+    handleUnauthorizedError(error);
+    throw error.response?.data || new Error('Failed to send email') 
   }
 };
 
@@ -34,24 +35,10 @@ export const verifyEmailCode = async (sentCode, verificationCode) => {
     
     return response
   } catch (error) {
-    handleError(error);
+    handleUnauthorizedError(error);
+    throw error.response?.data || new Error('Failed to verify email code'); 
   }
 };
 
 
-const handleError = (error) => {
-    const response = error.response;
-    if (error.response) {
-        if (response && error.response.status === 401) {
-        localStorage.removeItem('reconnect_access_token');
-        localStorage.removeItem('reconnect_token_type');
-        localStorage.removeItem('reconnect_first_name');
-        localStorage.removeItem('reconnect_last_name');
-        window.location.href = '/';
-        }
-        throw new Error(error.response.data.message);
-    } else {
-        console.error('api/mailService', error);
-        return response;
-    }
-}
+ 

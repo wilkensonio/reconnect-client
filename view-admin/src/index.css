@@ -30,6 +30,9 @@ body {
   background: #071689;
   background-image: url('/assets/logo/compsci-logo.png');   
   height: 100vh; 
+  background-repeat: repeat;          
+  background-size: contain;               
+  background-position: center;   
   background-size: 10rem 10rem;  
 } 
 
@@ -238,6 +241,12 @@ input[type="radio"]{
   transition: filter 0.3s;
 }
 
+.notifiction-btn-hover:hover {
+  background-color: hsl(210, 17%, 98%); 
+}
+.x-notifiction-btn-hover:hover{
+  color: hsl(233, 90%, 28%)
+}
 
  
  

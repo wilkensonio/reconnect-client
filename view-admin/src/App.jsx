@@ -3,13 +3,13 @@ import { Route, Routes, Navigate } from 'react-router-dom';
 import Layout from './layout/Layout';
 import SignUpIn from './components/auth/SignUpIn';
 import { CSpinner } from '@coreui/react';
-import { NotificationProvider } from './context/NotificationProvider';
-import { WebSocketProvider } from './context/WebSocketProvider';
+import { NotificationProvider } from './context/NotificationContext';
+
  
 function App() { 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true); // Add a loading state
-  const userId = '70573536';
+  const [loading, setLoading] = useState(true); 
+
   
   useEffect(() => {
     const token = localStorage.getItem('reconnect_access_token'); 
@@ -35,7 +35,7 @@ function App() {
   }
 
   return ( 
-    <WebSocketProvider  userId={userId}>
+    
     <NotificationProvider>
       <Suspense
           fallback={
@@ -46,11 +46,11 @@ function App() {
       >
         <Routes> 
           <Route path="/signin" element={<SignUpIn />} />  
-          <Route path="*" name="Home" element={isAuthenticated ? <Layout /> : <Navigate to="/signin"/>} /> 
+          <Route path="*" name="Home" element={isAuthenticated ? <Layout /> : <Navigate to="/signin?message=session-expired"/>} /> 
         </Routes>
       </Suspense>  
     </NotificationProvider>
-    </WebSocketProvider>
+   
   );
 }
 

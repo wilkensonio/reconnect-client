@@ -4,7 +4,7 @@ import PiMessage from './PiMessage';
 import { userNotifications } from '../apiservice/NotificationService';
 import {getUserByEmail} from '../apiservice/UserService';
 import NewStudent from './NewStudent';
-import { useNotifications } from '../context/NotificationProvider';
+import { useNotifications } from '../context/NotificationContext';
 import { Link } from 'react-router-dom';
  
 

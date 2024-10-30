@@ -37,8 +37,13 @@ function SignInForm({onResetPassword}) {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const smg = params.get('message');
+    if (smg == 'session-expired') {
+      setMessage('Session expired. Please sign in.');
+      setTimeout(() => {
+        setMessage('');
+      }, 10000);
 
-    if (smg == 'account_created') { 
+    }else if (smg == 'account_created') { 
       setMessage('Account created successfully. Please sign in.');
       setTimeout(() => {
         setMessage('');

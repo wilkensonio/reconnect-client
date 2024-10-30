@@ -1,4 +1,5 @@
-import axios from 'axios';
+import axios from 'axios'; 
+
 const apikey = import.meta.env.VITE_APP_API_KEY;
 const token = localStorage.getItem('reconnect_access_token');
 const token_type = localStorage.getItem('reconnect_token_type');
@@ -59,9 +60,9 @@ const scheduleMeeting = async (studentId) => {
     }
 }; 
 
-const blacklistStudent = async (studentId) => { 
+const deleteStudent = async (studentId) => { 
     try {
-        const response = await axios.post(`/api/blacklist/${studentId}`, {}, { headers });
+        const response = await axios.delete(`/api/delete/student/${studentId}`,{ headers });
         return response.data;
     } catch (error) {
         handleError(error);
@@ -83,5 +84,5 @@ const handleError = (error) => {
 
 export {
     fetchStudents, scheduleMeeting, 
-    addStudent, uploadCsv, blacklistStudent 
+    addStudent, uploadCsv, deleteStudent 
 };

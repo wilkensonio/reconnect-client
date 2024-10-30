@@ -1,6 +1,5 @@
 import React from 'react'
 import {Header, Footer, Sidebar, Content} from '../components/index'
-import NotificationDisplay from '../components/notification/NotificationDisplay'
 
 function Layout() {
   return (
@@ -10,7 +9,7 @@ function Layout() {
           <header className="d-flex sticky-top boder-0 d-lg-none" style={{background: '#e9e9e9'}}>
             <Header  />  
           </header>
-          <NotificationDisplay />
+          
           <div className="body flex-grow-1 pt-2" 
             style={{
               // background: '#e9e9e9',

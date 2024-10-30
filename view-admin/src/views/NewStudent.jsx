@@ -37,6 +37,8 @@ function NewStudent() {
 
     try {
       const response = await addStudent(studentData);
+      console.log('response', response);
+      
       if (response.status === 400){
         setError(response.data.detail);
         return;
@@ -75,10 +77,14 @@ function NewStudent() {
         setError('Select a CSV file');
         return;
       }
+      console.log('csvFile', csvFile);
+      
       await uploadCsv(csvFile);
       setSuccess('CSV file uploaded successfully');
       setCsvFile(null);
     } catch (error) {
+      console.log('error', error);
+      
       console.error('Error uploading CSV file:', error);
       setError('Failed to upload CSV file');
     }

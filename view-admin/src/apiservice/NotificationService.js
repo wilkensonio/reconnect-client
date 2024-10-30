@@ -1,4 +1,5 @@
 import axios from "axios";
+import { handleUnauthorizedError  } from "./ErrorService";
 
 const apiKey = import.meta.env.VITE_APP_API_KEY;
 const token  = localStorage.getItem('reconnect_access_token'); 
@@ -16,8 +17,9 @@ export const newNotification = async (data) => {
       });
       
       return response;
-    } catch (error) {
-      throw error.response?.data || new Error('Notification failed');
+    } catch (error) { 
+        handleUnauthorizedError(error);
+        throw error.response?.data || new Error('Notification failed');
     }
 }
 
@@ -30,11 +32,12 @@ export const userNotifications = async (hootloot_id) => {
                 'Authorization': `${token_type} ${token}`
             },
         }); 
-        console.log(response, "response from userNotifications");
+       
         return response.data;
-                 
+        
     } catch (error) {  
-         throw error.response?.data || new Error('Failed to get user notifications'); 
+        handleUnauthorizedError(error);
+        throw error.response?.data || new Error('Failed to get user notifications'); 
     }      
 }
 
@@ -51,7 +54,8 @@ export const deleteNotification = async (notification_id) => {
         return response.data;
                  
     } catch (error) {  
-         throw error.response?.data || new Error('Failed to delete notification'); 
+        handleUnauthorizedError(error);
+        throw error.response?.data || new Error('Failed to delete notification'); 
     }      
 }
 
@@ -67,8 +71,9 @@ export const deleteNotifications = async (user_id) => {
         
         return response.data;
                  
-    } catch (error) {  
-         throw error.response?.data || new Error('Failed to clear notifications'); 
+    } catch (error) { 
+        handleUnauthorizedError(error);
+        throw error.response?.data || new Error('Failed to clear notifications'); 
     }      
 }
 

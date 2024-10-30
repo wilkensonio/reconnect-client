@@ -1,4 +1,5 @@
 import axios from "axios";
+import { handleUnauthorizedError } from "./ErrorService";
 
 const apiKey = import.meta.env.VITE_APP_API_KEY;
 const token  = localStorage.getItem('reconnect_access_token'); 
@@ -16,6 +17,7 @@ export const piMessage = async (userData) => {
       
       return response;
     } catch (error) {
+      handleUnauthorizedError(error);
       throw error.response?.data || new Error('Pi Message failed');
     }
 }
