@@ -1,30 +1,22 @@
-import axios from 'axios'; 
-import { handleUnauthorizedError } from './ErrorService';
+import axios from "axios";
 
-const apikey = import.meta.env.VITE_APP_API_KEY;
-const token = localStorage.getItem('reconnect_access_token');
+const apiKey = import.meta.env.VITE_APP_API_KEY;
+const token  = localStorage.getItem('reconnect_access_token'); 
 const token_type = localStorage.getItem('reconnect_token_type');
 
 
+export const getAllAppointments = async (user_id) => {
+  try {
+    const response = await axios.get(`/api/appointments/get-by-user/${user_id}`, {
+      headers : {
+        'Authorization': `${token_type} ${token}`,
+        'R-API-KEY': `${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data;
 
-const headers = {
-    'R-API-KEY': `${apikey}`,
-    'Authorization': `${token_type} ${token}`
-}
-
-/**
- * 
- * @param {String} faculty_id 
- * @returns {JSON} 
- */
-export const getAppointments = async (faculty_id) => {
-
-    try {
-        console.log(response.data, "data")
-        const response = await axios.get(`/api/appointments/get_by_user/${faculty_id}`, { headers });
-        return response.data;
-    } catch (error) {
-        handleUnauthorizedError(error);
-        throw error.response?.data || new Error('Failed to get appointments');
-    }
+  } catch (error) {
+    throw error.response?.data || new Error('Signout failed');
+  }
 }

@@ -9,7 +9,8 @@ import Select from 'react-select';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import 'bootstrap/dist/css/bootstrap.min.css'; 
 import './Calendar.css';
-// import {getAllAppointments} from '../apiservice/CalendarService'; 
+import {getAllAppointments} from '../apiservice/CalendarService'; 
+import {getUserByEmail} from '../apiservice/UserService'; 
 
 export default function Calendar() {
   const [visible, setVisible] = useState(false);
@@ -21,31 +22,45 @@ export default function Calendar() {
   const [isAllDay, setIsAllDay] = useState(false); 
   const [startDate, setStartDate] = useState(null); 
   const [endDate, setEndDate] = useState(null);
-  const [appointments, setAppointments] = useState([]); 
-  const [user_id, setUser_id] = useState([]);
+  const [appointments, setAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [user, setUser] = useState('');
   
-  // useEffect(() => { 
-  //   console.log("Inside useEffect, start_time:", user_id); // Logs start_time when useEffect runs
+  useEffect(() => {
+    const loggedInUser = localStorage.getItem('reconnect_signin_email');
+    const getUser = async () => {
+      try {
+        const user = await getUserByEmail(loggedInUser);  
+        setUser(user); 
+      } catch (error) {
+        console.error(error);
+        tokenExpired(error.detail);
+        console.error(error);
+      }
+    };
+    getUser();
+  }, []);  
 
-  //   const fetchAppointments = async () => {
-  //     try { 
-  //       const appointmentsData = await getAllAppointments(user_id); // Use the correct function
-  //       console.log(appointmentsData, "appointmentsData");
+  useEffect(() => { 
+    const fetchAppointments = async () => {
+      try { 
+        const appointments = await getAllAppointments(user.user_id); 
+        console.log(appointments, "appointments");
+        setAppointments(appointments);  
+      } catch (error) {
+        console.error(error);
+        // Add token expiration handling here if needed
+      }
+    };
 
-  //       setAppointments(appointmentsData.reverse());  
-  //     } catch (error) {
-  //       console.error(error.message); // Changed for clarity
-  //       tokenExpired(error.detail); // Ensure tokenExpired is defined
-  //     }
-  //   };
-
-  //   if (user_id) {
-  //     fetchAppointments();
-  //   }
-  // }, [user_id]);
-  // console.log("Outside useEffect, start_time:", user_id); // Logs start_time when useEffect runs
-
-
+    if (user.user_id) {
+      const intervalId = setInterval(() => {
+        fetchAppointments(); 
+      }, 1000);  
+      return () => clearInterval(intervalId);
+    }  
+  }, [user]);
 
   const handleDateClick = (arg) => {
     const today = new Date();
@@ -305,6 +320,19 @@ export default function Calendar() {
           </form>
         </div>
       </CModal>
+      <div>
+      <h2>Your Appointments</h2>
+      <ul>
+        {appointments.map((appointment) => (
+          <li key={appointment.id}>
+            {/* Adjust based on your appointment structure */}
+            <strong>{appointment.title}</strong> - {appointment.date}
+            <strong>{appointment.start_time}</strong>
+            <strong>{appointment.end_time}</strong>
+          </li>
+        ))}
+      </ul>
+    </div>
     </>
   );
 }
