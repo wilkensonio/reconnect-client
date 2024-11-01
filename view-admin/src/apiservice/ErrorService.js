@@ -12,6 +12,7 @@ export const handleUnauthorizedError = (error) => {
             localStorage.removeItem('reconnect_access_token');
             localStorage.removeItem('reconnect_token_type');
             localStorage.removeItem('reconnect_first_name');
+            localStorage.removeItem('reconnect_signup_data')
             localStorage.removeItem('reconnect_last_name');
             window.location.href = '/signin?message=session-expired';
         } else {

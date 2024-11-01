@@ -5,6 +5,13 @@ const apiKey = import.meta.env.VITE_APP_API_KEY;
 const token  = localStorage.getItem('reconnect_access_token'); 
 const token_type = localStorage.getItem('reconnect_token_type');
 
+/**
+ * Data is the JSON object that contains the user_id and the message
+ * data.user_id is the id of the user that the notification is for
+ * 
+ * @param {String} data
+ * @returns {JSON}
+ */
 
 export const newNotification = async (data) => {
     try {
@@ -23,6 +30,12 @@ export const newNotification = async (data) => {
     }
 }
 
+/**
+ * Get all notifications for a user
+ * 
+ * @param {String} hootloot_id
+ * @returns {JSON}
+ */
 export const userNotifications = async (hootloot_id) => {    
     try {
         const response = await axios.get(`/api/notifications_by_user/${hootloot_id}`, {
@@ -41,6 +54,12 @@ export const userNotifications = async (hootloot_id) => {
     }      
 }
 
+/**
+ * Delete  a notification
+ *  
+ * @returns {JSON}
+ */
+
 export const deleteNotification = async (notification_id) => {
     try {
         const response = await axios.delete(`/api/delete/notification/${notification_id}`, {
@@ -58,7 +77,12 @@ export const deleteNotification = async (notification_id) => {
         throw error.response?.data || new Error('Failed to delete notification'); 
     }      
 }
-
+/**
+ * Delete all notifications for a user
+ * 
+ * @param {String} user_id the id of the user
+ * @returns {JSON}
+ */
 export const deleteNotifications = async (user_id) => {
     try {
         const response = await axios.delete(`/api/delete/notifications/${user_id}`, {

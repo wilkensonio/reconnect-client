@@ -1,4 +1,6 @@
 import axios from 'axios';
+import {handleUnauthorizedError} from './ErrorService';
+
 const apikey = import.meta.env.VITE_APP_API_KEY;
 const token = localStorage.getItem('reconnect_access_token');
 const token_type = localStorage.getItem('reconnect_token_type');
@@ -9,6 +11,13 @@ const headers = {
     'Authorization': `${token_type} ${token}`
 }
 
+
+/**
+ * get a user by their email
+ * 
+ * @param {String} email the faculty's email
+ * @returns {JSON} the unser information
+ */
 export const getUserByEmail = async email => { 
     try {
         const response = await axios.get(`/api/user/email/${email}`, {
@@ -18,11 +27,17 @@ export const getUserByEmail = async email => {
         return response.data;
                  
     } catch (error) {  
-        return handleError(error); 
+        handleUnauthorizedError(error);
+        throw error.response?.data || new Error('Failed to get user by email');
     }      
 }
 
-
+/**
+ * Update a user by their id 
+ * 
+ * @param {String} userData the user's date to be updated
+ * @returns {JSON} the user information
+ */
 export const updateUser = async (userData) => { 
     console.log(userData.user_id, "user_id form api service");
     
@@ -34,20 +49,8 @@ export const updateUser = async (userData) => {
         return response.data;
                  
     } catch (error) {  
-        return handleError(error); 
+        handleUnauthorizedError(error);
+        throw error.response?.data || new Error('Failed to update user');
     }      
-}
-
-
-const handleError = (error) => { 
-    if (error.response) {
-        console.error(error.response.data);
-        console.error(error.response.status);
-        console.error(error.response.headers);
-    } else if (error.request) 
-        console.error(error.request); 
-    console.error(error.config);
-    return error;
-}
-
+} 
  

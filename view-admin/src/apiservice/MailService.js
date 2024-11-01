@@ -2,7 +2,13 @@ import axios from 'axios';
 import { handleUnauthorizedError } from './ErrorService';
 
 const apiKey = import.meta.env.VITE_APP_API_KEY;
- 
+
+/**
+ * Send email verification code
+ * 
+ * @param {String} email
+ * @returns {JSON}
+ */
 export const sendEmail= async (email) => {
   try {
     const response = await axios.post('/api/verify-email/', { email }, {
@@ -20,6 +26,13 @@ export const sendEmail= async (email) => {
   }
 };
 
+/**
+ * Verify email code
+ * 
+ * @param {String} sentCode the code entered by the user
+ * @param {String} verificationCode  this code is to be compared with the code sent to the user
+ * @returns {JSON}
+ */
 export const verifyEmailCode = async (sentCode, verificationCode) => {  
   try {
     const data = {

@@ -41,6 +41,6 @@ export const tokenExpired = msg => {
       localStorage.removeItem('reconnect_email_verification_code');
       localStorage.setItem('reconnect_token_expired', 'true');  
       window.location.reload();
-      window.location.href = '/signin';
+      window.location.href = '/signin?message=session_expired';
     }
   } 
