@@ -4,19 +4,22 @@ import PiMessage from './PiMessage';
 import { userNotifications } from '../apiservice/NotificationService';
 import {getUserByEmail} from '../apiservice/UserService';
 import NewStudent from './NewStudent';
-import { useNotifications } from '../context/NotificationProvider';
+import { useNotifications } from '../context/NotificationContext';
 import { Link } from 'react-router-dom';
- 
+import { useBlur } from '../context/PiMessageContext';
+
+
+
 
 function Dashboard() { 
+   
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [numberOfStudents, setNumberOfStudents] = useState(10);
   const [piModalActive, setPiModalActive] = useState(false);
-  const [user, setUser] = useState(''); 
-
-  const {notifications, setNotifications} = useNotifications();
-   
+  const [user, setUser] = useState('');  
+  const {popup, setPopup}  = useBlur(); 
+  const {notifications, setNotifications} = useNotifications(); 
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem('reconnect_signin_email');
@@ -49,9 +52,17 @@ function Dashboard() {
     }
   }, [user]); 
   
+   
 
   return (
-    <div className="text-white">
+    <div className="text-white w-100"
+    style={{ 
+      background: popup && '#e9e9e9',
+      width: '100%',  
+      height: '100vh',
+      filter: popup ? 'blur(5rem)' : 'none',
+      transition: 'filter 0.5s',   
+    }}>
       <h2 className="text-center text-white mb-5 position-relative mt-3">
         Faculty Dashboard
       </h2>
@@ -67,8 +78,8 @@ function Dashboard() {
             </CButton> 
           </Link>
         </CCol>
-        <CCol sm={3} className="mb-4">
-          <PiMessage />
+        <CCol sm={3} className="mb-4"> 
+          {popup ? <PiMessage /> : <PiMessage />}
         </CCol>
         <CCol sm={3} className="mb-4">
           <Link to='/new-student'>

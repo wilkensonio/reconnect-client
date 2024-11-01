@@ -4,6 +4,12 @@ const apiKey = import.meta.env.VITE_APP_API_KEY;
 const token  = localStorage.getItem('reconnect_access_token'); 
 const token_type = localStorage.getItem('reconnect_token_type');
 
+/**
+ * Signup a user
+ * 
+ * @param {JSON} userData the user data to be signed up
+ * @returns {JSON}
+ */
 export const signupUser = async (userData) => {
     try {
       const response = await axios.post('/api/signup/', userData, {
@@ -19,7 +25,13 @@ export const signupUser = async (userData) => {
     }
   };
 
-
+/**
+ * Signin a user
+ * 
+ * @param {String} email
+ * @param {String} password
+ * @returns {JSON}
+ */
 export const signinUser = async (email, password) => {
     
   try { 
@@ -37,6 +49,11 @@ export const signinUser = async (email, password) => {
     }
 }
 
+/**
+ * Signout a user
+ * 
+ * @returns {JSON}
+ */
 export const signoutUser = async () => {
   try {
     const response = await axios.post('/api/signout/', {}, {
@@ -51,7 +68,13 @@ export const signoutUser = async () => {
   }
 }
 
-
+/**
+ * Update the user's password 
+ * 
+ * @param {String} email
+ * @param {String} password 
+ * @returns {JSON}
+ */
 export const resetPassword = async (email, password) => {
   
   try {
@@ -64,8 +87,7 @@ export const resetPassword = async (email, password) => {
 
     return response;
   } catch (error) {
-    console.log(error);
-    
+    console.log(error); 
     throw error.response?.data || new Error('Reset password failed');
   }
 }
