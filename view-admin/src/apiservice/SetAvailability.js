@@ -6,15 +6,14 @@ const token  = localStorage.getItem('reconnect_access_token');
 const token_type = localStorage.getItem('reconnect_token_type');
 
 /**
- *  Update the message the be displayed on the pi
- * data.user_id is the id of the user that the notification is for (hootloot id)
+ *  Create a new availability 
  * 
  * @param {String} userData 
  * @returns {JSON}
  */
-export const updatePiMessage = async (userData) => {
+export const createAvailability = async (data) => {
     try {
-      const response = await axios.put(`/api/pi-message/update/${userData.user_id}`, userData, {
+      const response = await axios.put('/api/availability/create/', userData, {
         headers: {
           'R-API-KEY': `${apiKey}`,
           'Content-Type': 'application/json',
@@ -25,17 +24,17 @@ export const updatePiMessage = async (userData) => {
       return response;
     } catch (error) {
       handleUnauthorizedError(error);
-      throw error.response?.data || new Error('Pi Message failed');
+      throw error.response?.data || new Error('Create availability failed');
     }
 }
 
 /**
- * Delete the message that is displayed on the pi
+ * Get the availability of a user
  * 
  * @param {String} user_id 
- * @returns {Boolean} true if successful false if not
+ * @returns {JSON} the availability of the user
  */
-export const deletePiMessage = async (user_id) => {
+export const getAvailability = async (user_id) => {
     try {
       const response = await axios.delete(`/api/pi-message/delete/${user_id}`, {
         headers: {
@@ -43,22 +42,22 @@ export const deletePiMessage = async (user_id) => {
           'Content-Type': 'application',
           'Authorization': `${token_type} ${token}`
         },
-      }); 
-    } catch (error) { 
+      });
+    } catch (error) {
       handleUnauthorizedError(error);
       throw error.response?.data || new Error('Failed to delete pi message');
     }
 }
 
 /**
- * Get the message that is displayed on the pi
+ * Update the availability of a user
  * 
  * @param {String} user_id
- * @returns {JSON} the message that is displayed on the pi
+ * @returns {JSON} the availability of the user
  */
-export const getPiMessage = async (user_id) => {
+export const updateAvailability = async (availabilityData) => {
     try {
-      const response = await axios.get(`/api/pi-message/get/${user_id}`, {
+      const response = await axios.get(`/api/availability/update/${availabilityData.id}`, availabilityData,{
         headers: {
           'R-API-KEY': `${apiKey}`,
           'Content-Type': 'application',
@@ -69,7 +68,7 @@ export const getPiMessage = async (user_id) => {
       return response.data;
     } catch (error) {
       handleUnauthorizedError(error);
-      throw error.response?.data || new Error('Failed to get pi message');
+      throw error.response?.data || new Error('Failed to update availability');
     }
   }
  

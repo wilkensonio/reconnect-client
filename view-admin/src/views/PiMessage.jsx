@@ -21,10 +21,11 @@ function PiMessage() {
     const [duration, setDuration] = useState(15);  
     const [durationUnit, setDurationUnit] = useState('minutes');  
     const [loggedInUser, setLoggedInUser] = useState('');
-    const { popup, togglePiPopup } = useBlur(); 
-    const [success, setSuccess] = useState('');
+    const { popup, togglePiPopup } = useBlur();  
     const [error, setError] = useState('');
     const [user, setUser] = useState('');
+    const [deleteMessage, setDeleteMessage] = useState(false);
+    const [hasMessage, setHasMessage] = useState('');
 
     
     const handleDurationUnitChange = (e) => {
@@ -42,22 +43,26 @@ function PiMessage() {
       };
         const  userSignInEmail = localStorage.getItem('reconnect_signin_email'); 
         setLoggedInUser(userSignInEmail); 
-        fetchUser();
+        if (!user)
+          fetchUser();
     }, []);
 
     useEffect(() => { 
       if (!user) return;
       const fetchActiveMessage = async () => {
           setError('');
-          setSuccess('');
           try {
-              const response = await getPiMessage(user.user_id); 
-              console.log(response, "response from getPiMessage"); 
+              const response = await getPiMessage(user.user_id);  
               setMessage(response.message);
               setDuration(response.duration);  
               setDurationUnit(response.duration_unit); 
+              if (response.message)
+                setHasMessage('Kiosk has a message');
           } catch (error) { 
-              console.error(error);
+            if (!error.response)
+                setHasMessage('No message on the kiosk');  
+            setError('Failed to get message');
+            console.error(error);
           }
       }  
           
@@ -74,36 +79,31 @@ function PiMessage() {
         duration_unit: durationUnit
       } 
       
-      try {  
-        setSuccess('');
-          await updatePiMessage(userData);  
+      try {   
           setError('');
-          setSuccess('Message updated successfully'); 
+          await updatePiMessage(userData);  
+          setDeleteMessage(false);
       } catch (error) {
+        setError('Failed to send message');
           console.error(error);
       }   
         
-    };
-     
-    const closeAndResetModal = () => {
-      togglePiPopup();  
-      setMessage('');
-      setDuration(15);
-      setDurationUnit('minutes');
     }; 
 
     const handleDeleteMessage = async () => {
-      try {
-        setSuccess('');
-        const response = await deletePiMessage(user.user_id);
-        closeAndResetModal();
-        setSuccess('No message is displayed on the kiosk');
+      if (!user) return;
+      try { 
+        setError('');
+        const response = await deletePiMessage(user.user_id); 
+        setDeleteMessage(true);
       } catch (error) {
+        if (!error.response){
+          setError('Failed to delete message or no message to delete');
+        } 
+        
         console.error(error);
       }
-    }
-
-    
+    } 
 
   return (
     <div>  
@@ -115,8 +115,8 @@ function PiMessage() {
       </CButton>
       
 
-      <CModal visible={popup} onClose={closeAndResetModal}>
-        <CModalHeader onClose={closeAndResetModal} className='border-0'>
+      <CModal visible={popup} onClose={()=>togglePiPopup()}>
+        <CModalHeader onClose={()=>togglePiPopup()} className='border-0'>
           <CModalTitle>Leave a Message on the Kiosk</CModalTitle>
         </CModalHeader>
         <CModalBody className='card-color'>
@@ -164,8 +164,13 @@ function PiMessage() {
               </CButton> 
             </CModalFooter>
           </CForm>
-          {success && <p className="mt-3 p-3 text-center text-success h3">{success}</p>}
-          {error && <p className="mt-3 p-3 text-center text-success h3">{error}</p>}
+          {
+            message ? (
+              <p className="mt-3 p-3 text-center text-success h6">{hasMessage}</p>
+              ) : !message ? (
+              <p className='mt-3 p-3 text-center text-success h6"'>{hasMessage}</p>
+            ) : (deleteMessage && error)
+          }  
         </CModalBody>
       </CModal> 
     </div>
