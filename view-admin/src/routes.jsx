@@ -7,6 +7,7 @@ const NewStudent = React.lazy(() => import('./views/NewStudent'));
 const Logout = React.lazy(() => import('./views/Logout'));
 const Account = React.lazy(() => import('./views/Account'));
 const Notifications = React.lazy(() => import('./views/Notification'));
+const Availability = React.lazy(() => import('./views/Availability'));
 
 
 const routes = [
@@ -17,7 +18,8 @@ const routes = [
     {path: 'new-student', element: <NewStudent/>},
     {path: 'logout', element: <Logout/>},
     {path: 'account', element: <Account/>},
-    {path: 'notifications', element: <Notifications/>}
+    {path: 'notifications', element: <Notifications/>},
+    {path: 'availabilities', element: <Availability/>}
 ];
 
 export default routes;  

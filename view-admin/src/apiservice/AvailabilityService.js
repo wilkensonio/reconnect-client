@@ -13,7 +13,7 @@ const token_type = localStorage.getItem('reconnect_token_type');
  */
 export const createAvailability = async (data) => {
     try {
-      const response = await axios.put('/api/availability/create/', userData, {
+      const response = await axios.post('/api/availability/create/', data, {
         headers: {
           'R-API-KEY': `${apiKey}`,
           'Content-Type': 'application/json',
@@ -22,7 +22,7 @@ export const createAvailability = async (data) => {
       });
       
       return response;
-    } catch (error) {
+    } catch (error) { 
       handleUnauthorizedError(error);
       throw error.response?.data || new Error('Create availability failed');
     }
@@ -36,13 +36,14 @@ export const createAvailability = async (data) => {
  */
 export const getAvailability = async (user_id) => {
     try {
-      const response = await axios.delete(`/api/pi-message/delete/${user_id}`, {
+      const response = await axios.get(`/api/availability/get-by-user/${user_id}`, {
         headers: {
           'R-API-KEY': `${apiKey}`,
-          'Content-Type': 'application',
+          'Content-Type': 'application/json',
           'Authorization': `${token_type} ${token}`
         },
       });
+      return response;
     } catch (error) {
       handleUnauthorizedError(error);
       throw error.response?.data || new Error('Failed to delete pi message');
@@ -57,18 +58,46 @@ export const getAvailability = async (user_id) => {
  */
 export const updateAvailability = async (availabilityData) => {
     try {
-      const response = await axios.get(`/api/availability/update/${availabilityData.id}`, availabilityData,{
+      const response = await axios.put(`/api/availability/update/${availabilityData.id}`, availabilityData,{
         headers: {
           'R-API-KEY': `${apiKey}`,
-          'Content-Type': 'application',
+          'Content-Type': 'application/json',
           'Authorization': `${token_type} ${token}`
         },
       });
       
       return response.data;
     } catch (error) {
+      console.log(error);
+      
       handleUnauthorizedError(error);
       throw error.response?.data || new Error('Failed to update availability');
     }
   }
+
+
+/**
+ * Deletes an availability entry by its ID.
+ *
+ * @param {string} availabilityId - The ID of the availability entry to delete.
+ * @returns {Promise<Object>} The response from the server.
+ * @throws Will throw an error if the deletion fails.
+ */
+export const deleteAvailability = async (availabilityId) => {
+
+    try {
+      const response = await axios.delete(`/api/availability/delete/${availabilityId}`, {
+        headers: {
+          'R-API-KEY': `${apiKey}`,
+          'Content-Type': 'application/json',
+          'Authorization': `${token_type} ${token}`
+        },
+      });
+      return response;
+    } catch (error) {
+      handleUnauthorizedError(error);
+      throw error.response?.data || new Error('Failed to delete availability');
+    }
+}
+ 
  

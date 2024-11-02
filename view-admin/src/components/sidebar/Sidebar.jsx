@@ -42,7 +42,14 @@ function sidebar() {
           <Link to="/notifications" className="text-decoration-none text-light ms-3 mb-3">
             <CNavItem className="d-flex  align-items-center me-3">
               <CIcon className='d-flex justify-content-center' customClassName="nav-icon" icon={cilLaptop} />
-                Notifications&nbsp;<span class="badge text-bg-danger">{notifications.length}</span>
+                Notifications 
+            </CNavItem> 
+          </Link> 
+
+          <Link to="/availabilities" className="text-decoration-none text-light ms-3 mb-3">
+            <CNavItem className="d-flex  align-items-center me-3">
+              <CIcon className='d-flex justify-content-center' customClassName="nav-icon" icon={cilLaptop} />
+                availabilities
             </CNavItem> 
           </Link> 
            

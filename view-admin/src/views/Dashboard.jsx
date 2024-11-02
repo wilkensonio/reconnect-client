@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { CButton, CRow, CCol, CBadge } from '@coreui/react';
-import PiMessage from './PiMessage';
+import PiMessage from './PiMessage'; 
 import { userNotifications } from '../apiservice/NotificationService';
 import {getUserByEmail} from '../apiservice/UserService';
 import NewStudent from './NewStudent';
@@ -75,6 +75,14 @@ function Dashboard() {
               <CBadge color="danger" position="top-end" shape="rounded-pill">
                 {notifications.length} <span className="visually-hidden">unread messages</span>
               </CBadge>
+            </CButton> 
+          </Link>
+        </CCol>
+        <CCol sm={3} className="mb-4">
+          <Link to='/availabilities'>
+            <CButton color="primary" className="position-relative w-100"
+             style={{ height: 'auto' }}>
+              Availabilities
             </CButton> 
           </Link>
         </CCol>
