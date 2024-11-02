@@ -9,23 +9,23 @@ import Select from 'react-select';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import 'bootstrap/dist/css/bootstrap.min.css'; 
 import './Calendar.css';
-import {getAllAppointments} from '../apiservice/CalendarService'; 
+import { getAllAppointments, updateAppointment, deleteAppointment } from '../apiservice/CalendarService'; 
 import {getUserByEmail} from '../apiservice/UserService'; 
 
 export default function Calendar() {
   const [visible, setVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [formData, setFormData] = useState({ title: '', startTime: '', endTime: '', description: '' });
+  const [eventDetails, setEventDetails] = useState(null); // New state for event details
   const calendarRef = useRef(null);
   const [events, setEvents] = useState([]);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [isAllDay, setIsAllDay] = useState(false); 
-  const [startDate, setStartDate] = useState(null); 
-  const [endDate, setEndDate] = useState(null);
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [user, setUser] = useState('');
+  const [currentEvent, setCurrentEvent] = useState(null);
+
   
   useEffect(() => {
     const getUser = async () => {
@@ -46,10 +46,19 @@ export default function Calendar() {
       try {  
         const appointments = await getAllAppointments(user.user_id); 
         console.log(appointments, "appointments");
-        setAppointments(appointments);  
+
+        const formattedEvents = appointments.map(app => ({
+          aptid: app.id,
+          date: app.date,
+          start_time: app.start_time, 
+          end_time: app.end_time, 
+          reason: app.reason, 
+          color: '#ff9f00',
+        }));
+        setEvents(formattedEvents);  
       } catch (error) {
+        tokenExpired(error.detail);
         console.error(error);
-        // Add token expiration handling here if needed
       }
     };
 
@@ -61,18 +70,75 @@ export default function Calendar() {
     }  
   }, [user]);
 
-  const handleDateClick = (arg) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    if (arg.date < today) {
-      alert('You can only schedule events for today or later.');
-      return;
+  const handleUpdateAppointment = async () => {
+    try {
+      await updateAppointment({
+        user_id: user.user_id,
+        ...currentEvent,
+      });
+      setVisible(false);
+      fetchAppointments(); // Refresh appointments
+    } catch (error) {
+      console.error(error);
     }
-
-    setSelectedDate(arg.date);
-    setVisible(true);
   };
+
+  // Handle delete appointment
+  const handleDeleteAppointment = async () => {
+    if (currentEvent) {
+        const confirmDelete = window.confirm("Are you sure you want to delete this appointment?");
+        if (!confirmDelete) return; // If user cancels, do nothing
+
+        setLoading(true);
+        try {
+            console.log("Attempting to delete appointment with ID:", currentEvent.aptid);
+            await deleteAppointment(currentEvent.aptid); // Make sure deleteAppointment accepts aptid
+            setEvents(prevEvents => prevEvents.filter(event => event.aptid !== currentEvent.aptid)); // Update events state
+            console.log("Appointment deleted successfully.");
+        } catch (error) {
+            console.error("Error deleting appointment:", error); // Log error details
+            alert("Failed to delete appointment. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    }
+    setVisible(false);
+};
+  // Update event click handler
+  const handleEventClick = (info) => {
+    const { event } = info;
+
+    if (event.extendedProps) {
+        setEventDetails({
+            start_time: event.extendedProps.start_time,
+            end_time: event.extendedProps.end_time,
+            description: event.extendedProps.reason,
+        });
+
+        // Set the formData with the clicked event details
+        setFormData({
+            title: event.title,
+            startTime: event.extendedProps.start_time,
+            endTime: event.extendedProps.end_time,
+            description: event.extendedProps.reason,
+        });
+
+        // Show the modal to edit the appointment
+        setVisible(true);
+
+        // Store the current event for potential deletion
+        setCurrentEvent(event);
+    }
+};
+
+  // Function to close the modal
+  const handleCloseModal = () => {
+    setVisible(false);
+    setEventDetails(null); // Clear event details
+};
+
+
+
 
   const getDateTime = (date, time) => {
     const [hours, minutes] = time.split(':');
@@ -90,32 +156,32 @@ export default function Calendar() {
 };
   
 
-  const newEvent = [
-    {
-    id: '1',
-    title: 'Advising with Dr.Wilk',
-    start: '2024-10-25T10:00:00',
-    end: '2024-10-25T12:00:00',
-    description: 'Wilkenson is the goat',
-    color: '#ff9f00',
-    },
-    
-
-    
-      {
-      id: '2',
-      title: 'Meeting with Hacker Escobar',
-      start: '2024-12-31T11:00:00',
-      end: '2024-12-31T13:00:00',
-      description: 'Jonny is the goat',
-      color: '#ff9f00',
+  const generateTimeOptions = () => {
+    const options = [];
+    const interval = 15;
+    for (let hour = 1; hour < 24; hour++) {
+      for (let minute = 0; minute < 60; minute += interval) {
+        const formattedHour = String(hour).padStart(2, '0');
+        const formattedMinute = String(minute).padStart(2, '0');
+        const time = `${formattedHour}:${formattedMinute}`;
+        options.push({ value: time, label: time });
       }
-  ];
+    }
+    return options;
+  };
+
+  const handleSelect = (selectionInfo) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); 
+
+    if (selectionInfo.start < today) {
+      return; 
+    }
+  };
 
   useEffect(() => {
-    setEvents(newEvent); 
     updateCurrentDate(); 
-  }, []); 
+  }, [])
 
   const goprev = () => {
     const calendarApi = calendarRef.current.getApi();
@@ -139,10 +205,6 @@ export default function Calendar() {
     calendarApi.changeView('listYear');
   }
 
-  useEffect(() => {
-    updateCurrentDate();
-  }, []);
-
   const gotoday = () => {
     const calendarApi = calendarRef.current.getApi();
     calendarApi.today();
@@ -164,65 +226,6 @@ export default function Calendar() {
     calendarApi.changeView('timeGridDay');
   };
 
-  const generateTimeOptions = () => {
-    const options = [];
-    const interval = 15;
-    for (let hour = 1; hour < 13; hour++) {
-      for (let minute = 0; minute < 60; minute += interval) {
-        const formattedHour = String(hour).padStart(2, '0');
-        const formattedMinute = String(minute).padStart(2, '0');
-        const time = `${formattedHour}:${formattedMinute}`;
-        options.push({ value: time, label: time });
-      }
-    }
-    return options;
-  };
-
-  const handleSelect = (selectionInfo) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); 
-
-    if (selectionInfo.start < today) {
-      return; 
-    }
-
-    const isInTimeGridView = selectionInfo.view.type === 'timeGridDay' || selectionInfo.view.type === 'timeGridWeek';
-    const isAllDaySelection = selectionInfo.allDay && isInTimeGridView; 
-
-    if (isAllDaySelection) {
-      setIsAllDay(true);
-      setStartDate(selectionInfo.start);
-      setEndDate(selectionInfo.end);
-      setSelectedDate(selectionInfo.start);
-      setVisible(true); 
-    } else if (selectionInfo.view.type !== 'dayGridMonth') {
-      setIsAllDay(false);
-      setSelectedDate(selectionInfo.start);
-      setVisible(true); 
-    }
-  };
-
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    const newEvent = {
-      title: formData.title, 
-      start: isAllDay ? startDate.toISOString() : `${selectedDate.toISOString().split('T')[0]}T${formData.startTime}`,
-      end: isAllDay ? endDate.toISOString() : `${selectedDate.toISOString().split('T')[0]}T${formData.endTime}`,
-      description: formData.description, 
-      allDay: isAllDay,
-      color: '#ff9f00'
-    }
-
-    setEvents([...events, newEvent]);
-    setFormData({ title: '', startTime: '', endTime: '', description: ''});
-    setIsAllDay(false);
-    setVisible(false);
-  };
-
-  const handleCloseForm = () => {
-    setVisible(false);
-    setIsAllDay(false);
-  };
 
   return (
     <>

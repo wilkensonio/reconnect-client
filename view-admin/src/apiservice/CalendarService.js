@@ -1,7 +1,8 @@
-import axios from "axios";
+import axios from 'axios'; 
+import { handleUnauthorizedError } from './ErrorService';
 
-const apiKey = import.meta.env.VITE_APP_API_KEY;
-const token  = localStorage.getItem('reconnect_access_token'); 
+const apikey = import.meta.env.VITE_APP_API_KEY;
+const token = localStorage.getItem('reconnect_access_token');
 const token_type = localStorage.getItem('reconnect_token_type');
 
 
