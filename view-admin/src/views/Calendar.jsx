@@ -10,156 +10,133 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import 'bootstrap/dist/css/bootstrap.min.css'; 
 import './Calendar.css';
 import { getAllAppointments, updateAppointment, deleteAppointment } from '../apiservice/CalendarService'; 
-import {getUserByEmail} from '../apiservice/UserService'; 
+import { getUserByEmail } from '../apiservice/UserService'; 
 
 export default function Calendar() {
   const [visible, setVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [formData, setFormData] = useState({ title: '', startTime: '', endTime: '', description: '' });
-  const [eventDetails, setEventDetails] = useState(null); // New state for event details
-  const calendarRef = useRef(null);
   const [events, setEvents] = useState([]);
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [isAllDay, setIsAllDay] = useState(false); 
-  const [appointments, setAppointments] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [user, setUser] = useState('');
   const [currentEvent, setCurrentEvent] = useState(null);
+  const calendarRef = useRef(null);
+  const [loading, setLoading] = useState(false);
 
-  
   useEffect(() => {
+    const loggedInUser = localStorage.getItem('reconnect_signin_email');
     const getUser = async () => {
       try {
-        const userData = await getUserByEmail(loggedInUser);  
-        setUser(userData); 
+        const user = await getUserByEmail(loggedInUser);  
+        setUser(user); 
       } catch (error) {
         console.error(error);
       }
     };
     getUser();
   }, []);  
-  
-  useEffect(() => { 
-    
-    const getAllAppointments = async () => { 
-      setLoading(true); // Set loading before fetching
-      try {  
-        const appointments = await getAllAppointments(user.user_id); 
-        console.log(appointments, "appointments");
 
-        const formattedEvents = appointments.map(app => ({
-          aptid: app.id,
-          date: app.date,
-          start_time: app.start_time, 
-          end_time: app.end_time, 
-          reason: app.reason, 
-          color: '#ff9f00',
-        }));
-        setEvents(formattedEvents);  
-      } catch (error) {
-        tokenExpired(error.detail);
-        console.error(error);
+  useEffect(() => { 
+    const fetchAppointments = async () => {
+      if (user) {
+        try { 
+          const appointments = await getAllAppointments(user.user_id); 
+          const formattedEvents = appointments.map(app => ({
+            aptid: app.id,
+            date: app.date,
+            title: app.reason,
+            start: app.date + 'T' + app.start_time,
+            end: app.date + 'T' + app.end_time,
+            extendedProps: {
+              date: app.date,
+              start_time: app.start_time,
+              end_time: app.end_time,
+              reason: app.reason,
+            },
+            color: '#ff9f00',
+          }));
+          setEvents(formattedEvents);  
+        } catch (error) {
+          console.error(error);
+        }
       }
     };
 
-    if (user.user_id) {
-      const intervalId = setInterval(() => {
-        fetchAppointments(); 
-      }, 1000);  
+    if (user) {
+      fetchAppointments(); 
+      const intervalId = setInterval(fetchAppointments, 10000);
       return () => clearInterval(intervalId);
     }  
   }, [user]);
 
-  const handleUpdateAppointment = async () => {
+  const handleUpdateAppointment = async (e) => {
+    e.preventDefault();
     try {
-      await updateAppointment({
-        user_id: user.user_id,
-        ...currentEvent,
-      });
+      const updatedData = {
+        date: formData.date,
+        start_time: formData.startTime,
+        end_time: formData.endTime,
+        reason: formData.description,
+      };
+
+      const updatedAppointment = await updateAppointment(currentEvent.aptid, updatedData);
       setVisible(false);
-      fetchAppointments(); // Refresh appointments
+      setEvents(prevEvents => 
+        prevEvents.map(event => 
+          event.aptid === updatedAppointment.id 
+            ? { ...event, ...updatedData } 
+            : event
+        )
+      );
     } catch (error) {
-      console.error(error);
+      console.error("Error updating appointment:", error);
     }
   };
 
-  // Handle delete appointment
-  const handleDeleteAppointment = async () => {
-    if (currentEvent) {
-        const confirmDelete = window.confirm("Are you sure you want to delete this appointment?");
-        if (!confirmDelete) return; // If user cancels, do nothing
-
-        setLoading(true);
-        try {
-            console.log("Attempting to delete appointment with ID:", currentEvent.aptid);
-            await deleteAppointment(currentEvent.aptid); // Make sure deleteAppointment accepts aptid
-            setEvents(prevEvents => prevEvents.filter(event => event.aptid !== currentEvent.aptid)); // Update events state
-            console.log("Appointment deleted successfully.");
-        } catch (error) {
-            console.error("Error deleting appointment:", error); // Log error details
-            alert("Failed to delete appointment. Please try again.");
-        } finally {
-            setLoading(false);
-        }
+  const handleDeleteAppointment = async (appointment_id) => {
+    setLoading(true);
+    try { 
+      await deleteAppointment(appointment_id);
+      setEvents(prevEvents => prevEvents.filter(event => event.aptid !== appointment_id));  
     }
-    setVisible(false);
-};
-  // Update event click handler
+    catch (error) { 
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }  
+  } 
+  
   const handleEventClick = (info) => {
     const { event } = info;
+    setFormData({
+      title: event.title,
+      date: event.start.toISOString().split('T')[0], 
+      startTime: event.extendedProps.start_time,
+      endTime: event.extendedProps.end_time,
+      description: event.extendedProps.reason,
+    });
+    setCurrentEvent(event); 
+    setVisible(true); 
+  };
 
-    if (event.extendedProps) {
-        setEventDetails({
-            start_time: event.extendedProps.start_time,
-            end_time: event.extendedProps.end_time,
-            description: event.extendedProps.reason,
-        });
-
-        // Set the formData with the clicked event details
-        setFormData({
-            title: event.title,
-            startTime: event.extendedProps.start_time,
-            endTime: event.extendedProps.end_time,
-            description: event.extendedProps.reason,
-        });
-
-        // Show the modal to edit the appointment
-        setVisible(true);
-
-        // Store the current event for potential deletion
-        setCurrentEvent(event);
-    }
-};
-
-  // Function to close the modal
   const handleCloseModal = () => {
     setVisible(false);
-    setEventDetails(null); // Clear event details
-};
-
-
-
-
-  const getDateTime = (date, time) => {
-    const [hours, minutes] = time.split(':');
-    const dateTime = new Date(date);
-    dateTime.setHours(hours, minutes);
-    return dateTime.toISOString();
+    setFormData({ title: '', date: '', startTime: '', endTime: '', description: '' });
+    setCurrentEvent(null); 
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-        ...prevData,
-        [name]: value,
-    }));
-};
-  
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
 
   const generateTimeOptions = () => {
     const options = [];
     const interval = 15;
-    for (let hour = 1; hour < 24; hour++) {
+    for (let hour = 0; hour < 24; hour++) {
       for (let minute = 0; minute < 60; minute += interval) {
         const formattedHour = String(hour).padStart(2, '0');
         const formattedMinute = String(minute).padStart(2, '0');
@@ -173,15 +150,16 @@ export default function Calendar() {
   const handleSelect = (selectionInfo) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0); 
-
     if (selectionInfo.start < today) {
       return; 
     }
+    setVisible(true); 
   };
 
-  useEffect(() => {
-    updateCurrentDate(); 
-  }, [])
+  const updateCurrentDate = () => {
+    const calendarApi = calendarRef.current.getApi();
+    setCurrentDate(calendarApi.getDate());
+  };
 
   const goprev = () => {
     const calendarApi = calendarRef.current.getApi();
@@ -194,16 +172,6 @@ export default function Calendar() {
     calendarApi.next();
     updateCurrentDate();
   };
-
-  const updateCurrentDate = () => {
-    const calendarApi = calendarRef.current.getApi();
-    setCurrentDate(calendarApi.getDate());
-  };
-
-  const listview = () => {
-    const calendarApi = calendarRef.current.getApi(); 
-    calendarApi.changeView('listYear');
-  }
 
   const gotoday = () => {
     const calendarApi = calendarRef.current.getApi();
@@ -226,6 +194,10 @@ export default function Calendar() {
     calendarApi.changeView('timeGridDay');
   };
 
+  const listview = () => {
+    const calendarApi = calendarRef.current.getApi(); 
+    calendarApi.changeView('listYear');
+  }
 
   return (
     <>
@@ -233,52 +205,45 @@ export default function Calendar() {
         <CRow>
           <CCol lg={10} className="mx-auto">
             <CCard className="p-4 mb-3 mt-3 mx-auto">
-            <CRow className="align-items-center justify-content-between text-center text-md-start">
-              <CCol xs={12} md={3} lg={3} className="d-flex justify-content-center justify-content-md-start gap-2 mb-2 mb-md-0">
-                <CButton color="outline" onClick={goprev}>{'<'}</CButton>
-                <CButton color="outline" onClick={gonext}>{'>'}</CButton>
-                <CButton color="outline" onClick={gotoday}>Today</CButton>
-              </CCol>
-              <CCol xs={12} md={3} lg={4} className="my-2 my-md-0">
-                <h5 className="m-0">{currentDate.toLocaleString('default', { month: 'long' })} {currentDate.getFullYear()}</h5>
-              </CCol>
-              <CCol xs={12} md={4} lg={3} className="d-flex justify-content-center justify-content-md-end gap-2 mt-2 mt-md-0">
-                <CButton color="outline" onClick={gomonth}>Month</CButton>
-                <CButton color="outline" onClick={goweek}>Week</CButton>
-                <CButton color="outline" onClick={goday}>Day</CButton>
-                <CButton color="outline" onClick={listview}>Agenda</CButton>
-              </CCol>
-          </CRow>
+              <CRow className="align-items-center justify-content-between text-center text-md-start">
+                <CCol xs={12} md={3} lg={3} className="d-flex justify-content-center justify-content-md-start gap-2">
+                  <button className="btn btn-outline-dark" onClick={goprev}>{'<'}</button>
+                  <button className="btn btn-outline-dark" onClick={gonext}>{'>'}</button>
+                  <button className="btn btn-outline-dark" onClick={gotoday}>Today</button>
+                </CCol>
+                <CCol xs={12} md={3} lg={4} className="my-2 my-md-0 text-center">
+                  <h5>{currentDate.toLocaleString('default', { month: 'long' })} {currentDate.getFullYear()}</h5>
+                </CCol>
+                <CCol xs={12} md={4} lg={3} className="d-flex justify-content-center justify-content-md-end gap-2 mt-2 mt-md-0">
+                  <button className="btn btn-outline-dark" onClick={gomonth}>Month</button>
+                  <button className="btn btn-outline-dark" onClick={goweek}>Week</button>
+                  <button className="btn btn-outline-dark" onClick={goday}>Day</button>
+                  <button className='btn btn-outline-dark' onClick={listview}>Agenda</button>
+                </CCol>
+              </CRow>
               <CRow className="mt-4">
                 <CCol>
                   <FullCalendar
                     ref={calendarRef}
                     plugins={[dayGridPlugin, timeGridPlugin, bootstrapPlugin, interactionPlugin, listPlugin]}
                     initialView="dayGridMonth"
-                    dateClick={handleDateClick}
                     selectable
-                    select={handleSelect}
                     events={events}
                     eventClick={handleEventClick}
-                    eventContent={(eventInfo) => {
-                      return (
-                        <>
-                          <div style={{ cursor: 'pointer' }}> {/* Set cursor style inline */}
-                            <span>{eventInfo.event.extendedProps.reason}</span>
-                            <br />
-                            <span>{eventInfo.event.extendedProps.start_time} - </span>
-                            <span>{eventInfo.event.extendedProps.end_time}</span>
-                          </div>
-                        </>
-                      );
-                    }}
+                    eventContent={(eventInfo) => (
+                      <div style={{ cursor: 'pointer' }}>
+                        <span>{eventInfo.event.extendedProps.reason}</span>
+                        <br />
+                        <span>{eventInfo.event.extendedProps.start_time} - </span>
+                        <span>{eventInfo.event.extendedProps.end_time}</span>
+                      </div>
+                    )}
                     eventDisplay="block"
                     dayHeaderFormat={{
                       weekday: 'short'
                     }}
                     themeSystem="bootstrap"
                     headerToolbar={false} 
-                    height="auto"
                   />
                 </CCol>
               </CRow>
@@ -286,51 +251,74 @@ export default function Calendar() {
           </CCol>
         </CRow>
       </CContainer>
-
-      <CModal onClose={() => setVisible(false)} visible={visible} fade>
-            <div className="container">
-                <form onSubmit={handleUpdateAppointment} className="p-5">
-                    <h3 className="text-center">Edit Appointment</h3>
-                    <div className="form-group mt-2">
-                        <label>Start Time:</label>
-                        <Select
-                            options={generateTimeOptions()}
-                            value={formData.startTime ? { value: formData.startTime, label: formData.startTime } : null}
-                            onChange={(selected) => setFormData({ ...formData, startTime: selected.value })}
-                            className="form-control"
-                            placeholder={formData.startTime}
-                            required
-                        />
-                    </div>
-                    <div className="form-group mt-2">
-                        <label>End Time:</label>
-                        <Select
-                            options={generateTimeOptions()}
-                            value={formData.endTime ? { value: formData.endTime, label: formData.endTime } : null}
-                            onChange={(selected) => setFormData({ ...formData, endTime: selected.value })}
-                            className="form-control"
-                            placeholder={formData.endTime}
-                            required
-                        />
-                    </div>
-                    <div className="form-group mt-2">
-                        <label>Description:</label>
-                        <textarea
-                            name="description"
-                            value={formData.description}
-                            onChange={handleInputChange}
-                            className="form-control w-100"
-                            placeholder={formData.reason}
-                        />
-                    </div>
-                    <div className="form-group mt-2">
-                        <button type="submit" className="btn btn-primary w-100 mb-2">Update</button>
-                        <button type="button" className="btn btn-danger w-100" onClick={handleDeleteAppointment}>Delete</button>
-                    </div>
-                </form>
+      <CModal visible={visible} onClose={handleCloseModal}>
+        <form onSubmit={handleUpdateAppointment}>
+          <div className="modal-header">
+            <h5 className="modal-title">Appointment Details</h5>
+            <button type="button" className="close" onClick={handleCloseModal} aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div className="modal-body">
+            <div className="form-group">
+              <label htmlFor="title">Title</label>
+              <input 
+                type="text"
+                className="form-control"
+                name="title"
+                value={formData.title}
+                onChange={handleInputChange}
+                required
+              />
             </div>
-        </CModal>
-        
+            <div className="form-group">
+              <label htmlFor="date">Date</label>
+              <input
+                type="date"
+                className="form-control"
+                name="date"
+                value={formData.date}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="startTime">Start Time</label>
+              <Select
+                options={generateTimeOptions()}
+                name="startTime"
+                value={generateTimeOptions().find(option => option.value === formData.startTime)}
+                onChange={(option) => setFormData({ ...formData, startTime: option.value })}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="endTime">End Time</label>
+              <Select
+                options={generateTimeOptions()}
+                name="endTime"
+                value={generateTimeOptions().find(option => option.value === formData.endTime)}
+                onChange={(option) => setFormData({ ...formData, endTime: option.value })}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="description">Description</label>
+              <textarea
+                className="form-control"
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+              />
+            </div>
+          </div>
+          <div className="modal-footer">
+            <CButton type="submit" color="primary">Save Changes</CButton>
+            <CButton color="danger" onClick={() => handleDeleteAppointment(currentEvent.aptid)}>Delete</CButton>
+            <CButton color="secondary" onClick={handleCloseModal}>Close</CButton>
+          </div>
+        </form>
+      </CModal>
     </>
   );
 }
