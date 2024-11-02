@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { CButton, CModal,CModalBody, CModalFooter, CSpinner, CTooltip } from '@coreui/react'
-import { fetchStudents, deleteStudent} from '../ApiService/StudentService'
+import { fetchStudents, deleteStudent} from '../apiservice/StudentService'
 import customTooltipStyle from '../components/tooltip/CustomToolTip'
 import { Link } from 'react-router-dom';
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CButton, CFormInput, CFormLabel, CContainer, CRow, CCol, CTooltip } from '@coreui/react';
-import { addStudent, uploadCsv } from '../ApiService/StudentService';  
+import { addStudent, uploadCsv } from '../apiservice/StudentService';
 import customTooltipStyle from '../components/tooltip/CustomToolTip';
 import { Link } from 'react-router-dom';
 
