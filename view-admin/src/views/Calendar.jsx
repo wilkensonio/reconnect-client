@@ -9,21 +9,24 @@ import Select from 'react-select';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import 'bootstrap/dist/css/bootstrap.min.css'; 
 import './Calendar.css';
-import { getAllAppointments, deleteAppointment } from '../apiservice/CalendarService'; 
-import { getUserByEmail } from '../apiservice/UserService'; 
+import {getAllAppointments} from '../apiservice/CalendarService'; 
+import {getUserByEmail} from '../apiservice/UserService'; 
 
 export default function Calendar() {
   const [visible, setVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [formData, setFormData] = useState({ title: '', startTime: '', endTime: '', description: '' });
+  const calendarRef = useRef(null);
   const [events, setEvents] = useState([]);
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [user, setUser] = useState('');
-  const [currentEvent, setCurrentEvent] = useState(null);
-  const calendarRef = useRef(null);
+  const [isAllDay, setIsAllDay] = useState(false); 
+  const [startDate, setStartDate] = useState(null); 
+  const [endDate, setEndDate] = useState(null);
+  const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
-
-
+  const [error, setError] = useState(null);
+  const [user, setUser] = useState('');
+  
   useEffect(() => {
     const getUser = async () => {
       try {
@@ -42,82 +45,40 @@ export default function Calendar() {
       setLoading(true); // Set loading before fetching
       try {  
         const appointments = await getAllAppointments(user.user_id); 
-        setEvents(appointments);  // Update events instead of currentEvent
+        console.log(appointments, "appointments");
+        setAppointments(appointments);  
       } catch (error) {
-        tokenExpired(error.detail); // Ensure this function handles error appropriately
         console.error(error);
-      } finally {
-        setLoading(false);
+        // Add token expiration handling here if needed
       }
     };
-  
-    const intervalId = setInterval(() => {
-      getAllAppointments(); 
-    }, 1000);  // Adjusted interval to 5 seconds
-  
-    return () => clearInterval(intervalId);
-  }, [user]);  
-  
 
-
-  // const handleUpdateAppointment = async (e) => {
-  //   e.preventDefault();
-  //   if (formData.startTime >= formData.endTime) {
-  //       alert('End time must be after start time.');
-  //       return;
-  //   }
-  //   try {
-  //       const updatedData = {
-  //           date: formData.date,
-  //           start_time: formData.startTime,
-  //           end_time: formData.endTime,
-  //           reason: formData.description,
-  //       };
-  
-  //       const updatedAppointment = await updateAppointment(currentEvent.aptid, updatedData);  // Ensure aptid is defined.
-  //       setVisible(false);
-  //       setEvents(prevEvents => 
-  //           prevEvents.map(event => 
-  //               event.aptid === currentEvent.aptid 
-  //                   ? { ...event, ...updatedData }
-  //                   : event
-  //           )
-  //       );
-  //   } catch (error) {
-  //       console.error("Error updating appointment:", error);
-  //   }
-  // };
-
-  const handleDeleteAppointment = async (appointment_id) => {
-    setLoading(true);
-    try { 
-      await deleteAppointment(appointment_id);
-      setEvents(prevEvents => prevEvents.filter(event => event.aptid !== appointment_id));  
-      handleCloseModal(); // Close the modal after deletion
-    } catch (error) { 
-      console.error("Error deleting appointment:", error);
-    } finally {
-      setLoading(false);
+    if (user.user_id) {
+      const intervalId = setInterval(() => {
+        fetchAppointments(); 
+      }, 1000);  
+      return () => clearInterval(intervalId);
     }  
+  }, [user]);
+
+  const handleDateClick = (arg) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (arg.date < today) {
+      alert('You can only schedule events for today or later.');
+      return;
+    }
+
+    setSelectedDate(arg.date);
+    setVisible(true);
   };
 
-  const handleEventClick = (info) => {
-    const { event } = info;
-    setFormData({
-      title: event.title,
-      date: event.start.toISOString().split('T')[0], 
-      startTime: event.extendedProps.start_time,
-      endTime: event.extendedProps.end_time,
-      description: event.extendedProps.reason,
-    });
-    setCurrentEvent(event); 
-    setVisible(true); 
-  };
-
-  const handleCloseModal = () => {
-    setVisible(false);
-    setFormData({ title: '', date: '', startTime: '', endTime: '', description: '' });
-    setCurrentEvent(null); 
+  const getDateTime = (date, time) => {
+    const [hours, minutes] = time.split(':');
+    const dateTime = new Date(date);
+    dateTime.setHours(hours, minutes);
+    return dateTime.toISOString();
   };
 
   const handleInputChange = (e) => {
@@ -129,34 +90,32 @@ export default function Calendar() {
 };
   
 
-  const generateTimeOptions = () => {
-    const options = [];
-    const interval = 15;
-    for (let hour = 0; hour < 24; hour++) {
-      for (let minute = 0; minute < 60; minute += interval) {
-        const formattedHour = String(hour).padStart(2, '0');
-        const formattedMinute = String(minute).padStart(2, '0');
-        const time = `${formattedHour}:${formattedMinute}`;
-        options.push({ value: time, label: time });
+  const newEvent = [
+    {
+    id: '1',
+    title: 'Advising with Dr.Wilk',
+    start: '2024-10-25T10:00:00',
+    end: '2024-10-25T12:00:00',
+    description: 'Wilkenson is the goat',
+    color: '#ff9f00',
+    },
+    
+
+    
+      {
+      id: '2',
+      title: 'Meeting with Hacker Escobar',
+      start: '2024-12-31T11:00:00',
+      end: '2024-12-31T13:00:00',
+      description: 'Jonny is the goat',
+      color: '#ff9f00',
       }
-    }
-    return options;
-  };
+  ];
 
-  const handleSelect = (selectionInfo) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); 
-    if (selectionInfo.start < today) {
-      return; 
-    }
-    setSelectedDate(selectionInfo.start);
-    setVisible(true); 
-  };
-
-  const updateCurrentDate = () => {
-    const calendarApi = calendarRef.current.getApi();
-    setCurrentDate(calendarApi.getDate());
-  };
+  useEffect(() => {
+    setEvents(newEvent); 
+    updateCurrentDate(); 
+  }, []); 
 
   const goprev = () => {
     const calendarApi = calendarRef.current.getApi();
@@ -169,6 +128,20 @@ export default function Calendar() {
     calendarApi.next();
     updateCurrentDate();
   };
+
+  const updateCurrentDate = () => {
+    const calendarApi = calendarRef.current.getApi();
+    setCurrentDate(calendarApi.getDate());
+  };
+
+  const listview = () => {
+    const calendarApi = calendarRef.current.getApi(); 
+    calendarApi.changeView('listYear');
+  }
+
+  useEffect(() => {
+    updateCurrentDate();
+  }, []);
 
   const gotoday = () => {
     const calendarApi = calendarRef.current.getApi();
@@ -191,10 +164,65 @@ export default function Calendar() {
     calendarApi.changeView('timeGridDay');
   };
 
-  const listview = () => {
-    const calendarApi = calendarRef.current.getApi(); 
-    calendarApi.changeView('listYear');
-  }
+  const generateTimeOptions = () => {
+    const options = [];
+    const interval = 15;
+    for (let hour = 1; hour < 13; hour++) {
+      for (let minute = 0; minute < 60; minute += interval) {
+        const formattedHour = String(hour).padStart(2, '0');
+        const formattedMinute = String(minute).padStart(2, '0');
+        const time = `${formattedHour}:${formattedMinute}`;
+        options.push({ value: time, label: time });
+      }
+    }
+    return options;
+  };
+
+  const handleSelect = (selectionInfo) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); 
+
+    if (selectionInfo.start < today) {
+      return; 
+    }
+
+    const isInTimeGridView = selectionInfo.view.type === 'timeGridDay' || selectionInfo.view.type === 'timeGridWeek';
+    const isAllDaySelection = selectionInfo.allDay && isInTimeGridView; 
+
+    if (isAllDaySelection) {
+      setIsAllDay(true);
+      setStartDate(selectionInfo.start);
+      setEndDate(selectionInfo.end);
+      setSelectedDate(selectionInfo.start);
+      setVisible(true); 
+    } else if (selectionInfo.view.type !== 'dayGridMonth') {
+      setIsAllDay(false);
+      setSelectedDate(selectionInfo.start);
+      setVisible(true); 
+    }
+  };
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    const newEvent = {
+      title: formData.title, 
+      start: isAllDay ? startDate.toISOString() : `${selectedDate.toISOString().split('T')[0]}T${formData.startTime}`,
+      end: isAllDay ? endDate.toISOString() : `${selectedDate.toISOString().split('T')[0]}T${formData.endTime}`,
+      description: formData.description, 
+      allDay: isAllDay,
+      color: '#ff9f00'
+    }
+
+    setEvents([...events, newEvent]);
+    setFormData({ title: '', startTime: '', endTime: '', description: ''});
+    setIsAllDay(false);
+    setVisible(false);
+  };
+
+  const handleCloseForm = () => {
+    setVisible(false);
+    setIsAllDay(false);
+  };
 
   return (
     <>
@@ -224,24 +252,30 @@ export default function Calendar() {
                     ref={calendarRef}
                     plugins={[dayGridPlugin, timeGridPlugin, bootstrapPlugin, interactionPlugin, listPlugin]}
                     initialView="dayGridMonth"
+                    dateClick={handleDateClick}
                     selectable
                     select={handleSelect}
                     events={events}
                     eventClick={handleEventClick}
-                    eventContent={(eventInfo) => (
-                      <div style={{ cursor: 'pointer' }}>
-                        <span>{eventInfo.event.extendedProps.reason}</span>
-                        <br />
-                        <span>{eventInfo.event.extendedProps.start_time} - </span>
-                        <span>{eventInfo.event.extendedProps.end_time}</span>
-                      </div>
-                    )}
+                    eventContent={(eventInfo) => {
+                      return (
+                        <>
+                          <div style={{ cursor: 'pointer' }}> {/* Set cursor style inline */}
+                            <span>{eventInfo.event.extendedProps.reason}</span>
+                            <br />
+                            <span>{eventInfo.event.extendedProps.start_time} - </span>
+                            <span>{eventInfo.event.extendedProps.end_time}</span>
+                          </div>
+                        </>
+                      );
+                    }}
                     eventDisplay="block"
                     dayHeaderFormat={{
                       weekday: 'short'
                     }}
                     themeSystem="bootstrap"
                     headerToolbar={false} 
+                    height="auto"
                   />
                 </CCol>
               </CRow>
@@ -249,74 +283,51 @@ export default function Calendar() {
           </CCol>
         </CRow>
       </CContainer>
-      <CModal visible={visible} onClose={handleCloseModal}>
-        <form>
-          <div className="modal-header">
-            <h5 className="modal-title">Appointment Details</h5>
-            <button type="button" className="close" onClick={handleCloseModal} aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div className="modal-body">
-            <div className="form-group">
-              <label htmlFor="title">Title</label>
-              <input 
-                type="text"
-                className="form-control"
-                name="title"
-                value={formData.title}
-                onChange={handleInputChange}
-                required
-              />
+
+      <CModal onClose={() => setVisible(false)} visible={visible} fade>
+            <div className="container">
+                <form onSubmit={handleUpdateAppointment} className="p-5">
+                    <h3 className="text-center">Edit Appointment</h3>
+                    <div className="form-group mt-2">
+                        <label>Start Time:</label>
+                        <Select
+                            options={generateTimeOptions()}
+                            value={formData.startTime ? { value: formData.startTime, label: formData.startTime } : null}
+                            onChange={(selected) => setFormData({ ...formData, startTime: selected.value })}
+                            className="form-control"
+                            placeholder={formData.startTime}
+                            required
+                        />
+                    </div>
+                    <div className="form-group mt-2">
+                        <label>End Time:</label>
+                        <Select
+                            options={generateTimeOptions()}
+                            value={formData.endTime ? { value: formData.endTime, label: formData.endTime } : null}
+                            onChange={(selected) => setFormData({ ...formData, endTime: selected.value })}
+                            className="form-control"
+                            placeholder={formData.endTime}
+                            required
+                        />
+                    </div>
+                    <div className="form-group mt-2">
+                        <label>Description:</label>
+                        <textarea
+                            name="description"
+                            value={formData.description}
+                            onChange={handleInputChange}
+                            className="form-control w-100"
+                            placeholder={formData.reason}
+                        />
+                    </div>
+                    <div className="form-group mt-2">
+                        <button type="submit" className="btn btn-primary w-100 mb-2">Update</button>
+                        <button type="button" className="btn btn-danger w-100" onClick={handleDeleteAppointment}>Delete</button>
+                    </div>
+                </form>
             </div>
-            <div className="form-group">
-              <label htmlFor="date">Date</label>
-              <input
-                type="date"
-                className="form-control"
-                name="date"
-                value={formData.date}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="startTime">Start Time</label>
-              <Select
-                options={generateTimeOptions()}
-                name="startTime"
-                value={generateTimeOptions().find(option => option.value === formData.startTime)}
-                onChange={(option) => setFormData({ ...formData, startTime: option.value })}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="endTime">End Time</label>
-              <Select
-                options={generateTimeOptions()}
-                name="endTime"
-                value={generateTimeOptions().find(option => option.value === formData.endTime)}
-                onChange={(option) => setFormData({ ...formData, endTime: option.value })}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="description">Description</label>
-              <textarea
-                className="form-control"
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-              />
-            </div>
-          </div>
-          <div className="modal-footer">
-            <CButton type="submit" color="primary">Save Changes</CButton>
-            <CButton color="danger" onClick={() => handleDeleteAppointment(currentEvent?.aptid)}>Delete</CButton>
-            <CButton color="secondary" onClick={handleCloseModal}>Close</CButton>
-          </div>
-        </form>
-      </CModal>
+        </CModal>
+        
     </>
   );
 }

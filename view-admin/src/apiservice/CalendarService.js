@@ -20,37 +20,3 @@ export const getAllAppointments = async (user_id) => {
     throw error.response?.data || new Error('Signout failed');
   }
 }
-
-
-// export const updateAppointment = async (appointment_id, data) => {
-//   try {
-//     const response = await axios.put(`/api/appointment/update/${appointment_id}`, data, {
-//       headers: {
-//         "R-API-KEY": `${apiKey}`,
-//         "Content-Type": "application/json",
-//         Authorization: `${token_type} ${token}`,
-//       },
-//     });
-//     return response.data;
-//   } catch (error) {
-//     throw error.response?.data || new Error("Updating appointment failed");
-//   }
-// };
-
-export const deleteAppointment = async (appointment_id) => {
-  try {
-      const response = await axios.delete(`/api/appointment/delete/${appointment_id}`, {
-          headers: {
-              'R-API-KEY': `${apiKey}`,
-              'Content-Type': 'application/json',
-              'Authorization': `${token_type} ${token}`
-          },
-      }); 
-      
-      return response.data;
-               
-  } catch (error) {  
-      handleUnauthorizedError(error);
-      throw error.response?.data || new Error('Failed to delete appointment'); 
-  }      
-}
