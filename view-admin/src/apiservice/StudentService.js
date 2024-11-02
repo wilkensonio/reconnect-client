@@ -1,14 +1,20 @@
-import axios from 'axios';
+import axios from 'axios'; 
+import { handleUnauthorizedError } from './ErrorService';
+
 const apikey = import.meta.env.VITE_APP_API_KEY;
 const token = localStorage.getItem('reconnect_access_token');
 const token_type = localStorage.getItem('reconnect_token_type');
-
 
 const headers = {
     'R-API-KEY': `${apikey}`,
     'Authorization': `${token_type} ${token}`
 }
 
+/**
+ * Get all students
+ * 
+ * @returns {JSON}
+ */
 const fetchStudents = async () => { 
     try {
         const response = await axios.get('/api/students/', {
@@ -18,20 +24,33 @@ const fetchStudents = async () => {
         return response.data;
                  
     } catch (error) { 
-        handleError(error); 
-        return [];
+        handleUnauthorizedError(error);
+        throw error.response?.data || new Error('Failed to get students');
     }      
 } 
 
+/**
+ * Add a student 
+ * 
+ * @param {JSON} student
+ * @returns {JSON}
+ */
 const addStudent = async (student) => {
     try {
         const response = await axios.post('/api/signup-student/', student, { headers });
         return response.data;
     } catch (error) {
-        return handleError(error);
+        handleUnauthorizedError(error);
+        throw error.response?.data || new Error('Failed to add student');
     }
 };
 
+/**
+ * Add students in bulk from a CSV file
+ * 
+ * @param {File} csvFile
+ * @returns {JSON}
+ */
 const uploadCsv = async (csvFile) => {
     const formData = new FormData();
     formData.append('file', csvFile);
@@ -44,44 +63,46 @@ const uploadCsv = async (csvFile) => {
       });
       return response.data;
     } catch (error) {
-      throw new Error('Failed to upload CSV file');
+        handleUnauthorizedError(error);
+        throw error.response?.data || new Error('Failed to upload csv');
     }
 };
   
  
-
+/**
+ * Schedule a meeting with a student 
+ * 
+ * @param {String} studentId
+ * @returns {JSON}
+ */
 const scheduleMeeting = async (studentId) => {
     try {
         const response = await axios.post(`/api/schedule/${studentId}`, {}, { headers });
         return response.data;
     } catch (error) {
-        handleError(error);
+        handleUnauthorizedError(error);
+        throw error.response?.data || new Error('Failed to schedule meeting');
     }
 }; 
 
-const blacklistStudent = async (studentId) => { 
+/**
+ * Delete a student
+ * 
+ * @param {String} studentId hootloot id of the student
+ * @returns {JSON}
+ */
+const deleteStudent = async (studentId) => { 
     try {
-        const response = await axios.post(`/api/blacklist/${studentId}`, {}, { headers });
+        const response = await axios.delete(`/api/delete/student/${studentId}`,{ headers });
         return response.data;
     } catch (error) {
-        handleError(error);
+        handleUnauthorizedError(error);
+        throw error.response?.data || new Error('Failed to delete student');
     }
 
-}
-
-const handleError = (error) => {
-    const response = error.response;
-    if (response && response.status === 401) {
-        localStorage.removeItem('reconnect_access_token');
-        localStorage.removeItem('reconnect_token_type');
-        window.location.href = '/signin?message=Session expired. Please sign in again.';
-    } else {
-        console.error("api/studentService", response);
-        return response;
-    }
-};
+} 
 
 export {
     fetchStudents, scheduleMeeting, 
-    addStudent, uploadCsv, blacklistStudent 
+    addStudent, uploadCsv, deleteStudent 
 };

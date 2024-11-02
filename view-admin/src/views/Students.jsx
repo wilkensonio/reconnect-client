@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { CButton, CModal,CModalBody, CModalFooter, CTooltip } from '@coreui/react'
-import { fetchStudents, blacklistStudent} from '../ApiService/StudentService'
+import { CButton, CModal,CModalBody, CModalFooter, CSpinner, CTooltip } from '@coreui/react'
+import { fetchStudents, deleteStudent} from '../apiservice/StudentService'
 import customTooltipStyle from '../components/tooltip/CustomToolTip'
 import { Link } from 'react-router-dom';
 
@@ -27,22 +27,32 @@ function Students() {
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [studentToDelete, setStudentToDelete] = useState(null)
     const [filteredStudents, setFilteredStudents] = useState(students)  
-    const [visibleRange, setVisibleRange] = useState({ start: 0, end: count });
+    const [visibleRange, setVisibleRange] = useState({ start: 0, end: count }); 
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
 
     useEffect(() => {
-        const fetchStudentData = async () => { 
-            const data = await fetchStudents();  
-            setStudentLength(data.length);
-            const fakeStudents = generateFakeStudents(100);
-            setStudents([...data, ...fakeStudents]); // Merge real and fake students remove fake students aftera after testing
-        };
-
-        fetchStudentData();
-
+        const fetchStudentData = async () => {  
+            setError('');
+            try {
+                const data = await fetchStudents();  
+                setTimeout(() => {  
+                    setStudentLength(data.length);
+                    const fakeStudents = generateFakeStudents(100);
+                    setStudents([...data]); // Merge real and fake students remove fake students aftera after testing
+                    
+                }, 200); 
+            } catch (error) {
+                setError('Could not fetch students'); 
+            } finally {
+                setLoading(false);
+            } 
+        };  
+        fetchStudentData();  
     }, [studentLength]);
 
-
-    useEffect(() => {
+    
+    useEffect(() => { 
         setFilteredStudents(students)
     }, [students]) 
   
@@ -77,10 +87,17 @@ function Students() {
     }
 
     const handleDeleteStudent = async () => {
-        await blacklistStudent(studentToDelete.student_id);
-        setStudents(students.filter(student => student.id !== studentToDelete.id));
-        setFilteredStudents(students.filter(student => student.id !== studentToDelete.id));
-        setShowDeleteModal(false);
+        setError('');
+        try{
+            await deleteStudent(studentToDelete.student_id);
+            setStudents(students.filter(student => student.id !== studentToDelete.id));
+            setFilteredStudents(students.filter(student => student.id !== studentToDelete.id));
+            setShowDeleteModal(false);
+        }catch(e){ 
+            setError('Could not delete student') 
+        } finally {
+            setLoading(false);
+        }
     }; 
 
     const openDeleteModal = (student) => {
@@ -106,7 +123,7 @@ function Students() {
                                 <p className='text-start mb-1'> <span className='text-danger'>
                                     3.</span> You can delete a student from the list by clicking the delete button.</p>
                                 <p className='text-start mb-1'> <span className='text-danger'>
-                                    4.</span> Deleting a student will blacklist the student from the system.</p>
+                                    4.</span> Deleting a student will remove the student from the system.</p>
                             </div>
                         }
                             placement="bottom"
@@ -126,55 +143,60 @@ function Students() {
                     <span className='text-white'>Back to dashboard</span>
                 </Link>
             </div>
-            <div className="container">
-                <div className='mb-3'>
-                    <input
-                        type="text"
-                        placeholder="Search for a student by name, email or student ID"
-                        onChange={(e) => filterStudents(e.target.value)}
-                        className="form-control"
-                    />
-                </div>                 
+            {studentLength === 0  ? (
+                <div className="d-flex justify-content-center text-white">
+                     No students found 
+                </div>
+            ):(
+                <div className="container">
+                    <div className='mb-3'>
+                        <input
+                            type="text"
+                            placeholder="Search for a student by name, email or student ID"
+                            onChange={(e) => filterStudents(e.target.value)}
+                            className="form-control"
+                        />
+                    </div>                 
 
-                <div className="row">
-                {currentStudents.map((student) => (
-                        <div sm={12} className="col-sm-12" key={student.id}>
-                            <div className="card card-student mt-2">
-                                <div className="p-2 card-body d-flex align-items-center justify-content-between">
-                                    <div className='d-flex align-items-center w-100' style={{ overflow: 'hidden' }}>
-                                        <p className="m-0 text-truncate" style={{ flex: '0 0 100px'}}>
-                                            {student.student_id} 
-                                        </p>
-                                        <p className="m-0 text-truncate" style={{ flex: '0 0 200px'}}> 
-                                            {student.email} 
-                                        </p>
-                                        <p className="m-0 ms-4 text-truncate" style={{ flex: '0 0 250px'}}>
-                                            {student.first_name} {student.last_name} 
-                                        </p> 
-                                    </div>
-                                    <div className='d-flex jsutify-content-center align-items-center'>
-                                         
-                                        <CButton
-                                        className='me-2 pt-0 pb-0   m-0' 
-                                            color="danger"
-                                            onClick={() => openDeleteModal(student)}
-                                        >
-                                            Delete
-                                        </CButton>
-                                        <CButton
-                                        className='m-0  pt-0 pb-0 ccolor' 
-                                            onClick={() => scheduleMeeting(student.id)}
-                                        >
-                                            History
-                                        </CButton> 
+                    <div className="row">
+                    {currentStudents.map((student) => (
+                            <div sm={12} className="col-sm-12" key={student.id}>
+                                <div className="card card-student mt-2">
+                                    <div className="p-2 card-body d-flex align-items-center justify-content-between">
+                                        <div className='d-flex align-items-center w-100' style={{ overflow: 'hidden' }}>
+                                            <p className="m-0 text-truncate" style={{ flex: '0 0 100px'}}>
+                                                {student.student_id} 
+                                            </p>
+                                            <p className="m-0 text-truncate" style={{ flex: '0 0 200px'}}> 
+                                                {student.email} 
+                                            </p>
+                                            <p className="m-0 ms-4 text-truncate" style={{ flex: '0 0 250px'}}>
+                                                {student.first_name} {student.last_name} 
+                                            </p> 
+                                        </div>
+                                        <div className='d-flex jsutify-content-center align-items-center'>
+                                            
+                                            <CButton
+                                            className='me-2 pt-0 pb-0   m-0' 
+                                                color="danger"
+                                                onClick={() => openDeleteModal(student)}
+                                            >
+                                                Delete
+                                            </CButton>
+                                            <CButton
+                                            className='m-0  pt-0 pb-0 ccolor' 
+                                                onClick={() => scheduleMeeting(student.id)}
+                                            >
+                                                Add&nbsp;Notes
+                                            </CButton> 
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
-                </div>  
-            </div>
-
+                        ))}
+                    </div>  
+                </div>
+            ) } 
             {/* Modal to confirm delete action */}
             <CModal className="border-0" visible={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
               

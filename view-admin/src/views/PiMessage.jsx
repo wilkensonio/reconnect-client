@@ -12,14 +12,20 @@ import {
   CCard
 } from '@coreui/react';
 import { getUserByEmail } from '../apiservice/UserService';
-import { piMessage } from '../apiservice/PiMessage';
+import { updatePiMessage, getPiMessage, deletePiMessage} from '../apiservice/PiMessage';  
+import { useBlur } from '../context/PiMessageContext';
 
 function PiMessage() {
     const [modalVisible, setModalVisible] = useState(false);
     const [message, setMessage] = useState('');
-    const [duration, setDuration] = useState(15); // Default to 15 minutes
-    const [durationUnit, setDurationUnit] = useState('minutes'); // Default unit 
+    const [duration, setDuration] = useState(15);  
+    const [durationUnit, setDurationUnit] = useState('minutes');  
     const [loggedInUser, setLoggedInUser] = useState('');
+    const { popup, togglePiPopup } = useBlur();  
+    const [error, setError] = useState('');
+    const [user, setUser] = useState('');
+    const [deleteMessage, setDeleteMessage] = useState(false);
+    const [hasMessage, setHasMessage] = useState('');
 
     
     const handleDurationUnitChange = (e) => {
@@ -27,48 +33,90 @@ function PiMessage() {
     };
     
     useEffect(() => {
+      const fetchUser = async () => {
+        try {
+          const userRes = await getUserByEmail(loggedInUser);  
+          setUser(userRes);
+        } catch (error) {
+          console.error(error);
+        }
+      };
         const  userSignInEmail = localStorage.getItem('reconnect_signin_email'); 
         setLoggedInUser(userSignInEmail); 
+        if (!user)
+          fetchUser();
     }, []);
 
-   
+    useEffect(() => { 
+      if (!user) return;
+      const fetchActiveMessage = async () => {
+          setError('');
+          try {
+              const response = await getPiMessage(user.user_id);  
+              setMessage(response.message);
+              setDuration(response.duration);  
+              setDurationUnit(response.duration_unit); 
+              if (response.message)
+                setHasMessage('Kiosk has a message');
+          } catch (error) { 
+            if (!error.response)
+                setHasMessage('No message on the kiosk');  
+            setError('Failed to get message');
+            console.error(error);
+          }
+      }  
+          
+        fetchActiveMessage();
+      }, [user]);
+
+     
     
     const handleSendMessage = async () => {
-        try { 
-            const user = await getUserByEmail(loggedInUser);  
-            const userData = {
-              user_id: user.user_id,
-              message: message,
-              duration: duration,
-              duration_unit: durationUnit
-            }
-            const response = await piMessage(userData);
-            console.log(response);
-        } catch (error) {
-            console.error(error);
+      const userData = {
+        user_id: user.user_id,
+        message: message,
+        duration: duration,
+        duration_unit: durationUnit
+      } 
+      
+      try {   
+          setError('');
+          await updatePiMessage(userData);  
+          setDeleteMessage(false);
+      } catch (error) {
+        setError('Failed to send message');
+          console.error(error);
+      }   
+        
+    }; 
+
+    const handleDeleteMessage = async () => {
+      if (!user) return;
+      try { 
+        setError('');
+        const response = await deletePiMessage(user.user_id); 
+        setDeleteMessage(true);
+      } catch (error) {
+        if (!error.response){
+          setError('Failed to delete message or no message to delete');
         } 
-    
-        // Close modal and reset the form
-        setModalVisible(false);
-        setMessage('');  
-        setDuration(15);  
-        setDurationUnit('minutes');  
-    };
- 
-  
+        
+        console.error(error);
+      }
+    } 
 
   return (
     <div>  
     
-      <CButton color="primary" onClick={() => setModalVisible(true)} className="w-100"
+      <CButton color="primary" onClick={togglePiPopup} className="w-100"
        style={{ 
         height: 'auto'}}>  
         Leave Message on Kiosk
       </CButton>
       
 
-      <CModal visible={modalVisible} onClose={() => setModalVisible(false)}>
-        <CModalHeader onClose={() => setModalVisible(false)} className='border-0'>
+      <CModal visible={popup} onClose={()=>togglePiPopup()}>
+        <CModalHeader onClose={()=>togglePiPopup()} className='border-0'>
           <CModalTitle>Leave a Message on the Kiosk</CModalTitle>
         </CModalHeader>
         <CModalBody className='card-color'>
@@ -108,11 +156,21 @@ function PiMessage() {
               <option value="months">Months</option> 
             </CFormSelect>
             <CModalFooter className='border-0 mt-3'> 
+              <CButton color="danger" type="button" onClick={handleDeleteMessage}>
+                Delete Pi Message
+              </CButton>
               <CButton color="primary" type="submit">
                 Send
-              </CButton>
+              </CButton> 
             </CModalFooter>
           </CForm>
+          {
+            message ? (
+              <p className="mt-3 p-3 text-center text-success h6">{hasMessage}</p>
+              ) : !message ? (
+              <p className='mt-3 p-3 text-center text-success h6"'>{hasMessage}</p>
+            ) : (deleteMessage && error)
+          }  
         </CModalBody>
       </CModal> 
     </div>
