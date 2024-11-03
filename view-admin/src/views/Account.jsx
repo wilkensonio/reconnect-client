@@ -1,9 +1,57 @@
+/**
+ * Account component allows users to view and update their profile information.
+ * 
+ * @component
+ * @example
+ * return (
+ *   <Account />
+ * )
+ * 
+ * @returns {JSX.Element} The rendered Account component.
+ * 
+ * @description
+ * This component fetches user data from the server using the email stored in localStorage.
+ * It allows users to update their first name, last name, phone number, and password.
+ * Email and user ID fields are read-only.
+ * 
+ * @function
+ * @name Account
+ * 
+ * @property {string} user_id - The ID of the user.
+ * @property {string} first_name - The first name of the user.
+ * @property {string} last_name - The last name of the user.
+ * @property {string} email - The email of the user.
+ * @property {string} phone_number - The phone number of the user.
+ * @property {string} error - Error message to display if an error occurs.
+ * @property {string} success - Success message to display if the profile is updated successfully.
+ * @property {string} update_password - The new password entered by the user.
+ * @property {string} confirm_update - The confirmation of the new password.
+ * @property {boolean} showPassword - State to toggle the visibility of the password field.
+ * @property {boolean} showConfirmPassword - State to toggle the visibility of the confirm password field.
+ * 
+ * @method
+ * @name useEffect
+ * @description Fetches user data when the component mounts.
+ * 
+ * @method
+ * @name handleUpdate
+ * @description Handles the form submission to update user profile.
+ * 
+ * @method
+ * @name togglePasswordVisibility
+ * @description Toggles the visibility of the password field.
+ * 
+ * @method
+ * @name toggleConfirmPasswordVisibility
+ * @description Toggles the visibility of the confirm password field.
+ */
 import React, {useEffect, useState} from 'react';
-// import { CButton, CCard, CCardBody, CCardHeader, CCol, CForm,  CInput, CLabel, CRow } from '@coreui/react';
 import {getUserByEmail} from '../apiservice/UserService';
-import { CButton, CCard, CCardBody, CCardImage, CCol, CForm, CFormInput, CFormLabel, CInputGroup, CInputGroupText, CRow, CTooltip } from '@coreui/react';
+import { CButton, CCard, CCardBody, CCardImage,
+   CCol, CForm, CFormInput, CInputGroup, 
+   CInputGroupText, CRow, CTooltip } from '@coreui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDashboard, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'; 
+import {faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'; 
 import customTooltipStyle from '../components/tooltip/CustomToolTip'
 import { updateUser } from '../apiservice/UserService';
 import { Link } from 'react-router-dom';
@@ -20,7 +68,6 @@ function Account() {
   const [confirm_update, setConfirmUpdate] = useState('');
   const [showPassword, setShowPassword] = useState(false);   
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);  
-  
   
 
   useEffect(() => {
@@ -81,8 +128,15 @@ function Account() {
   };
 
   return ( 
-      <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}> 
-        <CCard style={{ width: '40rem' }} className='shadow'>
+    <>
+      <h1  className='text-white text-center mt-2  mb-4'>Update profile</h1>
+      <div className='container mt-3 mb-3'>
+        <Link to='/dashboard'>
+                <span className='text-white'>Back to dashboard</span>
+        </Link>
+      </div>
+      <div className="d-flex justify-content-center align-items-center"> 
+        <CCard style={{ width: '40rem', background: '#e9e9e9' }} className='shadow'>
           <div className='mt-3 h3 d-flex justify-content-center'>
              <>   
              Profile                   
@@ -120,6 +174,7 @@ function Account() {
                     value={email}
                     style={{ width: '100%' }}
                     readOnly
+                    disabled
                   />
                 </CCol>
                 <CCol xs={12} className='mb-4'>
@@ -129,6 +184,7 @@ function Account() {
                     value={user_id}
                     style={{ width: '100%' }}
                     readOnly
+                    disabled
                   />
                 </CCol>
                 <CCol xs={12} className='mb-4'>
@@ -218,6 +274,7 @@ function Account() {
           </CCardBody>
         </CCard>
       </div> 
+    </>
   ); 
 }
 

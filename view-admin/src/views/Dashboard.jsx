@@ -1,22 +1,45 @@
+/**
+ * Dashboard component renders the faculty dashboard with various sections such as notifications, availabilities, 
+ * adding new students, viewing all students, and profile management. It also handles fetching user data and notifications.
+ *
+ * @component
+ * @example
+ * return (
+ *   <Dashboard />
+ * )
+ *
+ * @returns {JSX.Element} The rendered dashboard component.
+ *
+ * @function
+ * @name Dashboard
+ *
+ * @description
+ * - Uses `useEffect` to fetch user data and notifications.
+ * - Uses `useState` to manage local state for alerts, user data, and notifications.
+ * - Utilizes `useBlur` and `useNotifications` context hooks for managing popup and notifications state.
+ *
+ * @dependencies
+ * - React
+ * - @coreui/react
+ * - PiMessage
+ * - NotificationService
+ * - UserService
+ * - NewStudent
+ * - NotificationContext
+ * - react-router-dom
+ * - PiMessageContext
+ */
 import React, {useEffect, useState} from 'react';
 import { CButton, CRow, CCol, CBadge } from '@coreui/react';
 import PiMessage from './PiMessage'; 
 import { userNotifications } from '../apiservice/NotificationService';
 import {getUserByEmail} from '../apiservice/UserService';
-import NewStudent from './NewStudent';
 import { useNotifications } from '../context/NotificationContext';
 import { Link } from 'react-router-dom';
 import { useBlur } from '../context/PiMessageContext';
 
 
-
-
-function Dashboard() { 
-   
-  const [showAlert, setShowAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('');
-  const [numberOfStudents, setNumberOfStudents] = useState(10);
-  const [piModalActive, setPiModalActive] = useState(false);
+function Dashboard() {  
   const [user, setUser] = useState('');  
   const {popup, setPopup}  = useBlur(); 
   const {notifications, setNotifications} = useNotifications(); 
@@ -34,7 +57,6 @@ function Dashboard() {
     getUser();
   }, []);
  
-
   useEffect(() => { 
     const getUserNotifications = async () => {
       try {
@@ -51,15 +73,14 @@ function Dashboard() {
       return () => clearInterval(intervalId);
     }
   }, [user]); 
-  
-   
+     
 
   return (
     <div className="text-white w-100"
     style={{ 
       background: popup && '#e9e9e9',
       width: '100%',  
-      height: '100vh',
+      height: '80vh',
       filter: popup ? 'blur(5rem)' : 'none',
       transition: 'filter 0.5s',   
     }}>
@@ -72,7 +93,7 @@ function Dashboard() {
             <CButton color="primary" className="position-relative w-100"
              style={{ height: 'auto' }}>
               Notifications
-              <CBadge color="danger" position="top-end" shape="rounded-pill">
+              <CBadge color="danger" position="top-end" shape="rounded-pill" hidden>
                 {notifications.length} <span className="visually-hidden">unread messages</span>
               </CBadge>
             </CButton> 
@@ -100,9 +121,6 @@ function Dashboard() {
           <Link to='/students'>
             <CButton color="primary" className="position-relative w-100" style={{ height: 'auto' }}>
               All Students
-              <CBadge color="danger" position="top-end" shape="rounded-pill">
-                {numberOfStudents} <span className="visually-hidden">unread messages</span>
-              </CBadge>
             </CButton> 
           </Link>
         </CCol>

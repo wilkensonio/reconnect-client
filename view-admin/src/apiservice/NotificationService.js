@@ -4,15 +4,8 @@ import { handleUnauthorizedError  } from "./ErrorService";
 const apiKey = import.meta.env.VITE_APP_API_KEY;
 const token  = localStorage.getItem('reconnect_access_token'); 
 const token_type = localStorage.getItem('reconnect_token_type');
-
-/**
- * Data is the JSON object that contains the user_id and the message
- * data.user_id is the id of the user that the notification is for
- * 
- * @param {String} data
- * @returns {JSON}
- */
-
+ 
+ 
 export const newNotification = async (data) => {
     try {
       const response = await axios.put(`/api/new/notification/${data.user_id}`, data, {
@@ -30,11 +23,13 @@ export const newNotification = async (data) => {
     }
 }
 
+
 /**
- * Get all notifications for a user
- * 
- * @param {String} hootloot_id
- * @returns {JSON}
+ * Fetches user notifications based on the provided hootloot ID.
+ *
+ * @param {string} hootloot_id - The ID of the hootloot to fetch notifications for.
+ * @returns {Promise<Object>} A promise that resolves to the data of the user notifications.
+ * @throws Will throw an error if the request fails, including unauthorized errors.
  */
 export const userNotifications = async (hootloot_id) => {    
     try {
@@ -54,12 +49,15 @@ export const userNotifications = async (hootloot_id) => {
     }      
 }
 
-/**
- * Delete  a notification
- *  
- * @returns {JSON}
- */
+ 
 
+/**
+ * Deletes a notification by its ID.
+ *
+ * @param {string} notification_id - The ID of the notification to delete.
+ * @returns {Promise<Object>} The response data from the delete request.
+ * @throws Will throw an error if the delete request fails.
+ */
 export const deleteNotification = async (notification_id) => {
     try {
         const response = await axios.delete(`/api/delete/notification/${notification_id}`, {
@@ -77,11 +75,14 @@ export const deleteNotification = async (notification_id) => {
         throw error.response?.data || new Error('Failed to delete notification'); 
     }      
 }
+ 
+
 /**
- * Delete all notifications for a user
- * 
- * @param {String} user_id the id of the user
- * @returns {JSON}
+ * Deletes notifications for a specific user.
+ *
+ * @param {string} user_id - The ID of the user whose notifications are to be deleted.
+ * @returns {Promise<Object>} The response data from the server.
+ * @throws Will throw an error if the request fails.
  */
 export const deleteNotifications = async (user_id) => {
     try {

@@ -1,20 +1,79 @@
+/**
+ * Availability component
+ * 
+ * This component allows users to manage their availability schedule. Users can select days of the week,
+ * specify start and end times, and create, update, or delete availability entries. The component fetches
+ * user data and availability from the server and updates the state accordingly.
+ * 
+ * @component
+ * 
+ * @returns {JSX.Element} The rendered Availability component.
+ * 
+ * @typedef {Object} AvailabilityEntry
+ * @property {string} day - The day of the week.
+ * @property {string} startTime - The start time in HH:MM format.
+ * @property {string} endTime - The end time in HH:MM format.
+ * @property {string} userId - The ID of the user.
+ * @property {string} id - The ID of the availability entry.
+ * 
+ * @typedef {Object} User
+ * @property {string} user_id - The ID of the user.
+ * @property {string} email - The email of the user.
+ * 
+ * @typedef {Object} AvailabilityResponse
+ * @property {Array<AvailabilityEntry>} data - The array of availability entries.
+ * 
+ * @typedef {Object} CreateAvailabilityEntry
+ * @property {string} day - The day of the week.
+ * @property {string} start_time - The start time in HH:MM format.
+ * @property {string} end_time - The end time in HH:MM format.
+ * @property {string} user_id - The ID of the user.
+ * 
+ * @typedef {Object} UpdateAvailabilityEntry
+ * @property {string} day - The day of the week.
+ * @property {string} start_time - The start time in HH:MM format.
+ * @property {string} end_time - The end time in HH:MM format.
+ * @property {string} faculty_id - The ID of the user.
+ * @property {string} id - The ID of the availability entry.
+ * 
+ * @typedef {Object} DeleteAvailabilityResponse
+ * @property {boolean} data - The success status of the delete operation.
+ * 
+ * @function handleDayChange
+ * @description Toggles the selection state of a specific day.
+ * @param {number} index - The index of the day to toggle.
+ * 
+ * @function handleSelectAll
+ * @description Toggles the selection state of all days.
+ * 
+ * @function validateFields
+ * @description Validates the input fields for creating or updating availability.
+ * @returns {boolean} True if the fields are valid, false otherwise.
+ * 
+ * @function handleAddAvailability
+ * @description Adds new availability entries based on the selected days and times.
+ * @returns {Promise<void>}
+ * 
+ * @function handleUpdateClick
+ * @description Sets the state for updating an existing availability entry.
+ * @param {number} index - The index of the availability entry to update.
+ * 
+ * @function handleUpdateSubmit
+ * @description Submits the updated availability entry to the server.
+ * @returns {Promise<void>}
+ * 
+ * @function handleDeleteAvailability
+ * @description Deletes an availability entry.
+ * @param {number} index - The index of the availability entry to delete.
+ * @returns {Promise<void>}
+ */
 import React, { useEffect, useState } from 'react';
 import { CButton, CCard, CCol, CForm, CFormInput, CInputGroup, CInputGroupText, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CRow } from '@coreui/react';
 import { getUserByEmail } from '../apiservice/UserService';
 import { createAvailability, getAvailability, updateAvailability, deleteAvailability } from '../apiservice/AvailabilityService';
+import { Link } from 'react-router-dom';
 
-/**
- * Fetches the availability data for the user and updates the state.
- * 
- * This effect runs whenever the `user` state changes. It sends a request to fetch
- * the availability data for the user based on their user ID. The fetched data is then
- * formatted and stored in the `availability` state.
- * 
- * @async
- * @function
- * @name fetchAvailability
- * @returns {void}
- */
+ 
 function Availability() {
     const [userId, setUserId] = useState('');
     const [user, setUser] = useState('');
@@ -221,20 +280,25 @@ function Availability() {
 
     return (
         <div>
+            <span hidden>testAvailability</span>
             <h1 className='text-white text-center mb-4'>Availability</h1>
+            <div className='container mb-3 mt-2'>
+                <Link to='/dashboard'>
+                    <span className='text-white'>Back to dashboard</span>
+                </Link>
+            </div>
             <CCard className='shadow' 
-            alignment='center'
-            style={{ 
-                background: '#e9e9e9',
-                width: '100%',  
-                minHeight: '80vh',
-                filter: modalVisible ? 'blur(5rem)' : 'none',
-                transition: 'filter 0.3s',   
-            }}>
-                 <div>
-                    {alertMessage && <div className="text-danger text-center pt-5 h5">{alertMessage}</div>}
-
-                        </div>
+                alignment='center'
+                style={{ 
+                    background: '#e9e9e9',
+                    width: '100%',  
+                    minHeight: '80vh',
+                    filter: modalVisible ? 'blur(5rem)' : 'none',
+                    transition: 'filter 0.3s',   
+                }}> 
+                <div>
+                    {alertMessage && <div className="text-danger text-center pt-5 h5">{alertMessage}</div>} 
+                </div>
                 <div className='m-4'>
                     <CRow> 
                         <CCol md={6}>

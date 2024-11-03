@@ -1,19 +1,24 @@
-import { CFooter, CLink } from '@coreui/react'
-import React from 'react'
+import { CFooter, CLink } from '@coreui/react';
+import React from 'react';
 
 function Footer() {
+  const currentYear = new Date().getFullYear();
+  const startYear = 2024;
+
   return (
-    <footer className="footer bg-dark border-top-0 text-white">
+    <CFooter className='border-0'>
       <div>
-        <a href="https://coreui.io">ReConnect</a>
-        <span> &copy; 2024.</span>
+        <CLink>ReConnect</CLink>
+        <span>
+          &copy; {startYear} {currentYear > startYear ? `- ${currentYear}` : ''}
+        </span>
       </div>
       <div>
         <span>Powered by</span>
-        <a href="">😆</a>
+        <CLink href="https://coreui.io">CoreUI</CLink>
       </div>
-    </footer>
-  )
+    </CFooter>
+  );
 }
 
-export default Footer
+export default Footer;

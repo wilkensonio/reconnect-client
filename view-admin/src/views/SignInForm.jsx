@@ -1,3 +1,79 @@
+/**
+ * SignInForm component handles the user sign-in process.
+ * 
+ * @component
+ * @param {Object} props - Component props
+ * @param {Function} props.onResetPassword - Callback function to handle password reset
+ * 
+ * @returns {JSX.Element} The rendered SignInForm component
+ * 
+ * @example
+ * <SignInForm onResetPassword={handleResetPassword} />
+ * 
+ * @description
+ * The SignInForm component renders a form for user sign-in. It includes fields for email and password,
+ * and provides validation to ensure the email is a valid Southern Connecticut State University email.
+ * It also handles various messages based on URL parameters, such as session expiration or account creation.
+ * 
+ * @function
+ * @name SignInForm
+ * 
+ * @param {Object} fields - The fields to validate
+ * @param {string} fields.email - The email field
+ * @param {string} fields.password - The password field
+ * 
+ * @returns {boolean} - Returns true if the fields are valid, otherwise false
+ * 
+ * @example
+ * validateFields({ email: 'johnd1@southernct.edu', password: 'password123' });
+ * 
+ * @description
+ * The validateFields function checks if the email and password fields are not empty and if the email
+ * ends with '@southernct.edu'.
+ * 
+ * @function
+ * @name validateFields
+ * 
+ * @param {Object} e - The event object
+ * 
+ * @returns {void}
+ * 
+ * @example
+ * handleSubmit(event);
+ * 
+ * @description
+ * The handleSubmit function handles the form submission. It validates the email and password,
+ * attempts to get a token, and then signs in the user. If successful, it redirects to the dashboard.
+ * 
+ * @function
+ * @name handleSubmit
+ * 
+ * @param {void}
+ * 
+ * @returns {void}
+ * 
+ * @example
+ * handleResetPasswordClick();
+ * 
+ * @description
+ * The handleResetPasswordClick function triggers the onResetPassword callback.
+ * 
+ * @function
+ * @name handleResetPasswordClick
+ * 
+ * @param {void}
+ * 
+ * @returns {void}
+ * 
+ * @example
+ * togglePasswordVisibility();
+ * 
+ * @description
+ * The togglePasswordVisibility function toggles the visibility of the password field.
+ * 
+ * @function
+ * @name togglePasswordVisibility
+ */
 import React, { useEffect, useState } from 'react';
 import { CButton, CRow, CCol, CForm, CFormInput, CInputGroup, CInputGroupText } from '@coreui/react';
 import { useLocation } from 'react-router-dom';
@@ -37,23 +113,16 @@ function SignInForm({onResetPassword}) {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const smg = params.get('message');
-    if (smg == 'session-expired') {
-      setMessage('Session expired. Please sign in.');
-      setTimeout(() => {
-        setMessage('');
-      }, 10000);
+    if (smg == 'logout') {
+      setMessage('You have been signed out.');
+    } else if (smg == 'session-expired' || smg == 'token-expired'|| smg == 'session_expired') {
+      setMessage('Session expired. Please sign in.'); 
 
     }else if (smg == 'account_created') { 
-      setMessage('Account created successfully. Please sign in.');
-      setTimeout(() => {
-        setMessage('');
-      }, 5000);
+      setMessage('Account created successfully. Please sign in.'); 
     }
     else if (smg == 'password_reset') { 
-      setMessage('Password reset successfully. Please sign in.');
-      setTimeout(() => {
-        setMessage('');
-      }, 5000);
+      setMessage('Password reset successfully. Please sign in.'); 
     } else {
       setMessage('');
     }
@@ -116,6 +185,7 @@ function SignInForm({onResetPassword}) {
 
   return (
     <div style={{ width: '100%' }}>
+      <span hidden>testSignInForm</span>
       <CRow>  
         <CCol>  
           <CForm onSubmit={handleSubmit} className='mb-5' >
@@ -150,16 +220,27 @@ function SignInForm({onResetPassword}) {
                 style={{position: 'relative', top:'10px'}}
                 disabled={!isFormValid}
               > Signin
-              </CButton>
+              </CButton> 
               <div className="mt-5 d-flex justify-content-center mb-3"> 
-                <a as button className="text-decoration-none" onClick={handleResetPasswordClick} style={{cursor: 'pointer'}}>Reset password</a>
+                <a
+                  href="#"
+                  className="text-decoration-none"
+                  onClick={(e) => {
+                    e.preventDefault();  
+                    handleResetPasswordClick();
+                  }}
+                  style={{ cursor: 'pointer' }}
+                >
+                  Reset password
+                </a>
               </div>
+
             </CCol> 
             {error ? (
               <div className="text-danger text-center pt-5">
                 <p>{error}</p>
               </div>
-            ) :  <div className="text-success text-center pt-5"> {message} </div>}
+            ) :  <div className="text-success text-center pt-5 h5"> {message} </div>}
           </CForm>
         </CCol>
       </CRow> 

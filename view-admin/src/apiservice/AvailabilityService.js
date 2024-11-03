@@ -5,11 +5,13 @@ const apiKey = import.meta.env.VITE_APP_API_KEY;
 const token  = localStorage.getItem('reconnect_access_token'); 
 const token_type = localStorage.getItem('reconnect_token_type');
 
+
 /**
- *  Create a new availability 
- * 
- * @param {String} userData 
- * @returns {JSON}
+ * Create an availability data for a specific user.
+ *
+ * @param {string} user_id - The ID (HootLoot) of the user whose availability data is being fetched.
+ * @returns {Promise<Object>} The response object containing the availability data.
+ * @throws Will throw an error if the request fails.
  */
 export const createAvailability = async (data) => {
     try {
@@ -28,11 +30,13 @@ export const createAvailability = async (data) => {
     }
 }
 
+ 
 /**
- * Get the availability of a user
- * 
- * @param {String} user_id 
- * @returns {JSON} the availability of the user
+ * Fetches the availability data for a specific user.
+ *
+ * @param {string} user_id - The ID of the user whose availability data is being fetched.
+ * @returns {Promise<Object>} The response object containing the availability data.
+ * @throws Will throw an error if the request fails.
  */
 export const getAvailability = async (user_id) => {
     try {
@@ -50,11 +54,15 @@ export const getAvailability = async (user_id) => {
     }
 }
 
+ 
 /**
- * Update the availability of a user
- * 
- * @param {String} user_id
- * @returns {JSON} the availability of the user
+ * Updates the availability data on the server.
+ *
+ * @param {Object} availabilityData - The availability data to be updated.
+ * @param {number} availabilityData.id - The ID of the availability entry.
+ * @param {string} availabilityData fields related to availability.
+ * @returns {Promise<Object>} The response data from the server.
+ * @throws Will throw an error if the update fails.
  */
 export const updateAvailability = async (availabilityData) => {
     try {
@@ -76,6 +84,7 @@ export const updateAvailability = async (availabilityData) => {
   }
 
 
+ 
 /**
  * Deletes an availability entry by its ID.
  *

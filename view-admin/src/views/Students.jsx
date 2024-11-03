@@ -1,27 +1,53 @@
-import { useState, useEffect } from 'react'
+/**
+ * Students component displays a list of students with functionalities to search, filter, and delete students.
+ * 
+ * @component
+ * 
+ * @returns {JSX.Element} The Students component.
+ * 
+ * @example
+ * return (
+ *   <Students />
+ * )
+ * 
+ * @description
+ * - Fetches student data from the server and displays it in a list.
+ * - Allows searching for students by name, email, or student ID.
+ * - Supports infinite scrolling to load more students as the user scrolls down.
+ * - Provides a modal to confirm the deletion of a student.
+ * 
+ * @function
+ * @name Students
+ * 
+ * @property {number} count - The number of students to display initially and incrementally.
+ * @property {Array} students - The list of students fetched from the server.
+ * @property {number} studentLength - The total number of students.
+ * @property {boolean} showDeleteModal - State to control the visibility of the delete confirmation modal.
+ * @property {Object|null} studentToDelete - The student object to be deleted.
+ * @property {Array} filteredStudents - The list of students filtered based on the search term.
+ * @property {Object} visibleRange - The range of students currently visible in the list.
+ * @property {boolean} loading - State to indicate if the data is being loaded.
+ * @property {string} error - Error message if any error occurs during data fetching or deletion.
+ * 
+ * @function fetchStudentData - Fetches the student data from the server.
+ * @function handleScroll - Handles the scroll event to implement infinite scrolling.
+ * @function filterStudents - Filters the students based on the search term.
+ * @function handleDeleteStudent - Deletes the selected student from the server and updates the list.
+ * @function openDeleteModal - Opens the delete confirmation modal for the selected student.
+ * 
+ * @returns {JSX.Element} The rendered component.
+ */
+import React, { useState, useEffect } from 'react'
 import { CButton, CModal,CModalBody, CModalFooter, CSpinner, CTooltip } from '@coreui/react'
 import { fetchStudents, deleteStudent} from '../apiservice/StudentService'
 import customTooltipStyle from '../components/tooltip/CustomToolTip'
 import { Link } from 'react-router-dom';
+// import { CVirtualScroller } from '@coreui/react-pro'
 
-// Function to generate fake student data remove after 
-const generateFakeStudents = (count) => {
-    const fakeStudent = [];
-    for (let i = 1; i <= count; i++) {
-        const student_id = (7857890 + i).toString().padStart(8, '0'); 
-        fakeStudent.push({
-            id: `fake-${i}`,
-            student_id: student_id,
-            first_name: `FakeFirst${i}`,
-            last_name: `FakeLast${i}`,
-            email: `fake${i}@southernct.edu`,
-        });
-    }
-    return fakeStudent;
-};
+
 
 function Students() {
-    const count = 10;
+    const count = 999999999;
     const [students, setStudents] = useState([])
     const [studentLength, setStudentLength] = useState(0) 
     const [showDeleteModal, setShowDeleteModal] = useState(false)
@@ -36,12 +62,8 @@ function Students() {
             setError('');
             try {
                 const data = await fetchStudents();  
-                setTimeout(() => {  
-                    setStudentLength(data.length);
-                    const fakeStudents = generateFakeStudents(100);
-                    setStudents([...data]); // Merge real and fake students remove fake students aftera after testing
-                    
-                }, 200); 
+                setStudentLength(data.length);
+                setStudents([...data]);   
             } catch (error) {
                 setError('Could not fetch students'); 
             } finally {
@@ -64,7 +86,7 @@ function Students() {
         if (scrollTop + windowHeight >= documentHeight - 200) {
             setVisibleRange((prevRange) => ({
                 start: prevRange.start,
-                end: Math.min(prevRange.end + count, students.length), // Increase the visible range end
+                end: Math.min(prevRange.end + count, students.length), 
             }));
         } 
          
@@ -108,7 +130,8 @@ function Students() {
     const currentStudents = filteredStudents.slice(visibleRange.start, visibleRange.end);
     const numberOfStudents = filteredStudents.length;
     return (
-        <div>
+        <div style={{ height: '90vh', overflow: 'hidden' }} className='scroll-container'>
+            <span hidden>testStudents</span>
             <h3 className='text-center text-white  d-flex justify-content-center mt-3 mb-2'>
                 <>      
                     <span>{numberOfStudents}&nbsp;</span> Students
@@ -158,7 +181,7 @@ function Students() {
                         />
                     </div>                 
 
-                    <div className="row">
+                    <div className="row mb-5" style={{ height: '65vh', overflowY: 'scroll'}}>
                     {currentStudents.map((student) => (
                             <div sm={12} className="col-sm-12" key={student.id}>
                                 <div className="card card-student mt-2">
@@ -183,7 +206,7 @@ function Students() {
                                             >
                                                 Delete
                                             </CButton>
-                                            <CButton
+                                            <CButton hidden
                                             className='m-0  pt-0 pb-0 ccolor' 
                                                 onClick={() => scheduleMeeting(student.id)}
                                             >

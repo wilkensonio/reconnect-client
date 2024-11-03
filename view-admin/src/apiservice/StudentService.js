@@ -56,9 +56,11 @@ const uploadCsv = async (csvFile) => {
     formData.append('file', csvFile);
   
     try {
-      const response = await axios.post(`${API_URL}/upload`, formData, {
+      const response = await axios.post('/api/students/upload', formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+            'R-API-KEY': `${apikey}`,
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `${token_type} ${token}`
         },
       });
       return response.data;

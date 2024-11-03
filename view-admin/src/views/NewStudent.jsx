@@ -1,8 +1,46 @@
+/**
+ * NewStudent component allows users to add new students or upload a CSV file containing student data.
+ * 
+ * @component
+ * @example
+ * return (
+ *   <NewStudent />
+ * )
+ * 
+ * @returns {JSX.Element} The rendered NewStudent component.
+ * 
+ * @description
+ * This component provides a form for adding individual students and a file input for uploading a CSV file with multiple students.
+ * It includes validation for student ID and email, and displays success or error messages based on the operation's outcome.
+ * 
+ * @function
+ * @name NewStudent
+ * 
+ * @property {string} firstName - The first name of the student.
+ * @property {string} lastName - The last name of the student.
+ * @property {string} studentId - The ID of the student (HootLoot ID).
+ * @property {string} email - The email address of the student.
+ * @property {string} phoneNumber - The phone number of the student.
+ * @property {string} success - Success message to be displayed.
+ * @property {string} error - Error message to be displayed.
+ * @property {File|null} csvFile - The CSV file to be uploaded.
+ * 
+ * @method
+ * @name handleSubmit
+ * @description Handles the form submission for adding a new student.
+ * @param {Event} e - The form submission event.
+ * 
+ * @method
+ * @name handleCsvUpload
+ * @description Handles the form submission for uploading a CSV file.
+ * @param {Event} e - The form submission event.
+ */
 import React, { useState } from 'react';
 import { CButton, CFormInput, CFormLabel, CContainer, CRow, CCol, CTooltip } from '@coreui/react';
 import { addStudent, uploadCsv } from '../apiservice/StudentService';
 import customTooltipStyle from '../components/tooltip/CustomToolTip';
 import { Link } from 'react-router-dom';
+
 
 function NewStudent() {
   const [firstName, setFirstName] = useState('');
@@ -93,13 +131,16 @@ function NewStudent() {
   return (
     <div className='container'>
       <h2 className='text-center text-white mt-3'>Upload or Add New Students</h2>
-      <div className='mb-5 mt-4'>
+      <div className='container mb-5 mt-4'>
         <Link to='/dashboard'>
             <span className='text-white'>Back to dashboard</span>
         </Link>
       </div>
       <CContainer className='d-flex justify-content-center   w-100'> 
-        <div className='card shadow '>
+        <div className='card shadow '
+        style={{
+          background: '#e9e9e9',
+        }}>
           <h3  className='text-center  d-flex justify-content-center mt-3 mb-5'> 
               <>      
               Students
