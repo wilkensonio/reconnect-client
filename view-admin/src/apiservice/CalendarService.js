@@ -37,9 +37,9 @@ export const getAppointmentById = async (appointmentId) => {
 };
 
 // Update an appointment
-export const updateAppointment = async (data) => {
+export const updateAppointment = async (id, updatedData) => {
   try {
-    const response = await axios.put(`/api/appointment/update/${data.user_id}`, data, {
+    const response = await axios.put(`/api/appointment/update/${id}`, updatedData, {
       headers: {
         'R-API-KEY': `${apiKey}`,
         'Content-Type': 'application/json',
