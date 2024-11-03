@@ -14,6 +14,7 @@ function SwitchForm(props) {
 
   return (
     <div>
+        <span hidden>switch form</span>
         <CForm className="form-container">
             <div className="slide-controls">
                 <CFormCheck

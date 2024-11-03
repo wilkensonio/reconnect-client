@@ -3,11 +3,13 @@ import { handleUnauthorizedError } from './ErrorService';
 
 const apiKey = import.meta.env.VITE_APP_API_KEY;
 
+
 /**
- * Send email verification code
- * 
- * @param {String} email
- * @returns {JSON}
+ * Sends an email for verification purposes.
+ *
+ * @param {string} email - The email address to send the verification to.
+ * @returns {Promise<Object>} The response from the server.
+ * @throws Will throw an error if the email sending fails.
  */
 export const sendEmail= async (email) => {
   try {
@@ -26,12 +28,14 @@ export const sendEmail= async (email) => {
   }
 };
 
+
 /**
- * Verify email code
- * 
- * @param {String} sentCode the code entered by the user
- * @param {String} verificationCode  this code is to be compared with the code sent to the user
- * @returns {JSON}
+ * Verifies the email code by sending a POST request to the server.
+ *
+ * @param {string} sentCode - The code sent to the user.
+ * @param {string} verificationCode - The code to verify against.
+ * @returns {Promise<Object>} The response from the server.
+ * @throws Will throw an error if the verification fails.
  */
 export const verifyEmailCode = async (sentCode, verificationCode) => {  
   try {

@@ -1,3 +1,56 @@
+/**
+ * SignupForm component handles the user registration process.
+ * 
+ * @component
+ * @param {Object} props - Component props
+ * @param {Function} props.onVerifySignup - Callback function to be called after successful email verification
+ * 
+ * @returns {JSX.Element} The rendered SignupForm component
+ * 
+ * @example
+ * <SignupForm onVerifySignup={handleVerifySignup} />
+ * 
+ * @typedef {Object} UserData
+ * @property {string} user_id - The user's HootLoot ID
+ * @property {string} first_name - The user's first name
+ * @property {string} last_name - The user's last name
+ * @property {string} email - The user's email address
+ * @property {string} password - The user's password
+ * @property {string} phone_number - The user's phone number
+ * 
+ * @typedef {Object} EmailResponse
+ * @property {string} verification_code - The verification code sent to the user's email
+ * 
+ * @typedef {Object} UserResponse
+ * @property {string} email - The user's email address
+ * @property {number} status - The response status code
+ * 
+ * @function validateFields
+ * @description Validates the form fields to ensure they are not empty
+ * @param {Object} fields - The form fields to validate
+ * @param {string} fields.userId - The user's HootLoot ID
+ * @param {string} fields.firstName - The user's first name
+ * @param {string} fields.lastName - The user's last name
+ * @param {string} fields.email - The user's email address
+ * @param {string} fields.password - The user's password
+ * @param {string} fields.phoneNumber - The user's phone number
+ * @returns {boolean} True if all fields are valid, otherwise false
+ * 
+ * @function sendEmailVerification
+ * @description Sends an email verification code to the user's email address
+ * @returns {Promise<void>} A promise that resolves when the email is sent
+ * 
+ * @function handleVerifyEmail
+ * @description Handles the email verification process and form validation
+ * @param {Event} e - The form submission event
+ * @returns {Promise<void>} A promise that resolves when the email verification is complete
+ * 
+ * @function togglePasswordVisibility
+ * @description Toggles the visibility of the password field
+ * 
+ * @function toggleConfirmPasswordVisibility
+ * @description Toggles the visibility of the confirm password field
+ */
 import React, { useState } from 'react';
 import { CForm, CCol, CFormInput, CButton, CRow, CInputGroupText, CInputGroup} from '@coreui/react'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -152,14 +205,15 @@ const SignupForm = ({onVerifySignup}) => {
   
   return ( 
     <div className=""> 
+        <span hidden>testSignupForm</span>
         <div className='d-flex justify-content-center align-items-center '> 
-              <CRow className=''> 
+              <CRow> 
                 <CCol md={12} > 
                     <div className=''>
                         <CForm  className="row gy-2 gx-3 ">
                           <CCol xs={12} className='mb-3'>
                             <CFormInput
-                              userId="idInput"
+                              id="idInput"
                               placeholder="Enter your (HootLoot) ID *"
                               value={userId}
                               onChange={(e) => setUserId(e.target.value)}

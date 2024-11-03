@@ -1,3 +1,48 @@
+/**
+ * PiMessage component allows users to send and delete messages on a kiosk.
+ * 
+ * @component
+ * @example
+ * return (
+ *   <PiMessage />
+ * )
+ * 
+ * @returns {JSX.Element} The rendered component.
+ * 
+ * @description
+ * This component provides a modal interface for users to leave a message on a kiosk.
+ * It fetches the logged-in user's information and any existing message on the kiosk.
+ * Users can send a new message or delete an existing one.
+ * 
+ * @function
+ * @name PiMessage
+ * 
+ * @property {boolean} modalVisible - State to control the visibility of the modal.
+ * @property {string} message - State to store the message to be sent to the kiosk.
+ * @property {number} duration - State to store the duration for which the message will be displayed.
+ * @property {string} durationUnit - State to store the unit of the duration (e.g., minutes, hours).
+ * @property {string} loggedInUser - State to store the email of the logged-in user.
+ * @property {object} user - State to store the user information fetched from the API.
+ * @property {boolean} deleteMessage - State to indicate if the message has been deleted.
+ * @property {string} hasMessage - State to indicate if there is an active message on the kiosk.
+ * @property {string} error - State to store any error messages.
+ * 
+ * @function handleDurationUnitChange
+ * @description Handles the change event for the duration unit select input.
+ * @param {object} e - The event object.
+ * 
+ * @function handleSendMessage
+ * @description Sends the message to the kiosk by calling the updatePiMessage API.
+ * 
+ * @function handleDeleteMessage
+ * @description Deletes the message from the kiosk by calling the deletePiMessage API.
+ * 
+ * @function fetchUser
+ * @description Fetches the logged-in user's information from the API.
+ * 
+ * @function fetchActiveMessage
+ * @description Fetches the active message on the kiosk from the API.
+ */
 import React, { useState, useEffect } from 'react';
 import {
   CButton,
@@ -14,6 +59,7 @@ import {
 import { getUserByEmail } from '../apiservice/UserService';
 import { updatePiMessage, getPiMessage, deletePiMessage} from '../apiservice/PiMessage';  
 import { useBlur } from '../context/PiMessageContext';
+
 
 function PiMessage() {
     const [modalVisible, setModalVisible] = useState(false);
@@ -115,11 +161,13 @@ function PiMessage() {
       </CButton>
       
 
-      <CModal visible={popup} onClose={()=>togglePiPopup()}>
+      <CModal className='pi-modal' visible={popup} onClose={()=>togglePiPopup()}
+        alignment='center'   
+        >
         <CModalHeader onClose={()=>togglePiPopup()} className='border-0'>
           <CModalTitle>Leave a Message on the Kiosk</CModalTitle>
         </CModalHeader>
-        <CModalBody className='card-color'>
+        <CModalBody className='card-color pi-modal'>
           <CForm
             onSubmit={(e) => {
               e.preventDefault();  

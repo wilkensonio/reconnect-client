@@ -1,9 +1,9 @@
-import {useState, useEffect} from 'react'
+import React, {useState, useEffect} from 'react'
 import SwitchForm from './SwitchForm';
 import SignInForm from '../../views/SignInForm';
 import SignUpForm from '../../views/SignUpForm';
 import ResetPasswordModal from './ResetPasswordModal';
-import VerifyEmailModal from './VerifyEmailModal';
+import VerifyEmailModal from './VerifyEmailModal'
 import {CCard, CCardBody, CCardHeader, CCol, CRow, CTooltip } from '@coreui/react';
 import customTooltipStyle from '../../components/tooltip/CustomToolTip'
 
@@ -43,6 +43,7 @@ function SignUpIn() {
 
     return (
         <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+            <span hidden>testSignupIn</span>
             <CCard
             className='shadow'
                 style={{ 

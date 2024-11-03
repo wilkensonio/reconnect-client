@@ -6,7 +6,7 @@ const token  = localStorage.getItem('reconnect_access_token');
 const token_type = localStorage.getItem('reconnect_token_type');
 
 /**
- *  Update the message the be displayed on the pi
+ * Update the message the be displayed on the pi
  * data.user_id is the id of the user that the notification is for (hootloot id)
  * 
  * @param {String} userData 

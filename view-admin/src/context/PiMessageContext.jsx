@@ -17,5 +17,9 @@ export const BlurDashboardProvider = ({ children }) => {
 };
 
 export const useBlur = () => {
-    return useContext(blurDashboardContext);
+    const context =  useContext(blurDashboardContext);
+    if (!context) {
+        throw new Error('useBlur must be used within a BlurDashboardProvider');
+    }
+    return context;
 };

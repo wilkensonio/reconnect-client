@@ -60,7 +60,7 @@ function VerifyEmailModal({ showModal, setShowModal}) {
             <CModalTitle className='d-flex text-center'>Verify Your Email</CModalTitle>
             </CModalHeader>
             <CModalBody>
-            <p>Please enter the verification code sent to your email. </p>
+            <p>Enter the verification code sent to your email. </p>
             <p>
                 <span className='text-muted'>
                 If you do not see the email in your inbox check your spam  <br /> 
