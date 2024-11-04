@@ -293,9 +293,7 @@ input[type="radio"]{
 .scroll-container{
   scrollbar-width: thin;
   scrollbar-color: hsl(233, 90%, 28%) hsl(233, 78%, 71%);
-} 
-
-@import 'bootstrap/dist/css/bootstrap.min.css';
+}  
  
  
 /* FullCalendar */
@@ -352,3 +350,5 @@ input[type="radio"]{
   margin: 0;
   padding: 0;
 }
+
+@import 'bootstrap/dist/css/bootstrap.min.css';
