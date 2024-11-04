@@ -4,7 +4,7 @@ import Layout from './layout/Layout';
 import SignUpIn from './components/auth/SignUpIn';
 import { CSpinner } from '@coreui/react';
 import { NotificationProvider } from './context/NotificationContext';
-
+import Logout from './views/Logout';
  
 function App() { 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -45,7 +45,8 @@ function App() {
           }
       >
         <Routes> 
-          <Route path="/signin" element={<SignUpIn />} />  
+          <Route path="/signin" element={<SignUpIn />} />
+          <Route path="/logout" element={<Logout />} />
           <Route path="*" name="Home" element={isAuthenticated ? <Layout /> : <Navigate to="/signin?message=session-expired"/>} /> 
         </Routes>
       </Suspense>  

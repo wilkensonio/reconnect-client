@@ -8,6 +8,7 @@
     --cui-sidebar-bg: #071689;
     --cui-didebar-padding-y: 0;
     --cui-didebar-padding-x: 0;
+    --cfc-blue:  hsl(233, 90%, 28%);
   }
   
 * {
@@ -292,9 +293,62 @@ input[type="radio"]{
 .scroll-container{
   scrollbar-width: thin;
   scrollbar-color: hsl(233, 90%, 28%) hsl(233, 78%, 71%);
-}
- 
-
+} 
 
 @import 'bootstrap/dist/css/bootstrap.min.css';
  
+ 
+/* FullCalendar */
+
+.fc-daygrid-event {
+  background-color:var(--cfc-blue);
+  border-color: var(--cfc-blue);
+  color: hsl(0, 0%, 100%);
+}
+.fc-daygrid-event:hover {
+  background-color:  hsl(233, 78%, 71%);
+  border-color: hsl(233, 78%, 71%);
+  color: hsl(0, 0%, 100%);
+}
+.fc-media-screen {
+  background-color: hsl(0, 0%, 91%);
+  border-color: var(--cfc-blue);
+  color: hsl(233, 78%, 71%);
+  font-weight: bold;
+  width: 100%;
+  height: 80vh;
+  border: 1px solid white; 
+} 
+.fc-toolbar-title {
+  color: var(--cfc-blue);
+}
+.fc .fc-button-primary {
+  background-color: var(--cfc-blue);
+  border: none !important;
+  border-radius: none !important;
+}
+.fc-today-button .fc-button-primary{
+  background-color: var(--cfc-blue);
+  border: none !important;
+  border-radius: none !important;
+}
+.fc-month-button .fc-button-primary{
+  background-color: var(--cfc-blue);
+  border: none !important;
+  border-radius: none !important;
+}
+.fc .fc-toolbar.fc-header-toolbar {
+   margin-top: 0;
+}
+.fc-button-group {
+  border: none !important;
+  border-radius: none !important;
+  margin: 0;
+  padding: 0;
+} 
+.fc-button{
+  border: none !important;
+  border-radius: none !important;
+  margin: 0;
+  padding: 0;
+}

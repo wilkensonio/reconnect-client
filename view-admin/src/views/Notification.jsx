@@ -93,8 +93,10 @@ function Notification() {
   useEffect(() => { 
     const getUserNotifications = async () => { 
       try {  
-        const notifications = await userNotifications(user.user_id); 
-        setNotifications(notifications.reverse());  
+        if(user.user_id != undefined){
+          const notifications = await userNotifications(user.user_id); 
+          setNotifications(notifications.reverse()); 
+        } 
       } catch (error) {
         tokenExpired(error.detail);
         console.error(error);

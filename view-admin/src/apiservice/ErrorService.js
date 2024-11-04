@@ -1,4 +1,4 @@
-
+import React from "react"; 
 
 /**
  * Handles unauthorized errors by checking the error response status.
@@ -11,6 +11,8 @@
  * @param {number} error.response.status - The HTTP status code of the response.
  */
 export const handleUnauthorizedError = (error) => {
+   
+
     const response = error.response;
     if (error.response) {
         if (response && error.response.status === 401) {
@@ -19,10 +21,12 @@ export const handleUnauthorizedError = (error) => {
             localStorage.removeItem('reconnect_first_name');
             localStorage.removeItem('reconnect_signup_data')
             localStorage.removeItem('reconnect_last_name');
+            localStorage.removeItem('reconnect_email_verification_code');
+            localStorage.setItem('reconnect_token_expired', 'true');  
+            
             window.location.href = '/signin?message=session-expired';
+            
             return
-        } else {
-            console.error(response);
         } 
     }  
 }
