@@ -1,3 +1,9 @@
+import React, { useState, useEffect } from 'react'
+import { CButton, CModal,CModalBody, CModalFooter, CSpinner, CTooltip } from '@coreui/react'
+import { fetchStudents, deleteStudent} from '../apiservice/StudentService'
+import customTooltipStyle from '../components/tooltip/CustomToolTip'
+import { Link } from 'react-router-dom'; 
+
 /**
  * Students component displays a list of students with functionalities to search, filter, and delete students.
  * 
@@ -37,15 +43,6 @@
  * 
  * @returns {JSX.Element} The rendered component.
  */
-import React, { useState, useEffect } from 'react'
-import { CButton, CModal,CModalBody, CModalFooter, CSpinner, CTooltip } from '@coreui/react'
-import { fetchStudents, deleteStudent} from '../apiservice/StudentService'
-import customTooltipStyle from '../components/tooltip/CustomToolTip'
-import { Link } from 'react-router-dom';
-// import { CVirtualScroller } from '@coreui/react-pro'
-
-
-
 function Students() {
     const count = 999999999;
     const [students, setStudents] = useState([])
@@ -56,6 +53,7 @@ function Students() {
     const [visibleRange, setVisibleRange] = useState({ start: 0, end: count }); 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+  
 
     useEffect(() => {
         const fetchStudentData = async () => {  

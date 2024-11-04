@@ -109,8 +109,7 @@ function sidebar() {
             </CNavItem> 
           </Link>
 
-          <hr />
-
+          <hr /> 
           <Link to="/logout" className="text-decoration-none text-light ms-3 mb-3">
             <CNavItem className="d-flex align-items-center me-3">
               <FontAwesomeIcon icon={faSignOutAlt} className="nav-icon text-white" /> 

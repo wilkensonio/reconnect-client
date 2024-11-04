@@ -89,6 +89,17 @@ function Dashboard() {
       </h2>
       <CRow className="mb-4 me-2 ms-2">
         <CCol sm={3} className="mb-4">
+          <Link to='/calendar'>
+            <CButton color="primary" className="position-relative w-100"
+             style={{ height: 'auto' }}>
+              Calendar
+              <CBadge color="danger" position="top-end" shape="rounded-pill" hidden>
+                {notifications.length} <span className="visually-hidden">unread messages</span>
+              </CBadge>
+            </CButton> 
+          </Link>
+        </CCol>
+        <CCol sm={3} className="mb-4">
           <Link to='/notifications'>
             <CButton color="primary" className="position-relative w-100"
              style={{ height: 'auto' }}>

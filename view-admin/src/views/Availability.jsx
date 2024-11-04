@@ -162,6 +162,16 @@ function Availability() {
         return true;
     };
 
+    const checkOverlap = (day, startTime, endTime) => {
+        return availability.some(entry => 
+            entry.day === day && 
+            !(
+                (endTime <= entry.startTime) || // New end time is before existing start time
+                (startTime >= entry.endTime) // New start time is after existing end time
+            )
+        );
+    };
+
     /**
      * Add availability to the user's schedule
      * 
@@ -177,6 +187,13 @@ function Availability() {
         const newAvailability = selectedDays
             .map((isSelected, index) => isSelected ? { day: daysOfWeek[index], startTime, endTime } : null)
             .filter(Boolean); 
+
+        for (const entry of newAvailability) {
+            if (checkOverlap(entry.day, entry.startTime, entry.endTime)) {
+                setAlertMessage(`Time slot for ${entry.day} overlaps with existing availability.`);
+                return;
+            }
+        }
     
         setAvailability(prevAvailability => {
             const updatedAvailability = [...prevAvailability, ...newAvailability];
@@ -193,7 +210,7 @@ function Availability() {
             await Promise.all(availabilityEntries.map(async entry => {
                 await createAvailability(entry);
             })); 
-            console.log('Availability entries created:', availabilityEntries);
+            
         } catch (error) {
             console.error('Error creating availability:', error);
         }
@@ -244,6 +261,11 @@ function Availability() {
             faculty_id: userId,
             id: availability[selectedEntry].id,
         };
+        
+        if (checkOverlap(day, startTime, endTime)) {
+            setAlertMessage(`Time slot for ${day} overlaps with existing availability.`);
+            return;
+        }
 
         try {
             await updateAvailability(updatedEntry);
@@ -363,7 +385,7 @@ function Availability() {
                             </CForm>
                         </CCol>
                     </CRow>
-                        <div>
+                        <div className='ms-5'>
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', margin: '20px 0' }}>
                                 <div style={{ flex: 1, height: '2px', backgroundColor: '#007bff', marginRight: '10px', position: 'relative' }}>
                                     <div style={{ content: "''", position: 'absolute', width: '20px', height: '2px', backgroundColor: '#007bff', left: '-20px', top: '50%', transform: 'translateY(-50%)' }}></div>
@@ -377,23 +399,34 @@ function Availability() {
                                 </div>
                             </div>
 
-                            {availability.length > 0 ? <span>
-                                {availability.map((entry, index) => (
-                                    <CRow key={index} className='mb-2 mt-5'>
-                                        <CCol md={3}>{entry.day}</CCol>
-                                        <CCol md={3}>{`${entry.startTime} - ${entry.endTime}`}</CCol>
-                                        <CCol md={3}>
-                                            <CButton onClick={() => handleUpdateClick(index)} className="ms-2 ccolor">Update</CButton>
-                                            <CButton color="danger" onClick={() => handleDeleteAvailability(index)} className="ms-2">Delete</CButton>
-                                        </CCol>
-                                    </CRow>
-                                ))}
-                            </span> : 
-                            <div className="text-center">
-                                <img src="/assets/logo/scsublueyellow.png" alt="scsu logo"
-                                    style={{ maxWidth: '20rem', width: '100%', height: 'auto' }} 
-                                 />    
-                            </div>}
+                            {availability.length > 0 ? (
+                                <CRow className='row'>
+                                    <CCol md={9}>
+                                        {availability.map((entry, index) => (
+                                            <CRow key={index} className='mb-2 mt-5'>
+                                                <CCol md={2}>{entry.day}</CCol>
+                                                <CCol md={2}>{`${entry.startTime} - ${entry.endTime}`}</CCol>
+                                                <CCol md={3} className='d-flex'>
+                                                    <CButton onClick={() => handleUpdateClick(index)} className="ms-2 ccolor mb-2" style={{ width: '50%' }}>Update</CButton>
+                                                    <CButton color="danger" onClick={() => handleDeleteAvailability(index)} className="ms-2 mb-2" style={{ width: '50%' }}>Delete</CButton>
+                                                </CCol>
+                                            </CRow>
+                                        ))}
+                                    </CCol>
+                                    <CCol>
+                                        <div className="mt-4">
+                                            <img src="/assets/logo/scsublueyellow.png" alt="scsu logo"
+                                                style={{ maxWidth: '20rem', width: '100%', height: 'auto' }} 
+                                            />    
+                                        </div>
+                                    </CCol> 
+                                </CRow> 
+                            )  : (
+                                <div className="text-center">
+                                    <img src="/assets/logo/scsublueyellow.png" alt="scsu logo"
+                                        style={{ maxWidth: '20rem', width: '100%', height: 'auto' }} 
+                                    />    
+                                </div>)}
                         </div>
                 </div>
             </CCard>
@@ -427,6 +460,7 @@ function Availability() {
                 </CModalBody>
                 <CModalFooter className='m-0 border-0'> 
                     <CButton className='ccolor' onClick={handleUpdateSubmit}>Update</CButton> 
+                    <CButton color="info" onClick={() => setModalVisible(false)}>Cancel</CButton>
                 </CModalFooter>
                 <div className='text-center mb-4'>
                         {alertMessage && <div className="text-danger text-center pt-5 h5">{alertMessage}</div>}

@@ -1,3 +1,13 @@
+import React, { useEffect, useState } from 'react';
+import { CButton, CRow, CCol, CForm, CFormInput, CInputGroup, CInputGroupText } from '@coreui/react';
+import { useLocation } from 'react-router-dom';
+import {signinUser} from '../apiservice/SignService';
+import {getToken} from '../apiservice/TokenService';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'; 
+import useFormValidation from '../components/validButton/useFormValidation';
+ 
+
 /**
  * SignInForm component handles the user sign-in process.
  * 
@@ -73,16 +83,7 @@
  * 
  * @function
  * @name togglePasswordVisibility
- */
-import React, { useEffect, useState } from 'react';
-import { CButton, CRow, CCol, CForm, CFormInput, CInputGroup, CInputGroupText } from '@coreui/react';
-import { useLocation } from 'react-router-dom';
-import {signinUser} from '../apiservice/SignService';
-import {getToken} from '../apiservice/TokenService';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'; 
-import useFormValidation from '../components/validButton/useFormValidation';
-
+ */ 
 function SignInForm({onResetPassword}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -91,7 +92,8 @@ function SignInForm({onResetPassword}) {
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const location = useLocation();  
-  const [showPassword, setShowPassword] = useState(false);  
+  const [showPassword, setShowPassword] = useState(false); 
+ 
 
   const validateFields = (fields) => {
     const {email, password} = fields;
@@ -111,11 +113,14 @@ function SignInForm({onResetPassword}) {
 
 
   useEffect(() => {
+    const token = localStorage.getItem('reconnect_token_expired');
     const params = new URLSearchParams(location.search);
     const smg = params.get('message');
-    if (smg == 'logout') {
-      setMessage('You have been signed out.');
-    } else if (smg == 'session-expired' || smg == 'token-expired'|| smg == 'session_expired') {
+    console.log(token);
+    
+    if (!token) {
+      setMessage('Signed out successfully.');
+    } else if (token && (smg == 'session-expired' || smg == 'token-expired'|| smg == 'session_expired')) {
       setMessage('Session expired. Please sign in.'); 
 
     }else if (smg == 'account_created') { 

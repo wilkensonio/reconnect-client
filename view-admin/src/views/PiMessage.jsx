@@ -91,7 +91,7 @@ function PiMessage() {
         setLoggedInUser(userSignInEmail); 
         if (!user)
           fetchUser();
-    }, []);
+    }, [user]);
 
     useEffect(() => { 
       if (!user) return;

@@ -50,7 +50,7 @@ export const getAvailability = async (user_id) => {
       return response;
     } catch (error) {
       handleUnauthorizedError(error);
-      throw error.response?.data || new Error('Failed to delete pi message');
+      throw error.response?.data || new Error('Failed to get availability');
     }
 }
 
@@ -82,7 +82,6 @@ export const updateAvailability = async (availabilityData) => {
       throw error.response?.data || new Error('Failed to update availability');
     }
   }
-
 
  
 /**
