@@ -415,7 +415,7 @@ function Availability() {
                                     </CCol>
                                     <CCol>
                                         <div className="mt-4">
-                                            <img src="/assets/logo/scsublueyellow.png" alt="scsu logo"
+                                            <img src="/faculty/assets/logo/scsublueyellow.png" alt="scsu logo"
                                                 style={{ maxWidth: '20rem', width: '100%', height: 'auto' }} 
                                             />    
                                         </div>
@@ -423,7 +423,7 @@ function Availability() {
                                 </CRow> 
                             )  : (
                                 <div className="text-center">
-                                    <img src="/assets/logo/scsublueyellow.png" alt="scsu logo"
+                                    <img src="/faculty/assets/logo/scsublueyellow.png" alt="scsu logo"
                                         style={{ maxWidth: '20rem', width: '100%', height: 'auto' }} 
                                     />    
                                 </div>)}

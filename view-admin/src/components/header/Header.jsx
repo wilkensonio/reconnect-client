@@ -9,7 +9,7 @@ function Header() {
     <div className='w-100 sticky-top'> 
       <CNavbar expand="lg" className='header border-0 text-white'>
         <CContainer> 
-          <Link to='/dashboard' className="text-decoration-none">
+          <Link to='/faculty/dashboard' className="text-decoration-none">
             <CNavbarBrand>
               <img src='/assets/logo/rconnect.png' alt="Reconnect logo"
                 style={{
@@ -23,7 +23,7 @@ function Header() {
           />
           <CCollapse className="navbar-collapse" visible={visible}>
             <CNavbarNav className='text-white' color='white'>
-              <Link to='/dashboard' className="text-decoration-none">
+              <Link to='/faculty/dashboard' className="text-decoration-none">
                 <CNavItem>
                   <CNavLink className='text-white' component={Link} to="/dashboard" active>
                     Dashboard
@@ -31,7 +31,7 @@ function Header() {
                 </CNavItem>
               </Link>
 
-              <Link to='/students' className="text-decoration-none">
+              <Link to='/faculty/students' className="text-decoration-none">
                 <CNavItem>
                   <CNavLink className='text-white'>
                     <BsPeople className='me-2'/>Students 
@@ -39,7 +39,7 @@ function Header() {
                 </CNavItem>
               </Link>
 
-              <Link to='/calendar' className="text-decoration-none">
+              <Link to='/faculty/calendar' className="text-decoration-none">
                 <CNavItem>
                   <CNavLink className='text-white'>
                     <BsCalendar className='me-2'/>Calendar
@@ -47,7 +47,7 @@ function Header() {
                 </CNavItem>
               </Link>
 
-              <Link to='/new-student' className="text-decoration-none">
+              <Link to='/faculty/new-student' className="text-decoration-none">
                 <CNavItem>
                   <CNavLink className='text-white'>
                     <BsPeople className='me-2'/>Add student
@@ -56,7 +56,7 @@ function Header() {
               </Link>
                
 
-              <Link to='/account' className="text-decoration-none">
+              <Link to='/faculty/account' className="text-decoration-none">
                 <CNavItem>
                   <CNavLink className='text-white'>
                     <BsGearFill className='me-2'/> Account

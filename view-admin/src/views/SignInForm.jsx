@@ -167,7 +167,7 @@ function SignInForm({onResetPassword}) {
       setLastName(last_name); 
       
       if (response.status === 200) {
-        window.location.href = '/dashboard';
+        window.location.href = '/faculty/dashboard';
         localStorage.setItem('reconnect_first_name', first_name);
       } 
       

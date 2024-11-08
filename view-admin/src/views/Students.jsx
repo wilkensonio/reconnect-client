@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { CButton, CModal,CModalBody, CModalFooter, CSpinner, CTooltip } from '@coreui/react'
+import { CButton, CModal,CModalBody, CModalFooter, CModalHeader, CSpinner, CTooltip } from '@coreui/react'
 import { fetchStudents, deleteStudent} from '../apiservice/StudentService'
 import customTooltipStyle from '../components/tooltip/CustomToolTip'
 import { Link } from 'react-router-dom'; 
@@ -219,12 +219,14 @@ function Students() {
                 </div>
             ) } 
             {/* Modal to confirm delete action */}
-            <CModal className="border-0" visible={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
-              
+            <CModal className="border-0" visible={showDeleteModal} 
+            onClose={() => setShowDeleteModal(false)}>
+                <CModalHeader className="border-0">
+                    <span>Are you sure you want to delete this student ?</span>
+                </CModalHeader> 
                 <CModalBody className="border-0">
                     {studentToDelete ? (
-                        <>
-                            Are you sure you want to delete this student ? <br/>
+                        <>  
                             <hr />
                             <p>Studen ID: {studentToDelete?.student_id}</p>
                             <p>Email : {studentToDelete.email}</p>

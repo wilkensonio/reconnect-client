@@ -7,9 +7,7 @@ const Logout = () => {
     localStorage.removeItem('reconnect_email_verification_code');
     localStorage.setItem('reconnect_token_expired', 'false');
     localStorage.removeItem('reconnect_signin_email');
-    window.location.href = '/login?message=logout'
-    console.log('logout was triggered');
-    
+    window.location.href = '/faculty/login?message=logout' 
     return
 } 
 

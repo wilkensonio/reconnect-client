@@ -7,6 +7,7 @@ dotenv.config()
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/faculty/',
   plugins: [react()], 
   optimizeDeps: {
     exclude: ['js-big-decimal']

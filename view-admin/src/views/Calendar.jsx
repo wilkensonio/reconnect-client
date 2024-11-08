@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
+import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import { getUserByEmail } from '../apiservice/UserService';
 import { getAvailability } from '../apiservice/AvailabilityService';
@@ -32,6 +33,7 @@ function Calendar() {
   const [user, setUser] = useState('');
   const [error, setError] = useState('');
   const [success, SetSuccess] = useState('');
+  const [confirmDelete, setConfirmDelete] = useState(false);  
  
 
   const [formData, setFormData] = useState({
@@ -180,6 +182,8 @@ function Calendar() {
   };
 
   const handleModalClose = () => {
+    setError('');
+    setConfirmDelete(false);
     setModalOpen(false);
     setSelectedDate(null);
     setCurrentAppointment(null);
@@ -259,6 +263,16 @@ function Calendar() {
           || formatDateTime(currentAppointment.end).formattedTime !== newAppt.end_time) {
           await updateAppointment(currentAppointment.id, newAppt);
           SetSuccess('Appointment updated'); 
+          setEvents((prevEvents) => [
+            ...prevEvents,
+            {
+              id: newScheduledAppointment.id,
+              title: newAppt.reason,
+              start: formData.start,
+              end: formData.end,
+              student_id: formData.student_id,
+            },
+          ]);
         } else {
           SetSuccess('No changes made');
         };
@@ -294,20 +308,23 @@ function Calendar() {
 
   const handleDeleteAppointment = async () => {
     setError('');
-    SetSuccess('');
-    if (currentAppointment) {
-      try {
-        await deleteAppointment(currentAppointment.id);
-        SetSuccess('Appointment cancelled');
+    SetSuccess(''); 
+    if(!confirmDelete){
+      setConfirmDelete(true); 
+    } else 
+        if (currentAppointment) {
+          try {
+            await deleteAppointment(currentAppointment.id);
+            SetSuccess('Appointment cancelled');
 
-        setEvents((prevEvents) => 
-          prevEvents.filter(event => event.id !== currentAppointment.id)
-        );
-
-      } catch (error) {
-        setError('Failed to cancel appointment'); 
-      }
-    }
+            setEvents((prevEvents) => 
+              prevEvents.filter(event => event.id !== currentAppointment.id)
+            );
+            setConfirmDelete(false);
+          } catch (error) {
+            setError('Failed to cancel appointment'); 
+          }
+        }
   };
 
   return (
@@ -315,7 +332,7 @@ function Calendar() {
       <h1 className="text-center text-white mt-3 mb-5">Calendar</h1>
       <div className="d-flex justify-content-center shadow">
         <FullCalendar
-          plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
+          plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin]}
           initialView="dayGridMonth"
           events={events}
           dateClick={handleDateClick}
@@ -323,7 +340,7 @@ function Calendar() {
           headerToolbar={{
             left: 'prev,next today',
             center: 'title',
-            right: 'dayGridMonth,timeGridWeek,timeGridDay',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
           }}
           editable={true}
           selectable={true}
@@ -376,12 +393,9 @@ function Calendar() {
               </CButton>
               {currentAppointment && (
                 <CButton color="danger" onClick={handleDeleteAppointment}>   
-                  Cancel
+                  {!confirmDelete ? 'Delete' : 'confirm Delete'}
                 </CButton>
-              )}
-              <CButton color="info" onClick={handleModalClose}>
-                Close
-              </CButton>
+              )} 
             </CModalFooter>
               <div className='text-center h5 mt-2 mb-5'>
                 {error && <p className="text-danger">{error}</p>}

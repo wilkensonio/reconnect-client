@@ -47,7 +47,7 @@ function App() {
         <Routes> 
           <Route path="/signin" element={<SignUpIn />} />
           <Route path="/logout" element={<Logout />} />
-          <Route path="*" name="Home" element={isAuthenticated ? <Layout /> : <Navigate to="/signin?message=session-expired"/>} /> 
+          <Route path="*" name="Home" element={isAuthenticated ? <Layout /> : <Navigate to="/signin"/>} /> 
         </Routes>
       </Suspense>  
     </NotificationProvider>

@@ -64,6 +64,7 @@ import { userNotifications, deleteNotification, deleteNotifications } from '../a
 import { getUserByEmail } from '../apiservice/UserService';
 import { tokenExpired } from '../apiservice/TokenService';
 import { useNotifications } from '../context/NotificationContext';
+import { logDOM } from '@testing-library/dom';
 
 
 function Notification() {
@@ -106,9 +107,20 @@ function Notification() {
       }
     };
     if (user.user_id){
+      // console.log('notifications', notifications[0].message);
+      // console.log('notifications', notifications);
+      
+      notifications.map((n) => {
+        if(n.event_type === 'appointment_checked_in' && 
+          localStorage.getItem('reconnect_checkinNotification') != 'true'){
+         localStorage.setItem('reconnect_checkinNotification', n.message);
+        } 
+        
+      });
         getUserNotifications(); 
         const intervalId = setInterval(() => {
           getUserNotifications(); 
+          
           localStorage.setItem('user_notifications', notifications.length);
         }, 1000);   
         return () => clearInterval(intervalId);
@@ -147,7 +159,7 @@ function Notification() {
 
   return (
     <div>
-      <h1 className='text-white text-center mt-2 mb-4'>Notofications</h1>
+      <h1 className='text-white text-center mt-2 mb-4'>Notifications</h1>
       <div className='container mb-3'>
           <Link to='/dashboard'>
             <span className='text-white'>Back to dashboard</span>
