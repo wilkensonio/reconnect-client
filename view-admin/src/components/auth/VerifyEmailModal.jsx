@@ -40,7 +40,7 @@ function VerifyEmailModal({ showModal, setShowModal}) {
             
             await signupUser(userData); 
             
-            window.location.href = '/signin?message=account_created'; 
+            window.location.href = '/faculty/signin?message=account_created'; 
             
         } catch (error) { 
             if (error.response)

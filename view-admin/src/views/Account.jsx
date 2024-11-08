@@ -112,7 +112,7 @@ function Account() {
       setUpdatePassword('');
      
       setTimeout(() => {
-        window.location.href = '/dashboard';
+        window.location.href = '/faculty/dashboard';
       }, 2000);
     } catch (error) {
       setError('Failed to update profile');
@@ -157,7 +157,7 @@ function Account() {
               </>
             </div>
         <CCardImage orientation="top" 
-        src='/assets/avatar.png' 
+        src='/faculty/assets/avatar.png' 
         style={{ width: '20%',  
           margin: 'auto', 
           marginTop: '0', 

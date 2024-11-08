@@ -24,7 +24,7 @@ export const handleUnauthorizedError = (error) => {
             localStorage.removeItem('reconnect_email_verification_code');
             localStorage.setItem('reconnect_token_expired', 'true');  
             
-            window.location.href = '/signin?message=session-expired';
+            window.location.href = '/faculty/signin?message=session-expired';
             
             return
         } 
