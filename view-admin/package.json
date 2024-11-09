@@ -2,7 +2,8 @@
   "name": "view-admin",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
+  "type": "module", 
+  "homepage": "../",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

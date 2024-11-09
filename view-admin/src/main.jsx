@@ -7,7 +7,7 @@ import { BlurDashboardProvider } from './context/PiMessageContext.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter basename="/faculty"> 
+    <BrowserRouter> 
       <BlurDashboardProvider>
         <App />  
       </BlurDashboardProvider>

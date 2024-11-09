@@ -22,6 +22,7 @@ import {
   CForm,
   CFormInput,
 } from '@coreui/react';
+import { Link } from 'react-router-dom';
 
 
 function Calendar() {
@@ -329,7 +330,12 @@ function Calendar() {
 
   return (
     <div>
-      <h1 className="text-center text-white mt-3 mb-5">Calendar</h1>
+      <h1 className="text-center text-white mt-3 mb2">Calendar</h1>
+         <div className='mb-3'>
+                <Link to='/faculty/dashboard'>
+                    <span className='text-white'>Back to dashboard</span>
+                </Link>
+            </div>
       <div className="d-flex justify-content-center shadow">
         <FullCalendar
           plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin]}

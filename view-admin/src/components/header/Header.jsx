@@ -2,6 +2,10 @@ import React from 'react'
 import { CNavbar, CContainer, CNavbarBrand, CNavbarToggler, CCollapse, CNavbarNav, CNavItem, CNavLink, CDropdown, CDropdownToggle, CDropdownMenu, CDropdownItem, CDropdownDivider, CForm, CFormInput, CButton, CBadge } from '@coreui/react'
 import { BsEnvelope, BsCalendar, BsPeople, BsGearFill } from "react-icons/bs";
 import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLaptop, faBell, 
+  faUsers, faCalendar, 
+  faUserPlus, faCog, faSignOutAlt, faClock } from '@fortawesome/free-solid-svg-icons';
 
 function Header() {
   const [visible, setVisible] = React.useState(false)
@@ -63,6 +67,14 @@ function Header() {
                   </CNavLink>
                 </CNavItem>
               </Link> 
+
+              <hr /> 
+              <Link to="/faculty/logout" className="text-decoration-none text-light ms-3 mb-3">
+                <CNavItem className="d-flex align-items-center me-2">
+                  <FontAwesomeIcon icon={faSignOutAlt} className="nav-icon text-white" /> 
+                  <span>&nbsp;Logout</span>
+                </CNavItem> 
+              </Link>
                
               </CNavbarNav> 
             </CCollapse>

@@ -117,7 +117,7 @@ function SignUpIn() {
                         {!isSmallScreen && (
                             <CCol md={6} className="cmarginimg d-flex justify-content-center align-items-center" style={{ height: '100%' }}>
                                 <img
-                                    src="/faculty/assets/logo/reconnect.png"
+                                    src="/assets/logo/reconnect.png"
                                     alt="logo"
                                     style={{ maxWidth: '100%', height: 'auto' }}  
                                 />

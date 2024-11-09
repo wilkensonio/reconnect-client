@@ -118,9 +118,7 @@ function SignInForm({onResetPassword}) {
     const smg = params.get('message');
     console.log(token);
     
-    if (!token) {
-      setMessage('Signed out successfully.');
-    } else if (token && (smg == 'session-expired' || smg == 'token-expired'|| smg == 'session_expired')) {
+    if (token && (smg == 'session-expired' || smg == 'token-expired'|| smg == 'session_expired')) {
       setMessage('Session expired. Please sign in.'); 
 
     }else if (smg == 'account_created') { 

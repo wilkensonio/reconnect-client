@@ -29,23 +29,17 @@ function sidebar() {
               }} />
           </CSidebarBrand>
         </CSidebarHeader>
-        <CSidebarNav>
-          {/* <CNavTitle className='mb-3' style={{margin:'0', padding:'0'}}>reconnect</CNavTitle>  */}
+        <CSidebarNav> 
           <hr  style={{margin:'0', padding:'0'}}/> 
           
-          <Link to="/dashboard" className="text-decoration-none text-light ms-3 mb-3 mt-2">
+          <Link to="/faculty/dashboard" className="text-decoration-none text-light ms-3 mb-3 mt-2">
             <CNavItem className="d-flex  align-items-center me-3">
             <FontAwesomeIcon icon={faLaptop} className="nav-icon text-white" /> <span className='sidebar-text-link'>Dashboard</span>
             </CNavItem> 
           </Link> 
-
-          {/* <Link to="/notifications" className="text-decoration-none text-light ms-3 mb-3">
-            <CNavItem className="d-flex  align-items-center me-3">
-            <FontAwesomeIcon icon={faBell} className="nav-icon text-white" /> Notifications 
-            </CNavItem> 
-          </Link>  */}
+ 
           {notifications.length > 0 ?(
-          <Link to="/notifications" className="text-decoration-none text-light ms-3 mb-3">
+          <Link to="/faculty/notifications" className="text-decoration-none text-light ms-3 mb-3">
             <CNavItem className="d-flex align-items-center me-3">
               <div style={{ position: 'relative' }}>
                 <FontAwesomeIcon icon={faBell} className="nav-icon text-white bell-badge" />
@@ -70,14 +64,14 @@ function sidebar() {
             </CNavItem> 
           </Link>  
           ):( 
-          <Link to="/notifications" className="text-decoration-none text-light ms-3 mb-3">
+          <Link to="/faculty/notifications" className="text-decoration-none text-light ms-3 mb-3">
             <CNavItem className="d-flex  align-items-center me-3"> 
             <FontAwesomeIcon icon={faBell} className="nav-icon text-white" /> 
                 <span className='sidebar-text-link'>Notifications</span>
             </CNavItem> 
           </Link>)}
 
-          <Link to="/availabilities" className="text-decoration-none text-light ms-3 mb-3">
+          <Link to="/faculty/availabilities" className="text-decoration-none text-light ms-3 mb-3">
             <CNavItem className="d-flex  align-items-center me-3"> 
               <FontAwesomeIcon icon={faClock} className="nav-icon text-white" />  
                 <span className='sidebar-text-link'>Availabilities</span>
@@ -85,32 +79,32 @@ function sidebar() {
           </Link> 
            
           
-          <Link to="/students" className="text-decoration-none text-light ms-3 mb-3">
+          <Link to="/faculty/students" className="text-decoration-none text-light ms-3 mb-3">
             <CNavItem className="d-flex align-items-center me-3">
               <FontAwesomeIcon icon={faUsers} className="nav-icon text-white" /> <span className='sidebar-text-link'>All&nbsp;Students </span>
             </CNavItem> 
           </Link>
 
-          <Link to="/calendar" className="text-decoration-none text-light ms-3 mb-3">
+          <Link to="/faculty/calendar" className="text-decoration-none text-light ms-3 mb-3">
             <CNavItem className="d-flex align-items-center me-3">
               <FontAwesomeIcon icon={faCalendar} className="nav-icon text-white" /> <span className='sidebar-text-link'>Calendar</span>
             </CNavItem> 
           </Link>
 
-          <Link to="/new-student" className="text-decoration-none text-light ms-3 mb-3">
+          <Link to="/faculty/new-student" className="text-decoration-none text-light ms-3 mb-3">
             <CNavItem className="d-flex align-items-center me-3">
               <FontAwesomeIcon icon={faUserPlus} className="nav-icon text-white"  /> <span className='sidebar-text-link'>Add&nbsp;Student</span>
             </CNavItem> 
           </Link>
 
-          <Link to="/account" className="text-decoration-none text-light ms-3 mb-3">
+          <Link to="/faculty/account" className="text-decoration-none text-light ms-3 mb-3">
             <CNavItem className="d-flex align-items-center me-3">
             <FontAwesomeIcon icon={faCog} className="nav-icon text-white" /><span className='sidebar-text-link'>Account</span>
             </CNavItem> 
           </Link>
 
           <hr /> 
-          <Link to="/logout" className="text-decoration-none text-light ms-3 mb-3">
+          <Link to="/faculty/logout" className="text-decoration-none text-light ms-3 mb-3">
             <CNavItem className="d-flex align-items-center me-3">
               <FontAwesomeIcon icon={faSignOutAlt} className="nav-icon text-white" /> 
               <span className='sidebar-text-link'>Logout</span>

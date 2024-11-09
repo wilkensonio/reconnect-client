@@ -6,13 +6,16 @@ import react from '@vitejs/plugin-react'
 dotenv.config() 
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  base: '/faculty/',
+export default defineConfig({ 
+  base:'/',
   plugins: [react()], 
   optimizeDeps: {
     exclude: ['js-big-decimal']
   },
   server: {
+    headers: {
+      'Cache-Control': 'no-store'
+    },
     port: 3000,
     open: true,
     proxy: {

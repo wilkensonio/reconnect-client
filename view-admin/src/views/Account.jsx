@@ -131,7 +131,7 @@ function Account() {
     <>
       <h1  className='text-white text-center mt-2  mb-4'>Update profile</h1>
       <div className='container mt-3 mb-3'>
-        <Link to='/dashboard'>
+        <Link to='/faculty/dashboard'>
                 <span className='text-white'>Back to dashboard</span>
         </Link>
       </div>
@@ -157,7 +157,7 @@ function Account() {
               </>
             </div>
         <CCardImage orientation="top" 
-        src='/faculty/assets/avatar.png' 
+        src='/assets/avatar.png' 
         style={{ width: '20%',  
           margin: 'auto', 
           marginTop: '0', 
@@ -265,7 +265,7 @@ function Account() {
                   </div>
               </CForm>
               <div className='mt-3 mb-3'>
-                <Link to='/dashboard'>
+                <Link to='/faculty/dashboard'>
                         Back to dashboard
                 </Link>
               </div>
