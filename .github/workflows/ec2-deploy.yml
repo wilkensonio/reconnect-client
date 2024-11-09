@@ -45,8 +45,12 @@ jobs:
             # Refresh the group membership in the current session
             newgrp docker  
 
-            # Stop and remove existing container if it exists
-            docker ps -q --filter "name=react-app" | grep -q . && docker stop react-app && docker rm react-app
+            # Stop the existing Docker container if it exists
+            if [ "$(docker ps -q -f name=react-app)" ]; then
+              echo "Stopping existing container react-app..."
+              docker stop react-app || echo "Failed to stop container react-app."
+              docker rm react-app || echo "Failed to remove container react-app."
+            fi
 
             # Pull the latest Docker image
             docker pull ${{ secrets.DOCKER_USERNAME }}/react-app:latest
