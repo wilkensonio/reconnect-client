@@ -26,11 +26,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Set up .env.production
-        run: |
-          echo "${{ secrets.ENV_PRODUCTION }}" > .env.production
-          cat .env.production
-          pwd
       - name: Pull Docker image
         run: |
           docker pull ${{ secrets.DOCKER_USERNAME }}/react-app:latest
