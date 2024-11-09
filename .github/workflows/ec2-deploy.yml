@@ -5,6 +5,9 @@ on:
     types: [opened, reopened, synchronize] # Run on PR open, reopen, or sync
     branches:
       - main
+  push:
+    branches:
+      - main
 
 permissions:
   contents: write
@@ -42,7 +45,6 @@ jobs:
         run: docker push ${{ secrets.DOCKER_USERNAME }}/react-app:latest
 
   deploy:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     permissions:
