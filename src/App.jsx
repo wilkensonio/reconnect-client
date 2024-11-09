@@ -8,8 +8,7 @@ import Logout from './views/Logout';
  
 function App() { 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true); 
-
+  const [loading, setLoading] = useState(true);  
   
   useEffect(() => {
     const token = localStorage.getItem('reconnect_access_token'); 
@@ -45,9 +44,9 @@ function App() {
           }
       >
         <Routes> 
-          <Route path="/signin" element={<SignUpIn />} />
-          <Route path="/logout" element={<Logout />} />
-          <Route path="*" name="Home" element={isAuthenticated ? <Layout /> : <Navigate to="/signin"/>} /> 
+          <Route path="/faculty/signin" element={<SignUpIn />} />
+          <Route path="/faculty/logout" element={<Logout />} />
+          <Route path="*" name="Home" element={isAuthenticated ? <Layout /> : <Navigate to="/faculty/signin"/>} /> 
         </Routes>
       </Suspense>  
     </NotificationProvider>

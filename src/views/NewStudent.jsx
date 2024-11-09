@@ -132,7 +132,7 @@ function NewStudent() {
     <div className='container'>
       <h2 className='text-center text-white mt-3'>Upload or Add New Students</h2>
       <div className='container mb-5 mt-4'>
-        <Link to='/dashboard'>
+        <Link to='/faculty/dashboard'>
             <span className='text-white'>Back to dashboard</span>
         </Link>
       </div>
@@ -247,7 +247,7 @@ function NewStudent() {
                   </CButton>
                 </form>
                 <div className='mt-5'>
-                  <Link to='/dashboard'>
+                  <Link to='/faculty/dashboard'>
                           Back to dashboard
                   </Link>
                 </div>
