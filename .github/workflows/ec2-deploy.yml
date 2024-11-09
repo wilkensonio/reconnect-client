@@ -1,53 +1,19 @@
-name: React Docker deploy and EC2 deployment
+name: docker img -> EC2
 
 on:
   pull_request:
-    types: [opened, reopened, synchronize] # Run on PR open, reopen, or sync
+    types: [closed] # Run on PR close (merge or reject)
     branches:
       - main
 
 permissions:
-  contents: write
-  actions: write
+  contents: read
+  id-token: write # Required for AWS authentication
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v3
-
-      - name: Authenticate with GitHub using PAT
-        run: |
-          echo "${{ secrets.GH_TOKEN_REACT }}" | gh auth login --with-token
-
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Set up .env.production
-        run: echo "${{ secrets.ENV_PRODUCTION }}" > .env.production
-
-      - name: Build Docker image
-        run: docker build . -t ${{ secrets.DOCKER_USERNAME }}/react-app:latest --no-cache
-
-      - name: List all files in Docker image
-        run: |
-          docker run --rm ${{ secrets.DOCKER_USERNAME }}/react-app:latest ls -R / > file_list.txt
-          cat file_list.txt
-
-      - name: Push Docker image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/react-app:latest
-
   deploy:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
-      id-token: write # Required for AWS authentication
 
     steps:
       - name: Check out code
@@ -59,6 +25,9 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
+
+      - name: Set up .env.production
+        run: echo "${{ secrets.ENV_PRODUCTION }}" > .env.production
 
       - name: Pull Docker image
         run: |
