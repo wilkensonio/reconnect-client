@@ -1,4 +1,4 @@
-name: docker img -> EC2
+name: deploy -> EC2
 
 on:
   pull_request:
@@ -53,11 +53,10 @@ jobs:
             fi
 
             # Pull the latest Docker image
-            docker pull ${{ secrets.DOCKER_USERNAME }}/react-app:latest
+            docker pull "${{ secrets.DOCKER_USERNAME }}/react-app:latest"
 
             # Run the container with environment variables passed dynamically
-            docker run -d --name react-app -p 3000:80 \ 
-            "${{ secrets.DOCKER_USERNAME }}/react-app:latest"
+            docker run -d --name react-app -p 3000:80 "${{ secrets.DOCKER_USERNAME }}/react-app:latest"
 
             # Check logs for verification
             docker logs react-app
