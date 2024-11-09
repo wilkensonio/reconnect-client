@@ -27,8 +27,10 @@ jobs:
           aws-region: us-east-1
 
       - name: Set up .env.production
-        run: echo "${{ secrets.ENV_PRODUCTION }}" > .env.production
-
+        run: |
+          echo "${{ secrets.ENV_PRODUCTION }}" > .env.production
+          cat .env.production
+          pwd
       - name: Pull Docker image
         run: |
           docker pull ${{ secrets.DOCKER_USERNAME }}/react-app:latest
@@ -55,7 +57,7 @@ jobs:
             docker pull ${{ secrets.DOCKER_USERNAME }}/react-app:latest
 
             # Run the container with environment variables passed dynamically
-            docker run -d --name react-app -p 80:3000 \
+            docker run -d --name react-app -p 3000:80 \
               --env-file .env.production \
               ${{ secrets.DOCKER_USERNAME }}/react-app:latest
 
