@@ -34,7 +34,8 @@ function Calendar() {
   const [user, setUser] = useState('');
   const [error, setError] = useState('');
   const [success, SetSuccess] = useState('');
-  const [confirmDelete, setConfirmDelete] = useState(false);  
+  const [confirmDelete, setConfirmDelete] = useState(false); 
+  const [updateOrScheduleBtnClicked, setUpdateOrScheduleBtnClicked] = useState(false);  
  
 
   const [formData, setFormData] = useState({
@@ -184,11 +185,13 @@ function Calendar() {
 
   const handleModalClose = () => {
     setError('');
+    SetSuccess('');
     setConfirmDelete(false);
     setModalOpen(false);
     setSelectedDate(null);
     setCurrentAppointment(null);
     setFormData({student_id:'', title: '', start: '', end: '' });
+    setUpdateOrScheduleBtnClicked(false);
   };
 
   const formatDateTime = (dateString) => {
@@ -243,7 +246,7 @@ function Calendar() {
       );
     });
 
-    if (isOverlapping) {
+    if (!updateOrScheduleBtnClicked && isOverlapping) {
       setError('This time slot is already taken. Please choose a different time.');
       return;
     } 
@@ -261,8 +264,9 @@ function Calendar() {
       try { 
         
         if (formatDateTime(currentAppointment.start).formattedTime !== newAppt.start_time 
-          || formatDateTime(currentAppointment.end).formattedTime !== newAppt.end_time) {
-          await updateAppointment(currentAppointment.id, newAppt);
+          || formatDateTime(currentAppointment.end).formattedTime !== newAppt.end_time 
+           || currentAppointment.title !== newAppt.reason) {
+          const newScheduledAppointment =  await updateAppointment(currentAppointment.id, newAppt);
           SetSuccess('Appointment updated'); 
           setEvents((prevEvents) => [
             ...prevEvents,
@@ -299,7 +303,7 @@ function Calendar() {
       } catch (error) {
         const errMessage = error.detail; 
         if (errMessage.includes('pymysql.err.IntegrityError')){ 
-          setError('Student not found');
+          setError('Student not found check student ID');
         }else{
           setError('Failed to schedule appointment');
         }
@@ -394,7 +398,10 @@ function Calendar() {
               onChange={(e) => setFormData({ ...formData, end: e.target.value })}
             />
             <CModalFooter>
-              <CButton className='ccolor' type="submit">
+              <CButton className='ccolor' type="submit"
+              onClick={() => { 
+                currentAppointment && setUpdateOrScheduleBtnClicked(true)} 
+              }>
                 {currentAppointment ? 'Update' : 'Schedule'}
               </CButton>
               {currentAppointment && (
