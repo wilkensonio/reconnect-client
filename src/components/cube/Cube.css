@@ -1,0 +1,60 @@
+/* Cube.css */
+
+/* Set up the 3D scene */
+.scene {
+    width: 200px;
+    height: 200px;
+    perspective: 800px;
+    margin: 50px auto;
+    position: relative;
+  }
+  
+  .cube {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    transform-style: preserve-3d;
+    transform: rotateX(0deg) rotateY(0deg);
+    animation: spin 5s infinite linear;
+  }
+  
+  .face {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.9;
+  }
+  
+  /* Position each face and apply images */
+  .front  { transform: rotateY(  0deg) translateZ(90px); background-image: url('/assets/logo/scsublueyellow.png'); }
+  .back   { transform: rotateY(180deg) translateZ(90px); background-image: url('/assets/logo/scsublueyellow.png'); }
+  .right  { transform: rotateY( 90deg) translateZ(90px); background-image: url('/assets/logo/scsublueyellow.png'); }
+  .left   { transform: rotateY(-90deg) translateZ(90px); background-image: url('/assets/logo/scsublueyellow.png'); }
+  .top    { transform: rotateX( 90deg) translateZ(90px); background-image: url('/assets/logo/scsublueyellow.png'); }
+  .bottom { transform: rotateX(-90deg) translateZ(90px); background-image: url('/assets/logo/scsublueyellow.png'); }
+  
+  /* Animation for spinning */
+  @keyframes spin {
+    from {
+      transform: rotateX(-20deg) rotateY(0deg);
+    }
+    to {
+      transform: rotateX(-20deg) rotateY(360deg);
+    }
+  }
+
+  .center-image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300px;
+    height: 300px;
+    background-image: url('/assets/logo/reconnect.png');  
+    background-size: cover;
+    background-position: center;
+    transform: translate(-40%, -50%) translateZ(0px);  
+    border-radius: 50%;
+
+  }
