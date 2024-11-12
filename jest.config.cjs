@@ -1,26 +1,9 @@
-// jest.config.js
-// module.exports = {
-//   testEnvironment: "jsdom", // Ensure you use jsdom as the test environment
-//   transform: {
-//     "^.+\\.jsx?$": "babel-jest",
-//   },
-//   moduleFileExtensions: ["js", "jsx"],
-//   setupFilesAfterEnv: [
-//     "@testing-library/jest-dom",
-//     "<rootDir>/setupTests.js" 
-//   ],
-//   globals: {
-//     'import.meta': {
-//       env: {
-//         VITE_APP_API_KEY: 'mock_api_key'
-//       }
-//     }
-//   }
-// };
+// Jest configuration
 
 module.exports = {
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
+     "\\.(css|scss)$": "identity-obj-proxy"
   },
   testEnvironment: "jest-environment-jsdom",
   transform: {
