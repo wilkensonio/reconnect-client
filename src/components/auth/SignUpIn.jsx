@@ -6,6 +6,7 @@ import ResetPasswordModal from './ResetPasswordModal';
 import VerifyEmailModal from './VerifyEmailModal'
 import {CCard, CCardBody, CCardHeader, CCol, CRow, CTooltip } from '@coreui/react';
 import customTooltipStyle from '../../components/tooltip/CustomToolTip'
+import  Cube from '../../components/cube/Cube'
 
 function SignUpIn() {
    
@@ -115,12 +116,8 @@ function SignUpIn() {
                 <CCardBody className="mt-5" style={{marginBottom:'35px !importan'}}> 
                     <CRow>
                         {!isSmallScreen && (
-                            <CCol md={6} className="cmarginimg d-flex justify-content-center align-items-center" style={{ height: '100%' }}>
-                                <img
-                                    src="/assets/logo/reconnect.png"
-                                    alt="logo"
-                                    style={{ maxWidth: '100%', height: 'auto' }}  
-                                />
+                            <CCol md={6} className="mt-5 cmarginimg d-flex justify-content-center align-items-center" style={{ height: '100%' }}>
+                                <Cube />
                             </CCol>
                         )}
                         <CCol> 

@@ -211,7 +211,7 @@ const SignupForm = ({onVerifySignup}) => {
                 <CCol md={12} > 
                     <div className=''>
                         <CForm  className="row gy-2 gx-3 ">
-                          <CCol xs={12} className='mb-3'>
+                          <CCol xs={12} className='mb-2'>
                             <CFormInput
                               id="idInput"
                               placeholder="Enter your (HootLoot) ID *"
@@ -220,7 +220,7 @@ const SignupForm = ({onVerifySignup}) => {
                               required
                             />
                           </CCol>
-                          <CCol xs={12} className='mb-3'>
+                          <CCol xs={12} className='mb-2'>
                             <CFormInput
                               id="firstNameInput"
                               placeholder="First Name *"
@@ -229,7 +229,7 @@ const SignupForm = ({onVerifySignup}) => {
                               required
                             />
                           </CCol>
-                          <CCol xs={12} className='mb-3'>
+                          <CCol xs={12} className='mb-2'>
                             <CFormInput
                               id="lastNameInput"
                               placeholder="Last Name *"
@@ -238,17 +238,17 @@ const SignupForm = ({onVerifySignup}) => {
                               required
                             />
                           </CCol>
-                          <CCol xs={12} className='mb-3'>
+                          <CCol xs={12} className='mb-2'>
                             <CFormInput
                               id="emailInput"
                               type="email"
-                              placeholder="johnd1l@southernct.edu *"
+                              placeholder="johndl1@southernct.edu *"
                               value={email}
                               onChange={(e) => setEmail(e.target.value)}
                               required
                               />
                           </CCol>
-                          <CCol xs={12} className='mb-3'>
+                          <CCol xs={12} className='mb-2'>
                           <CInputGroup>
                             <CFormInput
                               id="passwordInput"
@@ -263,7 +263,7 @@ const SignupForm = ({onVerifySignup}) => {
                               </CInputGroupText>
                             </CInputGroup>
                           </CCol>
-                          <CCol xs={12} className='mb-3'>
+                          <CCol xs={12} className='mb-2'>
                             <CInputGroup>
                               <CFormInput
                                 id="confirmPasswordInput"
@@ -278,7 +278,7 @@ const SignupForm = ({onVerifySignup}) => {
                               </CInputGroupText>
                             </CInputGroup>
                           </CCol>
-                          <CCol xs={12} className='mb-3'>
+                          <CCol xs={12} className='mb-2'>
                             <CFormInput
                               id="phoneInput"
                               placeholder="Phone number *"
@@ -287,10 +287,9 @@ const SignupForm = ({onVerifySignup}) => {
                               required
                             />
                           </CCol>
-                          <CCol xs={12} className='mb-3'>
+                          <CCol xs={12} className='mt-3'>
                             <CButton className='ccolor' 
                               type="submit" 
-                              style={{position: 'relative', top:'20px'}}
                               disabled={!isFormValid}
                               onClick={handleVerifyEmail}
                             >

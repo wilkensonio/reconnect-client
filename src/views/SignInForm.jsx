@@ -192,7 +192,7 @@ function SignInForm({onResetPassword}) {
       <CRow>  
         <CCol>  
           <CForm onSubmit={handleSubmit} className='mb-5' >
-            <CCol xs={12} className='mb-4'>
+            <CCol xs={12} className='mb-3'>
               <CFormInput
                 id="emailInput"
                 type="email"
@@ -203,7 +203,7 @@ function SignInForm({onResetPassword}) {
                 required
               />
             </CCol>
-            <CCol xs={12} className='mb-4'>
+            <CCol xs={12} className='mb-3'>
               <CInputGroup>
                 <CFormInput
                   id="passwordInput"

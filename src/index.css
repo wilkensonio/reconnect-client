@@ -33,7 +33,7 @@
 body {
   background-color: #333333; 
   background: #071689;
-  background-image: url('/assets/logo/compsci-logo.png');   
+  /* background-image: url('/assets/logo/compsci-logo.png');    */
   height: 100vh; 
   background-repeat: repeat;  
   /* background-position: center;    */
