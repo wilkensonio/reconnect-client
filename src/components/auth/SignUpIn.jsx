@@ -116,7 +116,7 @@ function SignUpIn() {
                 <CCardBody className="mt-5" style={{marginBottom:'35px !importan'}}> 
                     <CRow>
                         {!isSmallScreen && (
-                            <CCol md={6} className=" mt-5cmarginimg d-flex justify-content-center align-items-center" style={{ height: '100%' }}> 
+                            <CCol md={6} className="mt-5 cmarginimg d-flex justify-content-center align-items-center" style={{ height: '100%' }}>
                                 <Cube />
                             </CCol>
                         )}
