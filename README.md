@@ -1,6 +1,9 @@
-# Office Hours Communication System
+# ReConnect
 
-A dedicated solution for faculty to easily communicate office hour changes to students, with updates displayed on LED screens near office doors.
+**Office Hours Communication System**
+
+A communication tool for faculty to update students about office hour changes, displayed on LED screens outside offices.
+ 
 
 ---
 
