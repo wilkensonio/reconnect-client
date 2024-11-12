@@ -63,6 +63,8 @@ Note : Before doing any of the steps below make sure the API is setup and runnin
 
 [Kiosk Setup](https://github.com/wilkensonio/reconnect-pi)
 
+If you prefer to run the application without installing docker go to step 1 (clone repo)
+
 0. Install these tools (if not already install)
 
     - **Docker** : https://docs.docker.com/engine/install/
@@ -96,17 +98,26 @@ Note : Before doing any of the steps below make sure the API is setup and runnin
     ```bash
     npm install 
 
-5. Run application
+5. If step 0 install docker was skip if docker if prefered go to step 6
+    - Run command : npm run dev
+        
+        From the root folder
+
+6. Run application
      
     - Run command : docker build -t react-app
     
         This command will build and image using the dockerfile and the image will be tag with the name react-app. In the terminal verified that the image was built successfully.,
+    <img width="1292" alt="Screenshot 2024-11-12 at 3 41 27 PM" src="https://github.com/user-attachments/assets/1450eaf3-95c2-40cb-993c-dcb29ba9177f">
 
     - Run command : docker run -p 80:80 react-app
 
         This command will run a docker container using the docker image build from above
 
         Verify that the container is running in the terminal. 
+    
+        <img width="1292" alt="Screenshot 2024-11-12 at 3 43 09 PM" src="https://github.com/user-attachments/assets/c99eaf37-1887-41c6-b68c-1e377ae01ff8">
+
 
     - visit http://localhost 
 
