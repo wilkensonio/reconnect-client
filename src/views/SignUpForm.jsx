@@ -131,8 +131,7 @@ const SignupForm = ({onVerifySignup}) => {
       
     } catch (error) {
       if (error.detail !== 'User not found') { 
-        setError(error.detail);
-        console.error(err);
+        setError(error.detail); 
         return;
       }
     }
