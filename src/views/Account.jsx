@@ -68,18 +68,19 @@ function Account() {
   const [confirm_update, setConfirmUpdate] = useState('');
   const [showPassword, setShowPassword] = useState(false);   
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);  
-  
-
+ 
   useEffect(() => {
     const userSignInEmail = localStorage.getItem('reconnect_signin_email'); 
     const getUser = async () => {
       try {
-        const response = await getUserByEmail(userSignInEmail); 
+        setError('');
+        const response = await getUserByEmail(userSignInEmail);  
+  
         setUserId(response.user_id);
         setFirstName(response.first_name);
         setLastName(response.last_name);
         setEmail(response.email);
-        setPhoneNumber(response.phone_number);
+        setPhoneNumber(response.phone_number); 
       } catch (error) {
         setError('Failed to get user data');
       }
@@ -90,9 +91,35 @@ function Account() {
   const handleUpdate = async (e) => { 
     e.preventDefault();
 
-    if (update_password !== confirm_update) {
-      setError('Passwords do not match');
-      return;
+    setError('');
+    console.log((update_password.trim().length));
+    
+    if (update_password.trim().length !== 0) {
+      console.log(update_password.trim().length);
+      if (update_password !== confirm_update) {
+        setError('Passwords do not match');
+        return;
+      }
+      if (update_password.trim().length < 8) {
+        setError('Password must be at least 6 characters');
+        return;
+      } 
+      if (!/[A-Z]/.test(update_password)) {
+        setError('Password must contain at least one uppercase letter');
+        return;
+      }
+      if (!/[a-z]/.test(update_password)) {
+        setError('Password must contain at least one lowercase letter');
+        return;
+      }
+      if (!/[0-9]/.test(update_password)) {
+        setError('Password must contain at least one digit');
+        return;
+      }
+      if (!/[!@#$%^&*]/.test(update_password)) {
+        setError('Password must contain at least one special character');
+        return;
+      }
     }
 
     const userData = {
@@ -102,7 +129,8 @@ function Account() {
       email: email,
       phone_number: phone_number,
       password: update_password
-    }; 
+    };   
+    
 
     try {
       setError('');
@@ -112,9 +140,11 @@ function Account() {
       setUpdatePassword('');
      
       setTimeout(() => {
-        window.location.href = '/faculty/dashboard';
+        window.location.href = '/dashboard';
       }, 2000);
     } catch (error) {
+      console.log(error);
+      
       setError('Failed to update profile');
     }
   }
@@ -125,13 +155,14 @@ function Account() {
 
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
-  };
-
+  }; 
+ 
+  
   return ( 
     <>
       <h1  className='text-white text-center mt-2  mb-4'>Update profile</h1>
       <div className='container mt-3 mb-3'>
-        <Link to='/faculty/dashboard'>
+        <Link to='/dashboard'>
                 <span className='text-white'>Back to dashboard</span>
         </Link>
       </div>
@@ -222,10 +253,9 @@ function Account() {
                     <CFormInput
                       id="passwordInput"
                       type={showPassword ? 'text' : 'password'} // Toggle password visibility
-                      placeholder="Password *"
+                      placeholder="Password"
                       value={update_password}
-                      onChange={(e) => setUpdatePassword(e.target.value)}
-                      required
+                      onChange={(e) => setUpdatePassword(e.target.value)} 
                     />
                       <CInputGroupText onClick={togglePasswordVisibility} style={{ cursor: 'pointer' }}>
                         <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
@@ -237,10 +267,9 @@ function Account() {
                     <CFormInput
                       id="confirmPasswordInput"
                       type={showConfirmPassword ? 'text' : 'password'} 
-                      placeholder="Confirm password *"
+                      placeholder="Confirm password"
                       value={confirm_update}
-                      onChange={(e) => setConfirmUpdate(e.target.value)}
-                      required
+                      onChange={(e) => setConfirmUpdate(e.target.value)} 
                     /> 
                     <CInputGroupText onClick={toggleConfirmPasswordVisibility} style={{ cursor: 'pointer' }}>  
                       <FontAwesomeIcon icon={showConfirmPassword ? faEyeSlash : faEye} />
@@ -265,7 +294,7 @@ function Account() {
                   </div>
               </CForm>
               <div className='mt-3 mb-3'>
-                <Link to='/faculty/dashboard'>
+                <Link to='/dashboard'>
                         Back to dashboard
                 </Link>
               </div>

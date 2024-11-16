@@ -12,16 +12,16 @@ const Availability = React.lazy(() => import('./views/Availability'));
 
 
 const routes = [
-    {path: '/', element: <Navigate to="/faculty/dashboard" replace />},
-    {path: '/faculty', element: <Dashboard/>},
-    {path: '/faculty/calendar', element: <Calendar/>},
-    {path: '/faculty/dashboard', element: <Dashboard/>},
-    {path: '/faculty/students', element: <Students/>},
-    {path: '/faculty/new-student', element: <NewStudent/>},
-    {path: '/faculty/logout', element: <Logout/>},
-    {path: '/faculty/account', element: <Account/>},
-    {path: '/faculty/notifications', element: <Notifications/>},
-    {path: '/faculty/availabilities', element: <Availability/>}
+    {path: '/', element: <Navigate to="/dashboard" replace />},
+    {path: '', element: <Dashboard/>},
+    {path: '/calendar', element: <Calendar/>},
+    {path: '/dashboard', element: <Dashboard/>},
+    {path: '/students', element: <Students/>},
+    {path: '/new-student', element: <NewStudent/>},
+    {path: '/logout', element: <Logout/>},
+    {path: '/account', element: <Account/>},
+    {path: '/notifications', element: <Notifications/>},
+    {path: '/availabilities', element: <Availability/>}
 ];
 
 export default routes;  

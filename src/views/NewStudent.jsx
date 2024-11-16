@@ -68,39 +68,37 @@ function NewStudent() {
       return;
     }
 
+    if(studentId.length !== 8) {
+      setError('Student ID must be 8 digits long');
+      return;
+    } 
+
+    if (!firstName || !lastName || !email) {
+      setError('Please fill out all required fields');
+      return;
+    } 
+
     if (!email.toLocaleLowerCase().endsWith('@southernct.edu')) {
       setError('Please enter a valid southern email');
       return;
     }
 
     try {
-      const response = await addStudent(studentData);
-      console.log('response', response);
-      
-      if (response.status === 400){
-        setError(response.data.detail);
-        return;
-      }
-      if (response.status === 409){
-        setError('Student already exists');
-        return;
-      } 
-      if (response.status === 422) { 
-        setError('Invalid student data');
-        return;
-      }
-      console.log('Student added:', response);  
+      setSuccess('');
+      setError('');
+      await addStudent(studentData); 
+     
       setFirstName('');
       setLastName('');
       setEmail('');
       setStudentId('');
       setPhoneNumber(''); 
+
       setSuccess('Student added successfully');
       setError(''); 
-    } catch (error) {
-      setScuccess('');  
+    } catch (error) { 
       console.error('Error adding student:', error);
-      setError('Failed to add student'); 
+      setError(error.detail); 
     }
   
   };
@@ -114,17 +112,15 @@ function NewStudent() {
       if (!csvFile) {
         setError('Select a CSV file');
         return;
-      }
-      console.log('csvFile', csvFile);
+      }      
       
       await uploadCsv(csvFile);
+      
       setSuccess('CSV file uploaded successfully');
       setCsvFile(null);
     } catch (error) {
-      console.log('error', error);
-      
       console.error('Error uploading CSV file:', error);
-      setError('Failed to upload CSV file');
+      setError(error.detail);
     }
   };
 
@@ -132,7 +128,7 @@ function NewStudent() {
     <div className='container'>
       <h2 className='text-center text-white mt-3'>Upload or Add New Students</h2>
       <div className='container mb-5 mt-4'>
-        <Link to='/faculty/dashboard'>
+        <Link to='/dashboard'>
             <span className='text-white'>Back to dashboard</span>
         </Link>
       </div>
@@ -186,6 +182,9 @@ function NewStudent() {
                     Upload CSV
                   </CButton>
                 </form>
+                <div className='mt-5'>
+                  Example csv file <a href="/assets/example.csv" download>here</a>
+                </div>
               </CCol>
 
               {/* Vertical Divider */}
@@ -247,14 +246,14 @@ function NewStudent() {
                   </CButton>
                 </form>
                 <div className='mt-5'>
-                  <Link to='/faculty/dashboard'>
+                  <Link to='/dashboard'>
                           Back to dashboard
                   </Link>
                 </div>
               </CCol> 
           </CRow>
-          { success && <p className='text-center mt-3 text-success'>{success}</p>}
-          { error && <p className='text-center mt-3 text-danger'>{error}</p>}
+          { success && <p className='text-center mt-3 text-success h5'>{success}</p>}
+          { error && <p className='text-center mt-3 text-danger h5'>{error}</p>}
         </div>
       </CContainer>
     </div>

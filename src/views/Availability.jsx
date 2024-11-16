@@ -305,7 +305,7 @@ function Availability() {
             <span hidden>testAvailability</span>
             <h1 className='text-white text-center mb-4'>Availability</h1>
             <div className='container mb-3 mt-2'>
-                <Link to='/faculty/dashboard'>
+                <Link to='/dashboard'>
                     <span className='text-white'>Back to dashboard</span>
                 </Link>
             </div>
@@ -385,7 +385,7 @@ function Availability() {
                             </CForm>
                         </CCol>
                     </CRow>
-                        <div className='ms-5'>
+                        <div className='ms-4 me-4'>
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', margin: '20px 0' }}>
                                 <div style={{ flex: 1, height: '2px', backgroundColor: '#007bff', marginRight: '10px', position: 'relative' }}>
                                     <div style={{ content: "''", position: 'absolute', width: '20px', height: '2px', backgroundColor: '#007bff', left: '-20px', top: '50%', transform: 'translateY(-50%)' }}></div>

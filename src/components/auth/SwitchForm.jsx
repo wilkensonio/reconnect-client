@@ -32,10 +32,10 @@ function SwitchForm(props) {
                 onChange={handleSwitch}
                 />
                 <CFormLabel htmlFor="login" className="slide login">
-                  Signin
+                  Sign in
                 </CFormLabel>
                 <CFormLabel htmlFor="signup" className="slide signup">
-                  Signup
+                  Sign up
                 </CFormLabel>
                 <div className="slider-tab"></div>
             </div> 

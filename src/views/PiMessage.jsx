@@ -75,6 +75,8 @@ function PiMessage() {
 
     
     const handleDurationUnitChange = (e) => {
+      console.log(e.target.value);
+      
         setDurationUnit(e.target.value);
     };
     
@@ -83,11 +85,11 @@ function PiMessage() {
         try {
           const userRes = await getUserByEmail(loggedInUser);  
           setUser(userRes);
-        } catch (error) {
+        } catch (error) { 
           console.error(error);
         }
       };
-        const  userSignInEmail = localStorage.getItem('reconnect_signin_email'); 
+        const  userSignInEmail = localStorage.getItem('reconnect_signin_email');  
         setLoggedInUser(userSignInEmail); 
         if (!user)
           fetchUser();
@@ -127,7 +129,8 @@ function PiMessage() {
       
       try {   
           setError('');
-          await updatePiMessage(userData);  
+          const r = await updatePiMessage(userData);  
+          console.log(r);
           setDeleteMessage(false);
       } catch (error) {
         setError('Failed to send message');
