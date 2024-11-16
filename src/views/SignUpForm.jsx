@@ -120,19 +120,22 @@ const SignupForm = ({onVerifySignup}) => {
   const handleVerifyEmail = async (e) => {
     e.preventDefault();
     setError('');
-    
-    // check user don't already exist in the database
-    const response = await getUserByEmail(email);
-    if (response.email === email.toLowerCase()) {
-      setError('User already exists, please ign in.');
-      return;
-    }
+    try {
+      // check user don't already exist in the database
+      const response = await getUserByEmail(email);
 
-    if (response.status === 200) {
-      setError('User already exists, please ign in.');
-      return;
+      if (response && response.email.toLowerCase() === email.toLowerCase()) {
+        setError('User already exists, please ign in.');
+        return;
+      } 
+      
+    } catch (error) {
+      if (error.detail !== 'User not found') { 
+        setError(error.detail);
+        console.error(err);
+        return;
+      }
     }
-    setError(''); 
     
     if (userId.trim() === ''              ||
     firstName.trim() === ''       || 
@@ -146,8 +149,10 @@ const SignupForm = ({onVerifySignup}) => {
     }
     
     if (!/^\d{8}$/.test(userId)) {
-      setError('Invalid HootLoot ID must be 8 digits' );
-      return;
+      if (userId.length !== 8) {
+        setError('Invalid HootLoot ID must be 8 digits' );
+        return;
+      } 
     }
     if (firstName.trim() === '') {
       setError('First Name is required');
@@ -189,7 +194,9 @@ const SignupForm = ({onVerifySignup}) => {
 
     setError('');
     localStorage.setItem('reconnect_signup_data', JSON.stringify(userData));  
-    await sendEmailVerification(); 
+
+    const emailResponse = await sendEmailVerification(); 
+    console.log(emailResponse);
 
     onVerifySignup();
     
