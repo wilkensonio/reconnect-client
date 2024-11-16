@@ -336,7 +336,7 @@ function Calendar() {
     <div>
       <h1 className="text-center text-white mt-3 mb2">Calendar</h1>
          <div className='mb-3'>
-                <Link to='/faculty/dashboard'>
+                <Link to='/dashboard'>
                     <span className='text-white'>Back to dashboard</span>
                 </Link>
             </div>
@@ -406,7 +406,7 @@ function Calendar() {
               </CButton>
               {currentAppointment && (
                 <CButton color="danger" onClick={handleDeleteAppointment}>   
-                  {!confirmDelete ? 'Delete' : 'confirm Delete'}
+                  {!confirmDelete ? 'Delete' : 'Confirm Delete'}
                 </CButton>
               )} 
             </CModalFooter>

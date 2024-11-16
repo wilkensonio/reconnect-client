@@ -18,7 +18,7 @@ const Content = () => {
               )
             )
           })}
-          <Route path='/faculty' element={<Navigate to="/faculty/dashboard" replace />} />
+          <Route path='/' element={<Navigate to="/dashboard" replace />} />
         </Routes> 
       </Suspense>
     </CContainer>

@@ -44,9 +44,9 @@ function App() {
           }
       >
         <Routes> 
-          <Route path="/faculty/signin" element={<SignUpIn />} />
-          <Route path="/faculty/logout" element={<Logout />} />
-          <Route path="*" name="Home" element={isAuthenticated ? <Layout /> : <Navigate to="/faculty/signin"/>} /> 
+          <Route path="/signin" element={<SignUpIn />} />
+          <Route path="/logout" element={<Logout />} />
+          <Route path="*" name="Home" element={isAuthenticated ? <Layout /> : <Navigate to="/signin"/>} /> 
         </Routes>
       </Suspense>  
     </NotificationProvider>

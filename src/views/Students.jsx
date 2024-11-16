@@ -160,7 +160,7 @@ function Students() {
                 </>
             </h3>
             <div className='mb-5 container'>
-                <Link to='/faculty/dashboard'>
+                <Link to='/dashboard'>
                     <span className='text-white'>Back to dashboard</span>
                 </Link>
             </div>

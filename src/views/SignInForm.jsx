@@ -119,12 +119,15 @@ function SignInForm({onResetPassword}) {
     console.log(token);
     
     if (token && (smg == 'session-expired' || smg == 'token-expired'|| smg == 'session_expired')) {
+      localStorage.clear();
       setMessage('Session expired. Please sign in.'); 
 
-    }else if (smg == 'account_created') { 
+    }else if (smg == 'account_created') {
+      localStorage.clear(); 
       setMessage('Account created successfully. Please sign in.'); 
     }
     else if (smg == 'password_reset') { 
+      localStorage.clear();
       setMessage('Password reset successfully. Please sign in.'); 
     } else {
       setMessage('');
@@ -165,7 +168,7 @@ function SignInForm({onResetPassword}) {
       setLastName(last_name); 
       
       if (response.status === 200) {
-        window.location.href = '/faculty/dashboard';
+        window.location.href = '/dashboard';
         localStorage.setItem('reconnect_first_name', first_name);
       } 
       
@@ -222,7 +225,7 @@ function SignInForm({onResetPassword}) {
               <CButton className='ccolor' type="submit" 
                 style={{position: 'relative', top:'10px'}}
                 disabled={!isFormValid}
-              > Signin
+              > Sign in
               </CButton> 
               <div className="mt-5 d-flex justify-content-center mb-3"> 
                 <a

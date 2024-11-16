@@ -89,7 +89,7 @@ function Dashboard() {
       </h2>
       <CRow className="mb-4 me-2 ms-2">
         <CCol sm={3} className="mb-4">
-          <Link to='/faculty/calendar'>
+          <Link to='/calendar'>
             <CButton color="primary" className="position-relative w-100"
              style={{ height: 'auto' }}>
               Calendar
@@ -100,7 +100,7 @@ function Dashboard() {
           </Link>
         </CCol>
         <CCol sm={3} className="mb-4">
-          <Link to='/faculty/notifications'>
+          <Link to='/notifications'>
             <CButton color="primary" className="position-relative w-100"
              style={{ height: 'auto' }}>
               Notifications
@@ -111,7 +111,7 @@ function Dashboard() {
           </Link>
         </CCol>
         <CCol sm={3} className="mb-4">
-          <Link to='/faculty/availabilities'>
+          <Link to='/availabilities'>
             <CButton color="primary" className="position-relative w-100"
              style={{ height: 'auto' }}>
               Availabilities
@@ -122,21 +122,21 @@ function Dashboard() {
           {popup ? <PiMessage /> : <PiMessage />}
         </CCol>
         <CCol sm={3} className="mb-4">
-          <Link to='/faculty/new-student'>
+          <Link to='/new-student'>
             <CButton color="primary" className="w-100" style={{ height: 'auto' }}>
               Add New Students
             </CButton>
           </Link>
         </CCol>
         <CCol sm={3} className="mb-4">
-          <Link to='/faculty/students'>
+          <Link to='/students'>
             <CButton color="primary" className="position-relative w-100" style={{ height: 'auto' }}>
               All Students
             </CButton> 
           </Link>
         </CCol>
         <CCol sm={3} className="mb-4">
-          <Link to='/faculty/account'>
+          <Link to='/account'>
             <CButton color="primary" className="position-relative w-100" style={{ height: 'auto' }}>
               Profile
             </CButton> 
