@@ -116,9 +116,8 @@ function SignInForm({onResetPassword}) {
     const token = localStorage.getItem('reconnect_token_expired');
     const params = new URLSearchParams(location.search);
     const smg = params.get('message');
-    console.log(token);
     
-    if (token && (smg == 'session-expired' || smg == 'token-expired'|| smg == 'session_expired')) {
+    if (!token && (smg == 'session-expired' || smg == 'token-expired'|| smg == 'session_expired')) {
       localStorage.clear();
       setMessage('Session expired. Please sign in.'); 
 
@@ -129,6 +128,10 @@ function SignInForm({onResetPassword}) {
     else if (smg == 'password_reset') { 
       localStorage.clear();
       setMessage('Password reset successfully. Please sign in.'); 
+    } else if (smg == 'logout') {
+      localStorage.clear();
+      setMessage('Logged out successfully.');
+
     } else {
       setMessage('');
     }
@@ -150,8 +153,8 @@ function SignInForm({onResetPassword}) {
     try {
       setError('');
       await getToken(email, password); 
-    } catch (error) {
-      setError('Invalid email or password');
+    } catch (error) {  
+      setError('Invalid credentials or account does not exist');
       return;
     }
 
@@ -172,11 +175,8 @@ function SignInForm({onResetPassword}) {
         localStorage.setItem('reconnect_first_name', first_name);
       } 
       
-    } catch (error) {  
-      if (error.response) 
-        setError(error.response.data.detail || 'An error occurred');
-      else  
-        setError('An error occurred while signing in'); 
+    } catch (error) {   
+       setError(error?.detail || error?.response?.data?.detail || 'Failed to sign in');
     }     
   };
 

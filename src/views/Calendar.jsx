@@ -384,7 +384,7 @@ function Calendar() {
             />
             <CFormInput
               type="datetime-local"
-              label="Start"
+              label="Start time"
               name="start"
               value={formData.start}
               onChange={(e) => setFormData({ ...formData, start: e.target.value })}
@@ -392,7 +392,7 @@ function Calendar() {
             />
             <CFormInput
               type="datetime-local"
-              label="End"
+              label="End time"
               name="end"
               value={formData.end}
               onChange={(e) => setFormData({ ...formData, end: e.target.value })}
