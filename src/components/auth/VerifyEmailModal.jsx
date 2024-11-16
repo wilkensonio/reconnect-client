@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import { CButton, CFormInput, 
     CModal, 
     CModalBody, CModalFooter, 
@@ -20,18 +20,32 @@ import { signupUser } from '../../apiservice/SignService';
 function VerifyEmailModal({ showModal, setShowModal}) { 
     const [verificationCode, setVerificationCode] = useState('');
     const [error, setError] = useState(''); 
+    const [sentCode, setSentCode] = useState('');
+
+    useEffect(() => {
+        const code = localStorage.getItem('reconnect_email_verification_code');
+        setSentCode(code);
+    });
 
     const verifyEmail = async () => {
-        const sentCode = localStorage.getItem('reconnect_eamil_verification_code');
+        setError('') 
+        
         if (!verificationCode) {
             setError('Please enter the verification code.');
             return;
         }
+
+        if(sentCode !== verificationCode) {
+            setError('Invalid verification code.');
+            return;
+        }
        
+        console.log(sentCode, verificationCode);
         try {
-            setError('')
-            await verifyEmailCode(sentCode, verificationCode);   
-            setError(''); 
+            
+            const res = await verifyEmailCode(sentCode, verificationCode);   
+            console.log(res);
+            
             setShowModal(false); 
             
             const userDataString  = localStorage.getItem('reconnect_signup_data');
@@ -44,7 +58,7 @@ function VerifyEmailModal({ showModal, setShowModal}) {
             
         } catch (error) { 
             if (error.response)
-                setError('Invalid verification code.');
+                setError(error?.response?.data?.detail);
             console.error(error);
         }  
     } 
