@@ -60,7 +60,7 @@ jobs:
             docker pull "${{ secrets.DOCKER_USERNAME }}/react-app:latest"
 
             # Run the container with environment variables passed dynamically
-            docker run -d -m 1g -p 80:80 --name react-app "${{ secrets.DOCKER_USERNAME }}/react-app:latest"
+            docker run -d -m 1g -p 8080:80 --name react-app "${{ secrets.DOCKER_USERNAME }}/react-app:latest"
 
             # Check logs for verification
             docker logs react-app
