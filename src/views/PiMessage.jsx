@@ -222,7 +222,7 @@ function PiMessage() {
           height: 'auto',
         }}
       >
-      {piMsg == 0 ? 'Kiosk Message' : 'Update'}
+      {piMsg == 0 ? 'Kiosk Message' : 'Update Kiosk Message'}
       </CButton> 
 
       <CModal className='pi-modal' visible={popup} onClose={()=>{
