@@ -1,9 +1,9 @@
 import React, { Suspense, useState , useEffect} from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';   
 import Layout from './layout/Layout';
-import SignUpIn from './components/auth/SignUpIn';
 import { CSpinner } from '@coreui/react';
 import { NotificationProvider } from './context/NotificationContext';
+import SignUpIn from './components/auth/SignUpIn';
 import Logout from './views/Logout';
  
 function App() { 

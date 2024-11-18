@@ -105,6 +105,22 @@ function SignInForm({onResetPassword}) {
     );
   };
 
+  const showMessage = (message) => {
+    if ( message == 'session-expired' || message == 'token-expired'|| message == 'session_expired') {
+      localStorage.clear();
+      setMessage('Session expired. Please sign in.'); 
+
+    } else if (message == 'account_created') {
+      localStorage.clear(); 
+      setMessage('Account created successfully. Please sign in.'); 
+    } else if (message == 'password_reset') { 
+      localStorage.clear();
+      setMessage('Password reset successfully'); 
+    } else {
+      setMessage('');
+    }
+  };
+  
 
   const isFormValid = useFormValidation(
     {email, password},
@@ -112,29 +128,14 @@ function SignInForm({onResetPassword}) {
   );
 
 
-  useEffect(() => {
-    const token = localStorage.getItem('reconnect_token_expired');
+  useEffect(() => { 
     const params = new URLSearchParams(location.search);
-    const smg = params.get('message');
+    if ( location.pathname ==  '/signin' )
+      localStorage.clear();
     
-    if (!token && (smg == 'session-expired' || smg == 'token-expired'|| smg == 'session_expired')) {
-      localStorage.clear();
-      setMessage('Session expired. Please sign in.'); 
-
-    }else if (smg == 'account_created') {
-      localStorage.clear(); 
-      setMessage('Account created successfully. Please sign in.'); 
-    }
-    else if (smg == 'password_reset') { 
-      localStorage.clear();
-      setMessage('Password reset successfully. Please sign in.'); 
-    } else if (smg == 'logout') {
-      localStorage.clear();
-      setMessage('Logged out successfully.');
-
-    } else {
-      setMessage('');
-    }
+    const msg = params.get('message'); 
+    
+    showMessage(msg);
 
     setEmail('');
     setPassword('');
