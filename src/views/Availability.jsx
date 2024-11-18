@@ -84,6 +84,8 @@ function Availability() {
     const [selectedEntry, setSelectedEntry] = useState(null);
     const [selectedDays, setSelectedDays] = useState(new Array(7).fill(false));
     const [alertMessage, setAlertMessage] = useState('');
+    const [confirmDeletes, setConfirmDeletes] = useState({});
+
     const [day, setDay] = useState('');
     const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
@@ -262,12 +264,7 @@ function Availability() {
             id: availability[selectedEntry].id,
         };
         
-        if (checkOverlap(day, startTime, endTime)) {
-            setAlertMessage(`Time slot for ${day} overlaps with existing availability.`);
-            return;
-        }
-
-        try {
+         try {
             await updateAvailability(updatedEntry);
             const updatedAvailability = [...availability];
             updatedAvailability[selectedEntry] = {
@@ -283,11 +280,14 @@ function Availability() {
     };
 
     const handleDeleteAvailability = async (index) => {
+        if (!confirmDeletes[index]) {
+            setConfirmDeletes( prev => ({ ...prev, [index]: true }));
+            return;
+        }
         const availabilityID = availability[index].id;
         
         try {
             const response = await deleteAvailability(availabilityID);  
-            
             if (response.data === true) {
                 const newAvailability = availability.filter((_, i) => i !== index);
                 setAvailability(newAvailability);
@@ -296,8 +296,15 @@ function Availability() {
         } catch (error) {
             console.error('Error deleting availability:', error);
         }
+        
         const newAvailability = availability.filter((_, i) => i !== index);
         setAvailability(newAvailability);
+        
+        setConfirmDeletes((prev) => {
+            const newState = { ...prev };
+            delete newState[index];  // Reset confirm state for this item after deletion
+            return newState;
+        });
     };
 
     return (
@@ -400,7 +407,7 @@ function Availability() {
                             </div>
 
                             {availability.length > 0 ? (
-                                <CRow className='row'>
+                                <CRow className='row d-flex justify-content-center align-items-center'>
                                     <CCol md={9}>
                                         {availability.map((entry, index) => (
                                             <CRow key={index} className='mb-2 mt-5'>
@@ -408,7 +415,9 @@ function Availability() {
                                                 <CCol md={2}>{`${entry.startTime} - ${entry.endTime}`}</CCol>
                                                 <CCol md={3} className='d-flex'>
                                                     <CButton onClick={() => handleUpdateClick(index)} className="ms-2 ccolor mb-2" style={{ width: '50%' }}>Update</CButton>
-                                                    <CButton color="danger" onClick={() => handleDeleteAvailability(index)} className="ms-2 mb-2" style={{ width: '50%' }}>Delete</CButton>
+                                                    <CButton color="danger" onClick={() => handleDeleteAvailability(index)} className="ms-2 mb-2" style={{ width: '50%' }}>
+                                                       {confirmDeletes[index] ? 'Confirm' : 'Delete'}
+                                                    </CButton>
                                                 </CCol>
                                             </CRow>
                                         ))}
@@ -430,7 +439,10 @@ function Availability() {
                         </div>
                 </div>
             </CCard>
-            <CModal visible={modalVisible} onClose={() => setModalVisible(false)}
+            <CModal visible={modalVisible} onClose={() =>{ 
+                setAlertMessage('');
+                setModalVisible(false)}
+            }
                 alignment='center'
                 >
                 <CModalHeader className='border-0'>
@@ -460,7 +472,9 @@ function Availability() {
                 </CModalBody>
                 <CModalFooter className='m-0 border-0'> 
                     <CButton className='ccolor' onClick={handleUpdateSubmit}>Update</CButton> 
-                    <CButton color="info" onClick={() => setModalVisible(false)}>Cancel</CButton>
+                    <CButton color="info" onClick={() => {
+                        setAlertMessage('');
+                        setModalVisible(false)}}>Cancel</CButton>
                 </CModalFooter>
                 <div className='text-center mb-4'>
                         {alertMessage && <div className="text-danger text-center pt-5 h5">{alertMessage}</div>}

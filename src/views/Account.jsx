@@ -92,36 +92,9 @@ function Account() {
     e.preventDefault();
 
     setError('');
-    console.log((update_password.trim().length));
-    
-    if (update_password.trim().length !== 0) {
-      console.log(update_password.trim().length);
-      if (update_password !== confirm_update) {
-        setError('Passwords do not match');
-        return;
-      }
-      if (update_password.trim().length < 8) {
-        setError('Password must be at least 6 characters');
-        return;
-      } 
-      if (!/[A-Z]/.test(update_password)) {
-        setError('Password must contain at least one uppercase letter');
-        return;
-      }
-      if (!/[a-z]/.test(update_password)) {
-        setError('Password must contain at least one lowercase letter');
-        return;
-      }
-      if (!/[0-9]/.test(update_password)) {
-        setError('Password must contain at least one digit');
-        return;
-      }
-      if (!/[!@#$%^&*]/.test(update_password)) {
-        setError('Password must contain at least one special character');
-        return;
-      }
-    }
+    setSuccess('');
 
+    
     const userData = {
       user_id: user_id,
       first_name: first_name,
@@ -129,7 +102,52 @@ function Account() {
       email: email,
       phone_number: phone_number,
       password: update_password
-    };   
+    };
+    
+    if (first_name.trim().length === 0 
+      || last_name.trim().length === 0 
+      || email.trim().length === 0 
+      || phone_number.trim().length === 0
+      || (update_password.trim().length === 0 
+      && confirm_update.trim().length === 0)) {
+
+      setError('All fields are required');
+      return;
+
+    }  
+      
+    if (update_password !== confirm_update) {
+      setError('Passwords do not match');
+      return;
+    }
+    if (update_password.trim().length < 8) {
+      setError('Password must be at least 6 characters');
+      return;
+    } 
+    if (!/[A-Z]/.test(update_password)) {
+      setError('Password must contain at least one uppercase letter');
+      return;
+    }
+    if (!/[a-z]/.test(update_password)) {
+      setError('Password must contain at least one lowercase letter');
+      return;
+    }
+    if (!/[0-9]/.test(update_password)) {
+      setError('Password must contain at least one digit');
+      return;
+    }
+    if (!/[!@#$%^&*]/.test(update_password)) {
+      setError('Password must contain at least one special character');
+      return;
+    }   
+    if (phone_number.trim().length !== 10) {  
+      setError('Phone number must be 10 digits');
+      return;
+    }
+    if (!/^\d{10}$/.test(phone_number)) {
+      setError('Phone number must be all digits');
+      return;
+    }
     
 
     try {
@@ -143,7 +161,7 @@ function Account() {
         window.location.href = '/dashboard';
       }, 2000);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       
       setError('Failed to update profile');
     }
@@ -253,7 +271,7 @@ function Account() {
                     <CFormInput
                       id="passwordInput"
                       type={showPassword ? 'text' : 'password'} // Toggle password visibility
-                      placeholder="Password"
+                      placeholder="Password *"
                       value={update_password}
                       onChange={(e) => setUpdatePassword(e.target.value)} 
                     />
@@ -267,7 +285,7 @@ function Account() {
                     <CFormInput
                       id="confirmPasswordInput"
                       type={showConfirmPassword ? 'text' : 'password'} 
-                      placeholder="Confirm password"
+                      placeholder="Confirm password *"
                       value={confirm_update}
                       onChange={(e) => setConfirmUpdate(e.target.value)} 
                     /> 

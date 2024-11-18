@@ -26,6 +26,6 @@ test('renders PiMessage component', () => {
     </MemoryRouter>
   );
  
-  const linkElement = screen.getByText(/Leave Message on Kiosk/i);
+  const linkElement = screen.getByText(/Kiosk Message/i);
   expect(linkElement).toBeInTheDocument();
 });
