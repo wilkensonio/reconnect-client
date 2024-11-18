@@ -108,11 +108,11 @@ function SignInForm({onResetPassword}) {
   const showMessage = (message) => {
     if ( message == 'session-expired' || message == 'token-expired'|| message == 'session_expired') {
       localStorage.clear();
-      setMessage('Session expired. Please sign in.'); 
+      setMessage('Session expired, please sign in.'); 
 
     } else if (message == 'account_created') {
       localStorage.clear(); 
-      setMessage('Account created successfully. Please sign in.'); 
+      setMessage('Account created successfully'); 
     } else if (message == 'password_reset') { 
       localStorage.clear();
       setMessage('Password reset successfully'); 
