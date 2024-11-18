@@ -125,7 +125,7 @@ const SignupForm = ({onVerifySignup}) => {
       const response = await getUserByEmail(email);
 
       if (response && response.email.toLowerCase() === email.toLowerCase()) {
-        setError('User already exists, please ign in.');
+        setError('User already exists, please sign in.');
         return;
       } 
       
@@ -136,13 +136,13 @@ const SignupForm = ({onVerifySignup}) => {
       }
     }
     
-    if (userId.trim() === ''              ||
-    firstName.trim() === ''       || 
-    lastName.trim() === ''        || 
-    email.trim() === ''           || 
-    password.trim() === ''        ||
-    confirmPassword.trim() === '' ||
-    phoneNumber.trim() === ''){  
+      if (userId.trim() === ''              ||
+      firstName.trim() === ''       || 
+      lastName.trim() === ''        || 
+      email.trim() === ''           || 
+      password.trim() === ''        ||
+      confirmPassword.trim() === '' ||
+      phoneNumber.trim() === ''){  
       setError('All fields are required');
       return;
     }

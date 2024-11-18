@@ -54,24 +54,59 @@ import {
   CForm,
   CFormInput,
   CFormSelect,
-  CCard
+  CCard,
+  CSpinner
 } from '@coreui/react';
 import { getUserByEmail } from '../apiservice/UserService';
 import { updatePiMessage, getPiMessage, deletePiMessage} from '../apiservice/PiMessage';  
 import { useBlur } from '../context/PiMessageContext';
 
 
-function PiMessage() { 
-    const [message, setMessage] = useState('');
-    const [duration, setDuration] = useState(15);  
-    const [durationUnit, setDurationUnit] = useState('minutes');  
-    const [loggedInUser, setLoggedInUser] = useState('');
-    const { popup, togglePiPopup } = useBlur();  
-    const [error, setError] = useState('');
-    const [user, setUser] = useState('');
-    const [deleteMessage, setDeleteMessage] = useState(false);
-    const [hasMessage, setHasMessage] = useState('');
 
+function PiMessage() { 
+  const [message, setMessage] = useState('');
+  const [duration, setDuration] = useState(15);  
+  const [durationUnit, setDurationUnit] = useState('minutes');  
+  const [loggedInUser, setLoggedInUser] = useState('');
+  const { popup, togglePiPopup } = useBlur();  
+  const [error, setError] = useState('');
+  const [user, setUser] = useState('');
+  const [deleteMessage, setDeleteMessage] = useState(false);
+  const [hasMessage, setHasMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [piMsg, setPiMsg] = useState(0);
+
+  const getUser = async () => {
+    setLoading(true);
+    try { 
+      const userRes = await getUserByEmail(loggedInUser);
+      setUser(userRes);
+    } catch (error) {
+      console.error('Trying to get user', error);
+    }
+    finally {
+      
+    }     
+  };
+
+  useEffect(() => {
+    const getUserEmail = async () => {
+      try {
+        const  userSignInEmail = localStorage.getItem('reconnect_signin_email');  
+        
+        setLoggedInUser(userSignInEmail);
+        await fetchActiveMessage();   
+        
+      } catch (error) { 
+        console.error('Trying to get user', error);
+      }
+    };
+    
+      if (loggedInUser != null || loggedInUser != undefined || loggedInUser != '' ) 
+        getUserEmail();
+      
+  }, []);
+  
   const handleMessageChange = (e) => {
     const selectedMessage = e.target.value;
     setMessage(selectedMessage);
@@ -83,8 +118,27 @@ function PiMessage() {
       setDuration(durationValue);
       setDurationUnit(unit.toLowerCase());
     }
-  };
+  }; 
 
+  const handleButtonClick = async () => {
+    try {
+      setLoading(true);
+      await getUser();  
+      if (!user || !user.user_id) {
+        console.error('User not set. Cannot fetch active message.');
+        return; // Exit without showing the modal
+      }
+      await fetchActiveMessage(); // Fetch the active message after the user is set
+      togglePiPopup(); // Open the modal
+    } catch (error) {
+      console.error('Error handling button click:', error);
+    } finally {
+      setLoading(false);
+      setPiMsg(p => p + 1);
+    }
+  };
+  
+ 
   const handleDurationChange = (e) => {
     setDuration(e.target.value);
   };
@@ -93,115 +147,92 @@ function PiMessage() {
     console.log(e.target.value);
     
       setDurationUnit(e.target.value);
-  };
-    
-    useEffect(() => {
-      const getUserEmail = async () => {
-        try {
-          const  userSignInEmail = localStorage.getItem('reconnect_signin_email');  
-          
-          setLoggedInUser(userSignInEmail);   
-          
-        } catch (error) { 
-          console.error('Trying to get user', error);
-        }
-      };
-      
-        if (loggedInUser != null || loggedInUser != undefined || loggedInUser != '' ) 
-          getUserEmail();
-        
-    }, []);
-
-    const getUser = async () => {
-
-      try { 
-        const userRes = await getUserByEmail(loggedInUser);
-        setUser(userRes);
-      } catch (error) {
-        console.error('Trying to get user', error);
-      }
-    };
-
+  }; 
  
     
-    const fetchActiveMessage = async () => { 
-      getUser();
-      if (!user) return;
-      try {
-        const response = await getPiMessage(user.user_id); 
-        
-        setMessage(response.message || '');
-        setDuration(response.duration || 15);
-        setDurationUnit(response.duration_unit || 'minutes');
-        setHasMessage(response.message ? 'Kiosk has a message' : 'No message on the kiosk');
-      } catch (error) {
-        setMessage('');
-        setDuration(15);
-        setDurationUnit('minutes');
-        setHasMessage('No message on the kiosk'); 
-        console.error('Error fetching active message or message doest exits:', error);
-      }
-    }; 
-    
-    
-    const handleSendMessage = async () => {
-      const userData = {
-        user_id: user.user_id,
-        message: message,
-        duration: duration,
-        duration_unit: durationUnit
-      } 
-      
-      try {   
-          setError(''); 
-          await updatePiMessage(userData);  
-          setMessage(userData.message);
-          setDuration(userData.duration);
-          setDurationUnit(userData.duration_unit);
-          setHasMessage('Kiosk has a message'); 
-          setDeleteMessage(false);
-      } catch (error) {
-        setError('Failed to send message');
-        console.error(error);
-      }  
-        
-    }; 
-
-    const handleDeleteMessage = async () => {
-      if (!user) return;
-      try { 
-        setError('');
-        await deletePiMessage(user.user_id); 
-        setMessage('');
-        setHasMessage('No message on the kiosk');
-        setDeleteMessage(true);
-      } catch (error) {
-        if (!error.detail){
-          setError('Failed to delete message or no message to delete');
-        }  
-        console.error(error);
-      }  
+  const fetchActiveMessage = async () => { 
+    if (!user || !user.user_id) {
+      console.error('User not set. Cannot fetch active message.');
+      return;
+    }
+    try {
+      const response = await getPiMessage(user.user_id); 
+      setMessage(response.message || '');
+      setDuration(response.duration || 15);
+      setDurationUnit(response.duration_unit || 'minutes');
+      setHasMessage('Kiosk has a message');
+    } catch (error) {
+      setMessage('');
+      setDuration(15);
+      setDurationUnit('minutes');
+      setHasMessage('No message on the kiosk'); 
+      console.error('Error fetching active message or message doest exits:', error);
+    }
+    finally {
+      setLoading(false);
     } 
+  };  
+  
+  const handleSendMessage = async () => {
+    const userData = {
+      user_id: user.user_id,
+      message: message,
+      duration: duration,
+      duration_unit: durationUnit
+    } 
+    
+    try {   
+        setError(''); 
+        await updatePiMessage(userData);  
+        setMessage(userData.message);
+        setDuration(userData.duration);
+        setDurationUnit(userData.duration_unit);
+        setHasMessage('Kiosk has a message'); 
+        setDeleteMessage(false);
+    } catch (error) {
+      setError('Failed to send message');
+      console.error(error);
+    }  
+      
+  }; 
+
+  const handleDeleteMessage = async () => {
+    if (!user) return;
+    try { 
+      setError('');
+      await deletePiMessage(user.user_id); 
+      setMessage('');
+      setHasMessage('No message on the kiosk');
+      setDeleteMessage(true);
+    } catch (error) {
+      if (!error.detail){
+        setError('Failed to delete message or no message to delete');
+      }  
+      console.error(error);
+    }  
+  } 
 
   return (
-    <div>  
-    
-      <CButton color="primary" onClick={()=>{
-        togglePiPopup()
-        fetchActiveMessage();
+    <div>   
+      <CButton
+        color="primary"
+        onClick={handleButtonClick}
+        className="w-100"
+        style={{
+          height: 'auto',
+        }}
+      >
+      {piMsg == 0 ? 'Kiosk Message' : 'Update'}
+      </CButton> 
 
-      }} className="w-100"
-       style={{ 
-        height: 'auto'}}>  
-        Leave Message on Kiosk
-      </CButton>
-      
-
-      <CModal className='pi-modal' visible={popup} onClose={()=>togglePiPopup()}
+      <CModal className='pi-modal' visible={popup} onClose={()=>{
+        togglePiPopup() 
+        setLoading(false)
+        }}
         alignment='center'   
         >
         <CModalHeader onClose={()=>{
-            togglePiPopup() 
+            togglePiPopup()  
           }} className='border-0'>
           <CModalTitle>Leave a Message on the Kiosk</CModalTitle>
         </CModalHeader>

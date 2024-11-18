@@ -38,8 +38,7 @@ export const getUserByEmail = async email => {
  * @param {String} userData the user's date to be updated
  * @returns {JSON} the user information
  */
-export const updateUser = async (userData) => { 
-    console.log(userData.user_id, "user_id form api service");
+export const updateUser = async (userData) => {  
     
     try {
         const response = await axios.put(`/api/user/update/${userData.user_id}`, userData, {

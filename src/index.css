@@ -350,5 +350,35 @@ input[type="radio"]{
   margin: 0;
   padding: 0;
 }
+/* .fc-button-group{ 
+  margin-bottom: 2px;
+
+} */
+
+ 
+
+/* Stacked buttons for small screens */
+@media (max-width: 576px) {
+  .fc-header-toolbar .fc-button-group {
+    display: flex;
+    flex-wrap: wrap; /* Allow the buttons to wrap */
+    justify-content: space-between; /* Space out the buttons evenly */
+  }
+
+  /* Targeting individual buttons to make them stack in pairs */
+  .fc-header-toolbar .fc-button:not(.fc-today-button) {
+    width: 48%; /* Make each button take up half of the row */
+    margin-bottom: 2px; /* Add bottom margin */
+    margin-right: 2%; /* Add right margin to create spacing between buttons */
+  }
+
+  /* Remove right margin for the last button in each row */
+  .fc-header-toolbar .fc-button:nth-child(2n) {
+    margin-right: 0;
+  }
+
+  
+}
+
 
 @import 'bootstrap/dist/css/bootstrap.min.css';
