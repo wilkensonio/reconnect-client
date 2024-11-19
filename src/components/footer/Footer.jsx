@@ -14,8 +14,8 @@ function Footer() {
         </span>
       </div>
       <div>
-        <span>Powered by</span>
-        <CLink href="https://coreui.io">CoreUI</CLink>
+        {/* <span>Powered by</span> */}
+        {/* <CLink href="https://coreui.io">CoreUI</CLink> */}
       </div>
     </CFooter>
   );
