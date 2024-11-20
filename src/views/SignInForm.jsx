@@ -150,6 +150,13 @@ function SignInForm({onResetPassword}) {
       setError('Enter a valid southern email');
       return;
     } 
+     
+    if (email.toLocaleLowerCase().trim()  !== 'lancorl1@southernct.edu'){
+      if (email.toLocaleLowerCase().trim() !== 'hilarionw2@southernct.edu'){ 
+        setError('Unauthorized access');
+        return;
+      } 
+   }
 
     try {
       setError('');
